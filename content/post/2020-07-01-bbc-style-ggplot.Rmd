@@ -1,0 +1,151 @@
+---
+title: BBC style ggplot
+author: ~
+date: '2020-07-01'
+slug: bbc-style-ggplot
+categories: []
+tags: []
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readr)
+library(plotly)
+library(bbplot)
+theme_set(theme_bw())
+addtimes <- function(date,roy,jack){
+
+}
+
+time_to_seconds <- function(x){
+100*(x-floor(x))+floor(x)*60  
+}
+
+data_raw <- read.csv('data.csv')
+
+data <- data_raw %>% 
+  select(date,roy_time,jack_time) %>% 
+  mutate(roy_time = roy_time / 60,
+         jack_time = jack_time / 60) %>% 
+  pivot_longer(c(roy_time,jack_time), names_to="person",values_to = "time")
+
+
+```
+
+```{r echo=FALSE}
+p <- data %>% 
+  ggplot(aes(date,time,colour=person, group = person))+
+  geom_line(size=2)+
+  scale_color_discrete(name='Rebel',labels=c('Jack','Roy'))+
+  labs(
+    title='Jack & Roy running times 1.6 mile',
+    x="",
+    y="Time in minutes"
+  )+
+  scale_y_continuous(labels=scales::label_number_auto())+
+  bbc_style()
+
+ggplotly(p)
+```
+
+
+```{r message=FALSE, include=TRUE}
+library(tidyverse)
+setwd("~/University/R/election2019")
+library(readr)
+election <- read_csv("HoC-2019GE-results-by-constituency.csv") %>% 
+  mutate(con_p=con/valid_votes,
+         lab_p=lab/valid_votes,
+         brexit_p=brexit/valid_votes,
+         ld_p=ld/valid_votes,
+         snp_p=snp/valid_votes)
+```
+
+### Voting mix of the most populated constituencies
+
+```{r}
+#party_colours <- c("purple", "blue", )
+election %>% 
+  arrange(desc(valid_votes)) %>% 
+  mutate(constituency_name=fct_reorder(constituency_name,con_p)) %>% 
+  head(30) %>% 
+  gather(key="Party", value="Number", con, lab, ld, snp, brexit) %>% 
+  ggplot(aes(constituency_name,Number,fill=Party))+
+  geom_col()+
+  coord_flip()+
+  bbc_style()
+```
+
+### Voting mix of the least populated constituencies
+
+
+```{r}
+election %>% 
+  arrange(valid_votes) %>% 
+  mutate(constituency_name=fct_reorder(constituency_name,valid_votes)) %>% 
+  head(30) %>% 
+  gather(key="Party", value="Number", con, lab, ld, snp, brexit) %>% 
+  ggplot(aes(constituency_name,Number,fill=Party))+
+  geom_col()+
+  coord_flip()+
+  bbc_style()
+```
+
+### Where are the Conservative strongholds?
+
+```{r}
+election %>% 
+  arrange(desc(con_p)) %>% 
+  mutate(constituency_name=fct_reorder(constituency_name,con_p)) %>% 
+  head(30) %>%
+  gather(Party, Proportion, con_p, lab_p, ld_p, brexit_p, snp_p) %>% 
+  ggplot(aes(constituency_name,Proportion, fill = Party))+
+  geom_col()+
+  scale_y_continuous(label=scales::percent_format()) +
+  coord_flip()+
+  bbc_style()
+```
+
+
+
+```{r}
+election %>% 
+  mutate(constituency_name=fct_reorder(constituency_name, -con_p)) %>% 
+  gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %>% 
+  ggplot(aes(constituency_name, Proportion, fill = Party)) +
+  geom_col()+
+  labs(
+    x="",
+    y="Vote Share"
+  )+
+  scale_x_discrete()+
+  bbc_style()
+  
+```
+```{r}
+election %>% 
+  ggplot(aes(con_p)) +
+  geom_histogram()+
+  bbc_style()
+election %>% 
+  ggplot(aes(lab_p))+
+  geom_histogram()+
+  bbc_style()
+```
+
+```{r}
+election_noscotland <- election %>% 
+  filter(!country_name=="Scotland")
+  
+lm(brexit_p ~ con_p + lab_p + ld_p, data = election_noscotland)
+```
+```{r}
+election_wales <- election %>% 
+  filter(country_name=="Wales")
+#tidy(lm(brexit_p ~ con_p + lab_p + ld_p, data = election_wales))
+```
+

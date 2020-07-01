@@ -22,6 +22,40 @@ This site was built using the blogdown package. The theme was forked from @jruth
     </item>
     
     <item>
+      <title>BBC style ggplot</title>
+      <link>/2020/07/01/bbc-style-ggplot/</link>
+      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/01/bbc-style-ggplot/</guid>
+      <description>knitr::opts_chunk$set(echo = TRUE){&#34;x&#34;:{&#34;data&#34;:[{&#34;x&#34;:[1,2,3,4,5],&#34;y&#34;:[18.9833333333333,17.8666666666667,18.0166666666667,17.9,18.6666666666667],&#34;text&#34;:[&#34;date: 13/05/2020
+time: 18.98333
+person: jack_time
+person: jack_time&#34;,&#34;date: 14/05/2020
+time: 17.86667
+person: jack_time
+person: jack_time&#34;,&#34;date: 15/05/2020
+time: 18.01667
+person: jack_time
+person: jack_time&#34;,&#34;date: 21/05/2020
+time: 17.90000
+person: jack_time
+person: jack_time&#34;,&#34;date: 26/05/2020
+time: 18.66667
+person: jack_time
+person: jack_time&#34;],&#34;type&#34;:&#34;scatter&#34;,&#34;mode&#34;:&#34;lines&#34;,&#34;line&#34;:{&#34;width&#34;:7.55905511811024,&#34;color&#34;:&#34;rgba(248,118,109,1)&#34;,&#34;dash&#34;:&#34;solid&#34;},&#34;hoveron&#34;:&#34;points&#34;,&#34;name&#34;:&#34;jack_time&#34;,&#34;legendgroup&#34;:&#34;jack_time&#34;,&#34;showlegend&#34;:true,&#34;xaxis&#34;:&#34;x&#34;,&#34;yaxis&#34;:&#34;y&#34;,&#34;hoverinfo&#34;:&#34;text&#34;,&#34;frame&#34;:null},{&#34;x&#34;:[1,2,3,4,5],&#34;y&#34;:[17.65,17.7333333333333,16.35,16.85,15.65],&#34;text&#34;:[&#34;date: 13/05/2020
+time: 17.65000
+person: roy_time
+person: roy_time&#34;,&#34;date: 14/05/2020
+time: 17.73333
+person: roy_time
+person: roy_time&#34;,&#34;date: 15/05/2020
+time: 16.35000
+person: roy_time
+person: roy_time&#34;,&#34;date: 21/05/2020
+time: 16.</description>
+    </item>
+    
+    <item>
       <title>Recent grads</title>
       <link>/2020/07/01/recent-grads/</link>
       <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
