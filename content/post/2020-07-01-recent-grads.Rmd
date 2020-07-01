@@ -244,7 +244,7 @@ g <- majors_processed %>%
   expand_limits(y=0)+
   labs(title="Relationship between median salary and proportion of women",
        subtitle = "Ordered by major and coloured by major category",
-       x="Percentage sharte of women in the field",
+       x="Percentage share of women in the field",
        y="Median salary income")+
   theme(legend.position = 'none')+
   annotate("text",x=0.8,y=max(majors_processed$Median)-2000,hjust=1,vjust=1,label="Size refers to sample size")+
