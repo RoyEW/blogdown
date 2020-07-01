@@ -6,10 +6,19 @@
     <description>Recent content on A Hugo website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Dec 2016 21:49:57 -0700</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Recent grads</title>
+      <link>/2020/07/01/recent-grads/</link>
+      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/01/recent-grads/</guid>
+      <description>Exploatory data analysismajors_processed %&amp;gt;%count(Major_category, sort = T)## # A tibble: 16 x 2## Major_category n## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;## 1 Engineering 29## 2 Education 16## 3 Humanities &amp;amp; Liberal Arts 15## 4 Biology &amp;amp; Life Science 14## 5 Business 13## 6 Health 12## 7 Computers &amp;amp; Mathematics 11## 8 Agriculture &amp;amp; Natural Resources 10## 9 Physical Sciences 10## 10 Psychology &amp;amp; Social Work 9## 11 Social Science 9## 12 Arts 8## 13 Industrial Arts &amp;amp; Consumer Services 7## 14 Law &amp;amp; Public Policy 5## 15 Communications &amp;amp; Journalism 4## 16 Interdisciplinary 1recent_grads %&amp;gt;% arrange(desc(Median)) %&amp;gt;% view()by_major_category &amp;lt;- majors_processed %&amp;gt;% filter(!</description>
+    </item>
     
     <item>
       <title>A Plain Markdown Post</title>
