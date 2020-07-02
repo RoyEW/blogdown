@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 02 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Bank transactions and ASDA</title>
+      <link>/2020/07/02/bank-transactions-and-asda/</link>
+      <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/02/bank-transactions-and-asda/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>BBC style ggplot</title>

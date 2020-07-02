@@ -1,0 +1,107 @@
+---
+title: Bank transactions and ASDA
+author: ~
+date: '2020-07-02'
+slug: bank-transactions-and-asda
+categories: []
+tags: []
+---
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(readr)
+library(lubridate)
+library(bbplot)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+year2020 <- read_csv("2019-2020.csv")
+year2019 <- read_csv("2018-2019.csv")
+year2018 <- read_csv("2017-2018.csv")
+year2017 <- read_csv("2016-2017.csv")
+year2016 <- read_csv("2015-2016.csv")
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+data <- year2020 %>% 
+  union_all(year2019) %>% 
+  union_all(year2018) %>% 
+  union_all(year2017) %>% 
+  union_all(year2016)
+
+colnames(data) <- c("date","type","code","number","description","dr","cr","balance")
+
+data <- data %>%
+  mutate(date = dmy(date),
+         year_month = as.numeric(paste(year(date), month(date), sep = ""))) %>% 
+  arrange(date)
+
+
+data_asda_wages <- data %>% 
+  filter(!cr==is.na(cr),
+         description=="ASDA STORES PLC") %>% 
+  mutate(cumsum_asda_wage=cumsum(cr))
+
+data_asda_costs <- data %>% 
+  filter(!dr==is.na(dr),
+         description=="ASDA STORES 4510") %>% 
+  mutate(cumsum_asda=cumsum(dr)) 
+```
+
+```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+data %>%
+  ggplot(aes(date,balance))+
+  geom_line()+
+  geom_smooth()+
+  bbc_style()+
+  labs(title = "Bank Balance 2015-2020",
+       subtitle="Bank balance summary for university years")
+```
+
+```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+  
+  data %>%
+  filter(year_month > "2020-1-1") %>% 
+  ggplot(aes(date,balance))+
+  geom_line()+
+  geom_smooth()+
+  bbc_style()+
+  labs(title = "Bank Balance 2020",
+       subtitle="Bank balance summary")
+```
+
+
+
+```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+data_asda_costs %>% 
+  union_all(data_asda_wages) %>% 
+  arrange(date) %>% 
+  filter(date>dmy("30092016")) %>% 
+  ggplot(aes(date))+
+  geom_ribbon(aes(ymax=cumsum_asda_wage,ymin=0),na.rm = T,alpha=0.7,colour="black",fill="darkgreen",size=1)+
+  geom_ribbon(aes(ymax=cumsum_asda,ymin=0),na.rm=T,alpha=0.9,colour="black",fill="red",size=1)+
+  theme_bw()+
+  labs(title="ASDA (theme_bw)",
+    subtitle="ASDA cumulative wages and costs in store"
+  )+ 
+  annotate("text", x = dmy("01042020"), y = 12000, size=6,label = "wages",colour="white")+ 
+  annotate("text", x = dmy("01042020"), y = 2100, size=6, label = "costs",colour="white")
+```
+
+```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+data_asda_costs %>% 
+  union_all(data_asda_wages) %>% 
+  arrange(date) %>% 
+  filter(date>dmy("30092016")) %>% 
+  ggplot(aes(date))+
+  geom_ribbon(aes(ymax=cumsum_asda_wage,ymin=0),na.rm = T,alpha=0.7,colour="black",fill="darkgreen",size=1)+
+  geom_ribbon(aes(ymax=cumsum_asda,ymin=0),na.rm=T,alpha=0.9,colour="black",fill="red",size=1)+
+  bbc_style()+
+  labs(title="ASDA (theme_bw)",
+    subtitle="ASDA cumulative wages and costs in store"
+  )+ 
+  annotate("text", x = dmy("01042020"), y = 12000, size=6,label = "wages",colour="white")+ 
+  annotate("text", x = dmy("01042020"), y = 2100, size=6, label = "costs",colour="white")
+```
+
