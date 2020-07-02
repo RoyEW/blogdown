@@ -14,6 +14,9 @@ library(lubridate)
 library(bbplot)
 ```
 
+# BBC News ggplot style example
+
+This is an example article using the BBC News ggplot style package. Data is sourced from bank statements.
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 year2020 <- read_csv("2019-2020.csv")
@@ -59,6 +62,10 @@ data %>%
        subtitle="Bank balance summary for university years")
 ```
 
+# Another headline
+
+And some text to separate the graphs. 
+
 ```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
   
   data %>%
@@ -71,9 +78,11 @@ data %>%
        subtitle="Bank balance summary")
 ```
 
+# ASDA
 
+Cumulative wages and costs specific to ASDA. The graph clearly shows that I spend too much money during my lunch breaks.
 
-```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE,echo=FALSE}
 data_asda_costs %>% 
   union_all(data_asda_wages) %>% 
   arrange(date) %>% 
@@ -85,8 +94,8 @@ data_asda_costs %>%
   labs(title="ASDA (theme_bw)",
     subtitle="ASDA cumulative wages and costs in store"
   )+ 
-  annotate("text", x = dmy("01042020"), y = 12000, size=6,label = "wages",colour="white")+ 
-  annotate("text", x = dmy("01042020"), y = 2100, size=6, label = "costs",colour="white")
+  annotate("text", x = dmy("01032020"), y = 12000, size=6,label = "wages",colour="white")+ 
+  annotate("text", x = dmy("01032020"), y = 2100, size=6, label = "costs",colour="white")
 ```
 
 ```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
@@ -98,10 +107,10 @@ data_asda_costs %>%
   geom_ribbon(aes(ymax=cumsum_asda_wage,ymin=0),na.rm = T,alpha=0.7,colour="black",fill="darkgreen",size=1)+
   geom_ribbon(aes(ymax=cumsum_asda,ymin=0),na.rm=T,alpha=0.9,colour="black",fill="red",size=1)+
   bbc_style()+
-  labs(title="ASDA (theme_bw)",
+  labs(title="ASDA",
     subtitle="ASDA cumulative wages and costs in store"
   )+ 
-  annotate("text", x = dmy("01042020"), y = 12000, size=6,label = "wages",colour="white")+ 
-  annotate("text", x = dmy("01042020"), y = 2100, size=6, label = "costs",colour="white")
+  annotate("text", x = dmy("01032020"), y = 12000, size=6,label = "wages",colour="white")+ 
+  annotate("text", x = dmy("01032020"), y = 2100, size=6, label = "costs",colour="white")
 ```
 

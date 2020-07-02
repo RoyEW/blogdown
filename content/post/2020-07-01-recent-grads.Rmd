@@ -36,9 +36,7 @@ majors_processed %>%
 
 
 ```{r by_major_category}
-recent_grads %>% 
-  arrange(desc(Median)) %>% 
-  view()
+
 by_major_category <- majors_processed %>% 
   filter(!is.na(Total)) %>% 
   group_by(Major_category) %>% 
@@ -53,7 +51,7 @@ by_major_category <- majors_processed %>%
 ```{r}
 majors_processed %>%
   ggplot(aes(Median)) +
-  geom_histogram()
+  geom_histogram(fill="dodgerblue")
 ```
 
 ### Metallurgical gender mix
@@ -102,6 +100,7 @@ majors_processed %>%
 
 ### What are the highest earning majors?
 
+
 ```{r warning=FALSE}
 majors_processed %>% # INTERQUARTILE RANGE OF HIGHEST EARNING MAJORS
   arrange(desc(Median)) %>% 
@@ -118,6 +117,8 @@ majors_processed %>% # INTERQUARTILE RANGE OF HIGHEST EARNING MAJORS
 
 
 ### Business subjects - Highest earning majors
+This is of interest with my background in Finance
+
 ```{r}
 majors_processed %>% 
   filter(Major_category=='Business') %>% 
@@ -207,7 +208,7 @@ majors_processed %>%
   
 ```
 
-### How does gener mix relate to typical earnings?
+### How does gender mix relate to typical earnings?
 
 ```{r}
 majors_processed %>% 
@@ -232,8 +233,8 @@ by_major_category %>%
   geom_text_repel(aes(label=Major_category),force=0.2)+expand_limits(y=0)+
   labs(title="Relationship between median salary and proportion of women",
        subtitle="Ordered by major category")
-  
 ```
+
 ```{r}
 library(plotly)
 g <- majors_processed %>% 
@@ -255,6 +256,8 @@ g <- majors_processed %>%
    
 ggplotly(g)
 ```
+
+
  
 ```{r}
 majors_processed %>% 
@@ -262,3 +265,12 @@ majors_processed %>%
   lm(Median ~ ShareWomen, data = ., weights = Sample_size) %>% 
   summary()
 ```
+
+# Summary findings
+
+* Engeneering graduates command more pay than their counterparts, followed by Computer Science and Mathematics.
+* Engeneering, Computer Science and Mathematics subjects are overwhelmingly dominated my men.
+* Psychology, Nursing, Communication, Elementary Education, English Lit & Lang are extremely popular fields for women.
+* The is a tendency for male dominated fields to typically earn more than female dominated fields although this is most notable on the extremes of the data.
+* Psychology, Accounting, Business Management subjects look to be oversubscribed. 
+* Library science is a good choice of major
