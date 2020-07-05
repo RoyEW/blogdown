@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.73.0" />
+
+
+<title>compositional analysis - Roy Blogdown</title>
+<meta property="og:title" content="compositional analysis - Roy Blogdown">
+
+
+  <link href='/featured.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/featured.png"
+         width="50"
+         height="50"
+         alt="Roy Blogdown">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://www.facebook.com/roy.wilson.94064176/">Facebook</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/roy-w-a5bb3b83/">LinkedIn</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">13 min read</span>
+    
+
+    <h1 class="article-title">compositional analysis</h1>
+
+    
+    <span class="article-date">2020-07-03</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre class="r"><code>#install.packages(&quot;compositions&quot;)
+#install.packages(&quot;robustbase&quot;)
+#install.packages(&quot;gtools&quot;)
+library(robustbase)</code></pre>
+<pre><code>## Warning: package &#39;robustbase&#39; was built under R version 4.0.2</code></pre>
+<pre class="r"><code>library(energy)</code></pre>
+<pre><code>## Warning: package &#39;energy&#39; was built under R version 4.0.2</code></pre>
+<pre class="r"><code>library(gtools)
+library(compositions)</code></pre>
+<pre><code>## Warning: package &#39;compositions&#39; was built under R version 4.0.2</code></pre>
+<pre><code>## Loading required package: tensorA</code></pre>
+<pre><code>## 
+## Attaching package: &#39;tensorA&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     norm</code></pre>
+<pre><code>## Loading required package: bayesm</code></pre>
+<pre><code>## Warning: package &#39;bayesm&#39; was built under R version 4.0.2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;bayesm&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:gtools&#39;:
+## 
+##     rdirichlet</code></pre>
+<pre><code>## Welcome to compositions, a package for compositional data analysis.
+## Find an intro with &quot;? compositions&quot;</code></pre>
+<pre><code>## 
+## Attaching package: &#39;compositions&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     cor, cov, dist, var</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     %*%, scale, scale.default</code></pre>
+<pre class="r"><code>library(readr)
+library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages ------------------------------------------ tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.0     v dplyr   0.8.5
+## v tibble  3.0.1     v stringr 1.4.0
+## v tidyr   1.0.3     v forcats 0.5.0
+## v purrr   0.3.4</code></pre>
+<pre><code>## -- Conflicts --------------------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(neuralnet)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;neuralnet&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     compute</code></pre>
+<pre class="r"><code>library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## 
+## Attaching package: &#39;caret&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     lift</code></pre>
+<pre><code>## The following object is masked from &#39;package:compositions&#39;:
+## 
+##     R2</code></pre>
+<pre class="r"><code>library(caretEnsemble)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;caretEnsemble&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     autoplot</code></pre>
+<pre class="r"><code>divide01 &lt;- function(x){
+  return(x/100)
+}
+head(data)</code></pre>
+<pre><code>##                                                                             
+## 1 function (..., list = character(), package = NULL, lib.loc = NULL,        
+## 2     verbose = getOption(&quot;verbose&quot;), envir = .GlobalEnv, overwrite = TRUE) 
+## 3 {                                                                         
+## 4     fileExt &lt;- function(x) {                                              
+## 5         db &lt;- grepl(&quot;\\\\.[^.]+\\\\.(gz|bz2|xz)$&quot;, x)                     
+## 6         ans &lt;- sub(&quot;.*\\\\.&quot;, &quot;&quot;, x)</code></pre>
+<pre class="r"><code>data &lt;- read.csv(&quot;hardness.csv&quot;) %&gt;% 
+  mutate(Al=divide01(Al),
+         Co=divide01(Co),
+         Cr=divide01(Cr),
+         Cu=divide01(Cu),
+         Fe=divide01(Fe),
+         Ni=divide01(Ni))
+data_ordered &lt;- read.csv(&quot;hardness.csv&quot;) %&gt;% 
+  mutate(Al=divide01(Al),
+         Co=divide01(Co),
+         Cr=divide01(Cr),
+         Cu=divide01(Cu),
+         Fe=divide01(Fe),
+         Ni=divide01(Ni)) %&gt;% 
+  arrange(desc(hardness))
+
+closed &lt;- clo(data, parts = 1:6,total=100)
+cx &lt;- acomp(data, c(&quot;Al&quot;,&quot;Co&quot;,&quot;Cr&quot;))
+plot(cx)</code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>xc &lt;- acomp(data, c(&quot;Al&quot;,&quot;Co&quot;,&quot;Cr&quot;,&quot;Cu&quot;,&quot;Fe&quot;,&quot;Ni&quot;))
+xc_ordered &lt;- acomp(data_ordered, c(&quot;Al&quot;,&quot;Co&quot;,&quot;Cr&quot;,&quot;Cu&quot;,&quot;Fe&quot;,&quot;Ni&quot;))
+plot(xc)</code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<pre class="r"><code>barplot.acomp(xc)</code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-2-3.png" width="672" /></p>
+<p>Order of hardness desc</p>
+<p>Using Aitchison (1986) rescaling ‘acomp’</p>
+<pre class="r"><code>barplot.acomp(xc_ordered)</code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>data %&gt;% 
+  arrange(desc(hardness)) %&gt;% 
+  head(20)</code></pre>
+<pre><code>##       Al    Co    Cr    Cu    Fe    Ni hardness
+## 1  0.400 0.200 0.200 0.000 0.200 0.000      775
+## 2  0.400 0.133 0.067 0.133 0.200 0.067      768
+## 3  0.430 0.060 0.330 0.060 0.060 0.060      764
+## 4  0.429 0.143 0.143 0.000 0.143 0.143      740
+## 5  0.375 0.125 0.125 0.125 0.125 0.125      735
+## 6  0.250 0.250 0.250 0.000 0.250 0.000      720
+## 7  0.429 0.143 0.143 0.071 0.071 0.143      720
+## 8  0.250 0.250 0.250 0.000 0.000 0.250      712
+## 9  0.462 0.154 0.077 0.077 0.154 0.077      702
+## 10 0.429 0.214 0.071 0.071 0.071 0.143      701
+## 11 0.200 0.267 0.267 0.000 0.267 0.000      695
+## 12 0.385 0.154 0.154 0.000 0.154 0.154      695
+## 13 0.429 0.071 0.143 0.071 0.143 0.143      694
+## 14 0.238 0.238 0.238 0.000 0.050 0.238      665
+## 15 0.150 0.283 0.283 0.000 0.283 0.000      655
+## 16 0.359 0.128 0.128 0.128 0.128 0.128      655
+## 17 0.333 0.000 0.167 0.167 0.167 0.167      651
+## 18 0.222 0.222 0.222 0.111 0.222 0.000      639
+## 19 0.333 0.133 0.133 0.133 0.133 0.133      625
+## 20 0.100 0.300 0.300 0.000 0.300 0.000      620</code></pre>
+<p>Possibly drop copper and nickel</p>
+<pre class="r"><code>mw &lt;- acomp(c(0.400,    0.200,  0.200,  0.0001, 0.200,  0.0001))    
+int &lt;- xc+mw
+full &lt;- as_tibble(int) %&gt;% 
+  mutate(hardness=data$hardness)
+
+model.ann &lt;- neuralnet(hardness ~., data = full,hidden = c(3,5))
+predict(model.ann,newdata =data)</code></pre>
+<pre><code>##            [,1]
+##   [1,] 422.1045
+##   [2,] 422.1045
+##   [3,] 422.1045
+##   [4,] 422.1045
+##   [5,] 422.1045
+##   [6,] 422.1045
+##   [7,] 422.1045
+##   [8,] 422.1045
+##   [9,] 422.1045
+##  [10,] 422.1045
+##  [11,] 422.1045
+##  [12,] 422.1045
+##  [13,] 422.1045
+##  [14,] 422.1045
+##  [15,] 422.1045
+##  [16,] 422.1045
+##  [17,] 422.1045
+##  [18,] 422.1045
+##  [19,] 422.1045
+##  [20,] 422.1045
+##  [21,] 422.1045
+##  [22,] 422.1045
+##  [23,] 422.1045
+##  [24,] 422.1045
+##  [25,] 422.1045
+##  [26,] 422.1045
+##  [27,] 422.1045
+##  [28,] 422.1045
+##  [29,] 422.1045
+##  [30,] 422.1045
+##  [31,] 422.1045
+##  [32,] 422.1045
+##  [33,] 422.1045
+##  [34,] 422.1045
+##  [35,] 422.1045
+##  [36,] 422.1045
+##  [37,] 422.1045
+##  [38,] 422.1045
+##  [39,] 422.1045
+##  [40,] 422.1045
+##  [41,] 422.1045
+##  [42,] 422.1045
+##  [43,] 422.1045
+##  [44,] 422.1045
+##  [45,] 422.1045
+##  [46,] 422.1045
+##  [47,] 422.1045
+##  [48,] 422.1045
+##  [49,] 422.1045
+##  [50,] 422.1045
+##  [51,] 422.1045
+##  [52,] 422.1045
+##  [53,] 422.1045
+##  [54,] 422.1045
+##  [55,] 422.1045
+##  [56,] 422.1045
+##  [57,] 422.1045
+##  [58,] 422.1045
+##  [59,] 422.1045
+##  [60,] 422.1045
+##  [61,] 422.1045
+##  [62,] 422.1045
+##  [63,] 422.1045
+##  [64,] 422.1045
+##  [65,] 422.1045
+##  [66,] 422.1045
+##  [67,] 422.1045
+##  [68,] 422.1045
+##  [69,] 422.1045
+##  [70,] 422.1045
+##  [71,] 422.1045
+##  [72,] 422.1045
+##  [73,] 422.1045
+##  [74,] 422.1045
+##  [75,] 422.1045
+##  [76,] 422.1045
+##  [77,] 422.1045
+##  [78,] 422.1045
+##  [79,] 422.1045
+##  [80,] 422.1045
+##  [81,] 422.1045
+##  [82,] 422.1045
+##  [83,] 422.1045
+##  [84,] 422.1045
+##  [85,] 422.1045
+##  [86,] 422.1045
+##  [87,] 422.1045
+##  [88,] 422.1045
+##  [89,] 422.1045
+##  [90,] 422.1045
+##  [91,] 422.1045
+##  [92,] 422.1045
+##  [93,] 422.1045
+##  [94,] 422.1045
+##  [95,] 422.1045
+##  [96,] 422.1045
+##  [97,] 422.1045
+##  [98,] 422.1045
+##  [99,] 422.1045
+## [100,] 422.1045
+## [101,] 422.1045
+## [102,] 422.1045
+## [103,] 422.1045
+## [104,] 422.1045
+## [105,] 422.1045
+## [106,] 422.1045
+## [107,] 422.1045
+## [108,] 422.1045
+## [109,] 422.1045
+## [110,] 422.1045
+## [111,] 422.1045
+## [112,] 422.1045
+## [113,] 422.1045
+## [114,] 422.1045
+## [115,] 422.1045
+## [116,] 422.1045
+## [117,] 422.1045
+## [118,] 422.1045
+## [119,] 422.1045
+## [120,] 422.1045
+## [121,] 422.1045
+## [122,] 422.1045
+## [123,] 422.1045
+## [124,] 422.1045
+## [125,] 422.1045
+## [126,] 422.1045
+## [127,] 422.1045
+## [128,] 422.1045
+## [129,] 422.1045
+## [130,] 422.1045
+## [131,] 422.1045
+## [132,] 422.1045
+## [133,] 422.1045
+## [134,] 422.1045
+## [135,] 422.1045
+## [136,] 422.1045
+## [137,] 422.1045
+## [138,] 422.1045
+## [139,] 422.1045
+## [140,] 422.1045
+## [141,] 422.1045
+## [142,] 422.1045
+## [143,] 422.1045
+## [144,] 422.1045
+## [145,] 422.1045
+## [146,] 422.1045
+## [147,] 422.1045
+## [148,] 422.1045
+## [149,] 422.1045
+## [150,] 422.1045
+## [151,] 422.1045
+## [152,] 422.1045
+## [153,] 422.1045</code></pre>
+<pre class="r"><code>myControl &lt;- trainControl(method=&quot;cv&quot;, number=5)
+modellist &lt;- caretList(hardness ~.,data=full, trControl = myControl,methodList = c(&quot;lm&quot;,&quot;glm&quot;))</code></pre>
+<pre><code>## Warning in trControlCheck(x = trControl, y = target): trControl$savePredictions
+## not &#39;all&#39; or &#39;final&#39;. Setting to &#39;final&#39; so we can ensemble the models.</code></pre>
+<pre><code>## Warning in trControlCheck(x = trControl, y = target): indexes not defined in
+## trControl. Attempting to set them ourselves, so each model in the ensemble will
+## have the same resampling indexes.</code></pre>
+<pre><code>## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient fit
+## may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient fit
+## may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient fit
+## may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient fit
+## may be misleading
+
+## Warning in predict.lm(modelFit, newdata): prediction from a rank-deficient fit
+## may be misleading</code></pre>
+<pre><code>## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+## prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+## prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+## prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+## prediction from a rank-deficient fit may be misleading
+
+## Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+## prediction from a rank-deficient fit may be misleading</code></pre>
+<pre class="r"><code>modellist$lm</code></pre>
+<pre><code>## Linear Regression 
+## 
+## 153 samples
+##   6 predictor
+## 
+## No pre-processing
+## Resampling: Cross-Validated (5 fold) 
+## Summary of sample sizes: 122, 124, 121, 123, 122 
+## Resampling results:
+## 
+##   RMSE      Rsquared   MAE     
+##   83.55635  0.8168298  65.89303
+## 
+## Tuning parameter &#39;intercept&#39; was held constant at a value of TRUE</code></pre>
+<pre class="r"><code>X &lt;- data[,1:6]
+Y &lt;- log(data$hardness)
+(model = lm(Y~ilr(X)))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Y ~ ilr(X))
+## 
+## Coefficients:
+## (Intercept)      ilr(X)1      ilr(X)2      ilr(X)3      ilr(X)4      ilr(X)5  
+##     5.89841     -0.39937      0.03248     -0.46888     -0.24807     -0.15782</code></pre>
+<pre class="r"><code>(a = coef(model)[1])</code></pre>
+<pre><code>## (Intercept) 
+##    5.898409</code></pre>
+<pre class="r"><code>(b = ilrInv(coef(model)[-1],orig=X))</code></pre>
+<pre><code>##        Al        Co        Cr        Cu        Fe        Ni 
+## 0.2607944 0.1482565 0.2046129 0.1159527 0.1318806 0.1385028 
+## attr(,&quot;class&quot;)
+## [1] acomp</code></pre>
+<pre class="r"><code>plot(X)</code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>X</code></pre>
+<pre><code>##        Al    Co    Cr    Cu    Fe    Ni
+## 1   0.182 0.182 0.182 0.182 0.091 0.182
+## 2   0.182 0.182 0.182 0.182 0.182 0.091
+## 3   0.053 0.211 0.211 0.000 0.263 0.263
+## 4   0.125 0.125 0.125 0.000 0.125 0.500
+## 5   0.000 0.000 0.250 0.250 0.250 0.250
+## 6   0.000 0.050 0.238 0.238 0.238 0.238
+## 7   0.000 0.100 0.225 0.225 0.225 0.225
+## 8   0.000 0.150 0.213 0.213 0.213 0.213
+## 9   0.000 0.333 0.167 0.167 0.167 0.167
+## 10  0.000 0.250 0.000 0.250 0.250 0.250
+## 11  0.000 0.238 0.050 0.238 0.238 0.238
+## 12  0.000 0.225 0.100 0.225 0.225 0.225
+## 13  0.000 0.213 0.150 0.213 0.213 0.213
+## 14  0.000 0.167 0.333 0.167 0.167 0.167
+## 15  0.000 0.250 0.250 0.250 0.000 0.250
+## 16  0.000 0.238 0.238 0.238 0.050 0.238
+## 17  0.000 0.225 0.225 0.225 0.100 0.225
+## 18  0.000 0.213 0.213 0.213 0.150 0.213
+## 19  0.000 0.167 0.167 0.167 0.333 0.167
+## 20  0.000 0.225 0.225 0.225 0.225 0.100
+## 21  0.000 0.213 0.213 0.213 0.213 0.150
+## 22  0.000 0.167 0.167 0.167 0.167 0.333
+## 23  0.000 0.267 0.267 0.000 0.267 0.200
+## 24  0.000 0.200 0.200 0.000 0.200 0.400
+## 25  0.143 0.143 0.143 0.000 0.143 0.429
+## 26  0.154 0.154 0.154 0.000 0.154 0.385
+## 27  0.167 0.167 0.167 0.000 0.167 0.333
+## 28  0.000 0.283 0.283 0.000 0.283 0.150
+## 29  0.050 0.317 0.317 0.000 0.317 0.000
+## 30  0.100 0.300 0.300 0.000 0.300 0.000
+## 31  0.182 0.182 0.182 0.000 0.182 0.273
+## 32  0.213 0.213 0.213 0.000 0.213 0.150
+## 33  0.225 0.225 0.225 0.000 0.225 0.100
+## 34  0.238 0.238 0.238 0.000 0.238 0.050
+## 35  0.250 0.250 0.250 0.000 0.250 0.000
+## 36  0.238 0.050 0.238 0.000 0.238 0.238
+## 37  0.225 0.100 0.225 0.000 0.225 0.225
+## 38  0.167 0.333 0.167 0.000 0.167 0.167
+## 39  0.238 0.238 0.050 0.000 0.238 0.238
+## 40  0.225 0.225 0.100 0.000 0.225 0.225
+## 41  0.213 0.213 0.150 0.000 0.213 0.213
+## 42  0.167 0.167 0.333 0.000 0.167 0.167
+## 43  0.250 0.250 0.250 0.000 0.000 0.250
+## 44  0.238 0.238 0.238 0.000 0.050 0.238
+## 45  0.225 0.225 0.225 0.000 0.100 0.225
+## 46  0.213 0.213 0.213 0.000 0.150 0.213
+## 47  0.167 0.167 0.167 0.000 0.333 0.167
+## 48  0.150 0.283 0.283 0.000 0.283 0.000
+## 49  0.200 0.267 0.267 0.000 0.267 0.000
+## 50  0.400 0.200 0.200 0.000 0.200 0.000
+## 51  0.057 0.189 0.189 0.189 0.189 0.189
+## 52  0.138 0.172 0.172 0.172 0.172 0.172
+## 53  0.206 0.159 0.159 0.159 0.159 0.159
+## 54  0.265 0.147 0.147 0.147 0.147 0.147
+## 55  0.231 0.154 0.154 0.154 0.154 0.154
+## 56  0.315 0.137 0.137 0.137 0.137 0.137
+## 57  0.333 0.133 0.133 0.133 0.133 0.133
+## 58  0.359 0.128 0.128 0.128 0.128 0.128
+## 59  0.375 0.125 0.125 0.125 0.125 0.125
+## 60  0.024 0.244 0.244 0.000 0.244 0.244
+## 61  0.091 0.227 0.227 0.000 0.227 0.227
+## 62  0.149 0.213 0.213 0.000 0.213 0.213
+## 63  0.167 0.208 0.208 0.000 0.208 0.208
+## 64  0.184 0.204 0.204 0.000 0.204 0.204
+## 65  0.231 0.192 0.192 0.000 0.192 0.192
+## 66  0.310 0.172 0.172 0.000 0.172 0.172
+## 67  0.143 0.429 0.000 0.143 0.143 0.143
+## 68  0.200 0.200 0.000 0.200 0.200 0.200
+## 69  0.238 0.048 0.000 0.238 0.238 0.238
+## 70  0.222 0.111 0.000 0.222 0.222 0.222
+## 71  0.182 0.273 0.000 0.182 0.182 0.182
+## 72  0.167 0.333 0.000 0.167 0.167 0.167
+## 73  0.059 0.235 0.235 0.000 0.235 0.235
+## 74  0.086 0.229 0.229 0.000 0.229 0.229
+## 75  0.158 0.211 0.211 0.000 0.211 0.211
+## 76  0.179 0.205 0.205 0.000 0.205 0.205
+## 77  0.238 0.190 0.190 0.000 0.190 0.190
+## 78  0.038 0.000 0.192 0.192 0.192 0.385
+## 79  0.057 0.000 0.189 0.189 0.189 0.377
+## 80  0.074 0.000 0.185 0.185 0.185 0.370
+## 81  0.091 0.000 0.182 0.182 0.182 0.364
+## 82  0.107 0.000 0.179 0.179 0.179 0.357
+## 83  0.123 0.000 0.175 0.175 0.175 0.351
+## 84  0.138 0.000 0.172 0.172 0.172 0.345
+## 85  0.153 0.000 0.169 0.169 0.169 0.339
+## 86  0.167 0.000 0.167 0.167 0.167 0.333
+## 87  0.194 0.000 0.161 0.161 0.161 0.323
+## 88  0.231 0.000 0.154 0.154 0.154 0.308
+## 89  0.242 0.000 0.152 0.152 0.152 0.303
+## 90  0.265 0.000 0.147 0.147 0.147 0.294
+## 91  0.286 0.000 0.143 0.143 0.143 0.286
+## 92  0.306 0.000 0.139 0.139 0.139 0.278
+## 93  0.333 0.000 0.133 0.133 0.133 0.267
+## 94  0.200 0.000 0.200 0.200 0.200 0.200
+## 95  0.217 0.000 0.217 0.217 0.217 0.130
+## 96  0.208 0.000 0.208 0.208 0.208 0.167
+## 97  0.192 0.000 0.192 0.192 0.192 0.231
+## 98  0.185 0.000 0.185 0.185 0.185 0.259
+## 99  0.167 0.167 0.167 0.083 0.167 0.250
+## 100 0.200 0.200 0.200 0.100 0.100 0.200
+## 101 0.167 0.167 0.250 0.083 0.167 0.167
+## 102 0.154 0.308 0.154 0.077 0.154 0.154
+## 103 0.222 0.222 0.000 0.111 0.222 0.222
+## 104 0.154 0.154 0.154 0.077 0.154 0.308
+## 105 0.167 0.250 0.167 0.083 0.167 0.167
+## 106 0.200 0.200 0.100 0.100 0.200 0.200
+## 107 0.154 0.154 0.308 0.077 0.154 0.154
+## 108 0.167 0.167 0.167 0.083 0.250 0.167
+## 109 0.154 0.154 0.154 0.077 0.308 0.154
+## 110 0.200 0.200 0.200 0.100 0.200 0.100
+## 111 0.222 0.222 0.222 0.111 0.222 0.000
+## 112 0.222 0.000 0.222 0.111 0.222 0.222
+## 113 0.308 0.154 0.154 0.077 0.154 0.154
+## 114 0.200 0.100 0.200 0.100 0.200 0.200
+## 115 0.111 0.000 0.222 0.222 0.222 0.222
+## 116 0.273 0.000 0.182 0.182 0.182 0.182
+## 117 0.333 0.000 0.167 0.167 0.167 0.167
+## 118 0.077 0.308 0.000 0.000 0.308 0.308
+## 119 0.143 0.286 0.000 0.000 0.286 0.286
+## 120 0.200 0.267 0.000 0.000 0.267 0.267
+## 121 0.080 0.170 0.170 0.080 0.170 0.330
+## 122 0.230 0.150 0.230 0.080 0.150 0.160
+## 123 0.167 0.000 0.556 0.000 0.000 0.278
+## 124 0.118 0.000 0.294 0.000 0.441 0.147
+## 125 0.063 0.000 0.313 0.000 0.469 0.156
+## 126 0.385 0.154 0.154 0.000 0.154 0.154
+## 127 0.429 0.143 0.143 0.000 0.143 0.143
+## 128 0.091 0.182 0.182 0.182 0.182 0.182
+## 129 0.286 0.143 0.143 0.143 0.143 0.143
+## 130 0.200 0.200 0.200 0.200 0.000 0.200
+## 131 0.250 0.167 0.167 0.083 0.167 0.167
+## 132 0.000 0.200 0.200 0.200 0.200 0.200
+## 133 0.000 0.250 0.250 0.000 0.250 0.250
+## 134 0.250 0.250 0.000 0.000 0.250 0.250
+## 135 0.200 0.200 0.200 0.000 0.200 0.200
+## 136 0.430 0.060 0.330 0.060 0.060 0.060
+## 137 0.429 0.143 0.071 0.071 0.071 0.214
+## 138 0.429 0.214 0.071 0.071 0.071 0.143
+## 139 0.400 0.133 0.067 0.133 0.200 0.067
+## 140 0.462 0.154 0.077 0.077 0.154 0.077
+## 141 0.429 0.143 0.143 0.071 0.071 0.143
+## 142 0.429 0.071 0.143 0.071 0.143 0.143
+## 143 0.070 0.000 0.233 0.000 0.233 0.465
+## 144 0.111 0.000 0.222 0.000 0.222 0.444
+## 145 0.130 0.000 0.280 0.220 0.060 0.310
+## 146 0.120 0.000 0.310 0.210 0.050 0.310
+## 147 0.120 0.000 0.310 0.200 0.050 0.320
+## 148 0.100 0.000 0.350 0.250 0.050 0.250
+## 149 0.100 0.000 0.350 0.260 0.050 0.240
+## 150 0.100 0.000 0.350 0.240 0.050 0.260
+## 151 0.110 0.000 0.290 0.290 0.050 0.260
+## 152 0.110 0.000 0.280 0.290 0.070 0.250
+## 153 0.110 0.000 0.280 0.270 0.060 0.280</code></pre>
+<pre class="r"><code>myY = pretty(Y)
+mean(X)</code></pre>
+<pre><code>## Warning in mean.default(X): argument is not numeric or logical: returning NA</code></pre>
+<pre><code>## [1] NA</code></pre>
+<pre class="r"><code>refX =  + ((myY - a)/norm(b)^2) * b</code></pre>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

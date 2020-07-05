@@ -268,9 +268,9 @@ majors_processed %>%
 
 # Summary findings
 
-* Engeneering graduates command more pay than their counterparts, followed by Computer Science and Mathematics.
-* Engeneering, Computer Science and Mathematics subjects are overwhelmingly dominated my men.
+* Engineering graduates command more pay than their counterparts, followed by Computer Science and Mathematics.
+* Engineering, Computer Science and Mathematics subjects are overwhelmingly dominated by men.
 * Psychology, Nursing, Communication, Elementary Education, English Lit & Lang are extremely popular fields for women.
-* The is a tendency for male dominated fields to typically earn more than female dominated fields although this is most notable on the extremes of the data.
+* There is a tendency for male dominated fields to typically earn more than female dominated fields although this is most notable on the extremes of the data.
 * Psychology, Accounting, Business Management subjects look to be oversubscribed. 
 * Library science is a good choice of major

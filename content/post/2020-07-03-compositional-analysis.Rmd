@@ -1,0 +1,100 @@
+---
+title: compositional analysis
+author: ~
+date: '2020-07-03'
+slug: compositional-analysis
+categories: []
+tags: []
+---
+
+```{r}
+#install.packages("compositions")
+#install.packages("robustbase")
+#install.packages("gtools")
+library(robustbase)
+library(energy)
+library(gtools)
+library(compositions)
+library(readr)
+library(tidyverse)
+library(neuralnet)
+library(caret)
+library(caretEnsemble)
+```
+
+```{r}
+divide01 <- function(x){
+  return(x/100)
+}
+head(data)
+data <- read.csv("hardness.csv") %>% 
+  mutate(Al=divide01(Al),
+         Co=divide01(Co),
+         Cr=divide01(Cr),
+         Cu=divide01(Cu),
+         Fe=divide01(Fe),
+         Ni=divide01(Ni))
+data_ordered <- read.csv("hardness.csv") %>% 
+  mutate(Al=divide01(Al),
+         Co=divide01(Co),
+         Cr=divide01(Cr),
+         Cu=divide01(Cu),
+         Fe=divide01(Fe),
+         Ni=divide01(Ni)) %>% 
+  arrange(desc(hardness))
+
+closed <- clo(data, parts = 1:6,total=100)
+cx <- acomp(data, c("Al","Co","Cr"))
+plot(cx)
+xc <- acomp(data, c("Al","Co","Cr","Cu","Fe","Ni"))
+xc_ordered <- acomp(data_ordered, c("Al","Co","Cr","Cu","Fe","Ni"))
+plot(xc)
+barplot.acomp(xc)
+
+```
+
+Order of hardness desc
+
+Using Aitchison (1986) rescaling 'acomp'
+
+```{r}
+barplot.acomp(xc_ordered)
+data %>% 
+  arrange(desc(hardness)) %>% 
+  head(20)
+```
+
+Possibly drop copper and nickel
+
+```{r}
+mw <- acomp(c(0.400,	0.200,	0.200,	0.0001,	0.200,	0.0001))	
+int <- xc+mw
+full <- as_tibble(int) %>% 
+  mutate(hardness=data$hardness)
+
+model.ann <- neuralnet(hardness ~., data = full,hidden = c(3,5))
+predict(model.ann,newdata =data)
+
+
+myControl <- trainControl(method="cv", number=5)
+modellist <- caretList(hardness ~.,data=full, trControl = myControl,methodList = c("lm","glm"))
+modellist$lm
+```
+```{r}
+
+```
+
+```{r}
+X <- data[,1:6]
+Y <- log(data$hardness)
+(model = lm(Y~ilr(X)))
+
+(a = coef(model)[1])
+(b = ilrInv(coef(model)[-1],orig=X))
+plot(X)
+X
+myY = pretty(Y)
+mean(X)
+refX =  + ((myY - a)/norm(b)^2) * b
+```
+
