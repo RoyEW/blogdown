@@ -36,7 +36,7 @@ data <- data_raw %>%
 
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, include = FALSE}
 p <- data %>% 
   ggplot(aes(date,time,colour=person, group = person))+
   geom_line(size=2)+
@@ -46,8 +46,7 @@ p <- data %>%
     x="",
     y="Time in minutes"
   )+
-  scale_y_continuous(labels=scales::label_number_auto())+
-  bbc_style()
+  scale_y_continuous(labels=scales::label_number_auto())
 
 ggplotly(p)
 ```
@@ -55,7 +54,7 @@ ggplotly(p)
 
 ```{r message=FALSE, include=TRUE}
 library(tidyverse)
-setwd("~/University/R/election2019")
+#setwd("~/University/R/election2019")
 library(readr)
 election <- read_csv("HoC-2019GE-results-by-constituency.csv") %>% 
   mutate(con_p=con/valid_votes,
@@ -68,7 +67,7 @@ election <- read_csv("HoC-2019GE-results-by-constituency.csv") %>%
 ### Voting mix of the most populated constituencies
 
 ```{r}
-#party_colours <- c("purple", "blue", )
+party_colours <- c("purple", "lightblue", "red","orange","yellow")
 election %>% 
   arrange(desc(valid_votes)) %>% 
   mutate(constituency_name=fct_reorder(constituency_name,con_p)) %>% 
@@ -76,6 +75,7 @@ election %>%
   gather(key="Party", value="Number", con, lab, ld, snp, brexit) %>% 
   ggplot(aes(constituency_name,Number,fill=Party))+
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()
 ```
@@ -91,6 +91,7 @@ election %>%
   gather(key="Party", value="Number", con, lab, ld, snp, brexit) %>% 
   ggplot(aes(constituency_name,Number,fill=Party))+
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()
 ```
@@ -105,6 +106,7 @@ election %>%
   gather(Party, Proportion, con_p, lab_p, ld_p, brexit_p, snp_p) %>% 
   ggplot(aes(constituency_name,Proportion, fill = Party))+
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   scale_y_continuous(label=scales::percent_format()) +
   coord_flip()+
   bbc_style()
@@ -118,6 +120,7 @@ election %>%
   gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %>% 
   ggplot(aes(constituency_name, Proportion, fill = Party)) +
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   labs(
     x="",
     y="Vote Share"
@@ -126,6 +129,30 @@ election %>%
   bbc_style()
   
 ```
+
+Reordering by voteshare
+
+```{r}
+
+election %>% 
+  view()
+election %>% 
+  mutate(constituency_name=fct_reorder(constituency_name, -con_p)) %>% 
+  arrange(con_p) %>% 
+  gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %>% 
+  ggplot(aes(constituency_name, Proportion, fill = Party)) +
+  geom_col()+
+  scale_fill_manual(values=party_colours)+
+  labs(
+    x="",
+    y="Vote Share"
+  )+
+ bbc_style()+
+  theme(axis.text.x = element_blank())
+```
+
+
+
 ```{r}
 election %>% 
   ggplot(aes(con_p)) +

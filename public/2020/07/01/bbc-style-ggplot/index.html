@@ -84,10 +84,8 @@
 
 
 <pre class="r"><code>knitr::opts_chunk$set(echo = TRUE)</code></pre>
-<div id="htmlwidget-1" style="width:672px;height:480px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"data":[{"x":[1,2,3,4,5],"y":[18.9833333333333,17.8666666666667,18.0166666666667,17.9,18.6666666666667],"text":["date: 13/05/2020<br />time: 18.98333<br />person: jack_time<br />person: jack_time","date: 14/05/2020<br />time: 17.86667<br />person: jack_time<br />person: jack_time","date: 15/05/2020<br />time: 18.01667<br />person: jack_time<br />person: jack_time","date: 21/05/2020<br />time: 17.90000<br />person: jack_time<br />person: jack_time","date: 26/05/2020<br />time: 18.66667<br />person: jack_time<br />person: jack_time"],"type":"scatter","mode":"lines","line":{"width":7.55905511811024,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"jack_time","legendgroup":"jack_time","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5],"y":[17.65,17.7333333333333,16.35,16.85,15.65],"text":["date: 13/05/2020<br />time: 17.65000<br />person: roy_time<br />person: roy_time","date: 14/05/2020<br />time: 17.73333<br />person: roy_time<br />person: roy_time","date: 15/05/2020<br />time: 16.35000<br />person: roy_time<br />person: roy_time","date: 21/05/2020<br />time: 16.85000<br />person: roy_time<br />person: roy_time","date: 26/05/2020<br />time: 15.65000<br />person: roy_time<br />person: roy_time"],"type":"scatter","mode":"lines","line":{"width":7.55905511811024,"color":"rgba(0,191,196,1)","dash":"solid"},"hoveron":"points","name":"roy_time","legendgroup":"roy_time","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":63.4221668742217,"r":7.30593607305936,"b":37.7916147779162,"l":34.8692403486924},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"<b> Jack & Roy running times 1.6 mile <\/b>","font":{"color":"rgba(34,34,34,1)","family":"Helvetica","size":37.1938563719386},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,5.6],"tickmode":"array","ticktext":["13/05/2020","14/05/2020","15/05/2020","21/05/2020","26/05/2020"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["13/05/2020","14/05/2020","15/05/2020","21/05/2020","26/05/2020"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(34,34,34,1)","family":"Helvetica","size":23.9103362391034},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[15.4833333333333,19.15],"tickmode":"array","ticktext":["16","17","18","19"],"tickvals":[16,17,18,19],"categoryorder":"array","categoryarray":["16","17","18","19"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(34,34,34,1)","family":"Helvetica","size":23.9103362391034},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(203,203,203,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.66417600664176,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(34,34,34,1)","family":"Helvetica","size":23.9103362391034},"y":1},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"4f48493d2a17":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"4f48493d2a17","visdat":{"4f48493d2a17":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>library(tidyverse)
-setwd(&quot;~/University/R/election2019&quot;)
+#setwd(&quot;~/University/R/election2019&quot;)
 library(readr)
 election &lt;- read_csv(&quot;HoC-2019GE-results-by-constituency.csv&quot;) %&gt;% 
   mutate(con_p=con/valid_votes,
@@ -97,7 +95,7 @@ election &lt;- read_csv(&quot;HoC-2019GE-results-by-constituency.csv&quot;) %&gt
          snp_p=snp/valid_votes)</code></pre>
 <div id="voting-mix-of-the-most-populated-constituencies" class="section level3">
 <h3>Voting mix of the most populated constituencies</h3>
-<pre class="r"><code>#party_colours &lt;- c(&quot;purple&quot;, &quot;blue&quot;, )
+<pre class="r"><code>party_colours &lt;- c(&quot;purple&quot;, &quot;lightblue&quot;, &quot;red&quot;,&quot;orange&quot;,&quot;yellow&quot;)
 election %&gt;% 
   arrange(desc(valid_votes)) %&gt;% 
   mutate(constituency_name=fct_reorder(constituency_name,con_p)) %&gt;% 
@@ -105,6 +103,7 @@ election %&gt;%
   gather(key=&quot;Party&quot;, value=&quot;Number&quot;, con, lab, ld, snp, brexit) %&gt;% 
   ggplot(aes(constituency_name,Number,fill=Party))+
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()</code></pre>
 <pre><code>## Warning in grid.Call(C_stringMetric, as.graphicsAnnot(x$label)): font family not
@@ -120,6 +119,7 @@ election %&gt;%
   gather(key=&quot;Party&quot;, value=&quot;Number&quot;, con, lab, ld, snp, brexit) %&gt;% 
   ggplot(aes(constituency_name,Number,fill=Party))+
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()</code></pre>
 <pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
@@ -135,6 +135,7 @@ election %&gt;%
   gather(Party, Proportion, con_p, lab_p, ld_p, brexit_p, snp_p) %&gt;% 
   ggplot(aes(constituency_name,Proportion, fill = Party))+
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   scale_y_continuous(label=scales::percent_format()) +
   coord_flip()+
   bbc_style()</code></pre>
@@ -146,6 +147,7 @@ election %&gt;%
   gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %&gt;% 
   ggplot(aes(constituency_name, Proportion, fill = Party)) +
   geom_col()+
+  scale_fill_manual(values=party_colours)+
   labs(
     x=&quot;&quot;,
     y=&quot;Vote Share&quot;
@@ -155,6 +157,25 @@ election %&gt;%
 <pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
 ## family not found in Windows font database</code></pre>
 <p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Reordering by voteshare</p>
+<pre class="r"><code>election %&gt;% 
+  view()
+election %&gt;% 
+  mutate(constituency_name=fct_reorder(constituency_name, -con_p)) %&gt;% 
+  arrange(con_p) %&gt;% 
+  gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %&gt;% 
+  ggplot(aes(constituency_name, Proportion, fill = Party)) +
+  geom_col()+
+  scale_fill_manual(values=party_colours)+
+  labs(
+    x=&quot;&quot;,
+    y=&quot;Vote Share&quot;
+  )+
+ bbc_style()+
+  theme(axis.text.x = element_blank())</code></pre>
+<pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
+## family not found in Windows font database</code></pre>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>election %&gt;% 
   ggplot(aes(con_p)) +
   geom_histogram()+
@@ -162,13 +183,13 @@ election %&gt;%
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
 ## family not found in Windows font database</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>election %&gt;% 
   ggplot(aes(lab_p))+
   geom_histogram()+
   bbc_style()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
 <pre class="r"><code>election_noscotland &lt;- election %&gt;% 
   filter(!country_name==&quot;Scotland&quot;)
   
