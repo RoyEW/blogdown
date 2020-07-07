@@ -105,6 +105,12 @@ election %&gt;%
   geom_histogram(fill=party_colours[1])+
   bbc_style()</code></pre>
 <p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-3.png" width="672" /></p>
+<pre class="r"><code>election %&gt;%
+  filter(!brexit_p==0) %&gt;% 
+  ggplot(aes(brexit_p))+
+  geom_histogram(fill=party_colours[1])+
+  bbc_style()</code></pre>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-4.png" width="672" /></p>
 <pre class="r"><code>election_noscotland &lt;- election %&gt;% 
   filter(!country_name==&quot;Scotland&quot;)
   

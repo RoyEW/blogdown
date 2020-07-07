@@ -151,6 +151,11 @@ election %>%
   ggplot(aes(brexit_p))+
   geom_histogram(fill=party_colours[1])+
   bbc_style()
+election %>%
+  filter(!brexit_p==0) %>% 
+  ggplot(aes(brexit_p))+
+  geom_histogram(fill=party_colours[1])+
+  bbc_style()
 ```
 
 ```{r, message=FALSE, warning=FALSE}
