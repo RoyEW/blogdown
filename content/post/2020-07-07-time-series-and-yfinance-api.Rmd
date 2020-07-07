@@ -40,7 +40,8 @@ data <- data %>%
 
 data %>% 
   ggplot(aes(date,Close))+
-  geom_point()
+  geom_point(shape=".")+
+  theme_void()
 
 ```
 
