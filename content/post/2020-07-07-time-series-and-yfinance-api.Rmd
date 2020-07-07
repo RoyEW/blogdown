@@ -1,0 +1,46 @@
+---
+title: Time-series and yfinance api
+author: ~
+date: '2020-07-07'
+slug: time-series-and-yfinance-api
+categories: []
+tags: []
+---
+
+Python integration using the reticulate package
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE)
+```
+
+
+```{r}
+library(reticulate)
+```
+
+
+
+```{python}
+import yfinance as yf
+msft = yf.Ticker("MSFT")
+```
+
+```{python}
+data=msft.history(period="max")
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)
+data <- py$data
+data <- cbind(date = rownames(data), data)
+rownames(data) <- 1:nrow(data)
+data <- data %>% 
+  mutate(date=ymd(date))
+
+data %>% 
+  ggplot(aes(date,Close))+
+  geom_point()
+
+```
+
