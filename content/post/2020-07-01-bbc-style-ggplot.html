@@ -1,6 +1,6 @@
 ---
-title: BBC style ggplot
-author: ~
+title: Election2019
+author: Roy
 date: '2020-07-01'
 slug: bbc-style-ggplot
 categories: []
@@ -17,7 +17,6 @@ tags: []
 <script src="/rmarkdown-libs/plotly-main/plotly-latest.min.js"></script>
 
 
-<pre class="r"><code>knitr::opts_chunk$set(echo = TRUE)</code></pre>
 <pre class="r"><code>library(tidyverse)
 #setwd(&quot;~/University/R/election2019&quot;)
 library(readr)
@@ -29,7 +28,7 @@ election &lt;- read_csv(&quot;HoC-2019GE-results-by-constituency.csv&quot;) %&gt
          snp_p=snp/valid_votes)</code></pre>
 <div id="voting-mix-of-the-most-populated-constituencies" class="section level3">
 <h3>Voting mix of the most populated constituencies</h3>
-<pre class="r"><code>party_colours &lt;- c(&quot;purple&quot;, &quot;lightblue&quot;, &quot;red&quot;,&quot;orange&quot;,&quot;yellow&quot;)
+<pre class="r"><code>party_colours &lt;- c(&quot;purple&quot;, &quot;dodgerblue&quot;, &quot;red&quot;,&quot;orange&quot;,&quot;yellow&quot;)
 election %&gt;% 
   arrange(desc(valid_votes)) %&gt;% 
   mutate(constituency_name=fct_reorder(constituency_name,con_p)) %&gt;% 
@@ -40,8 +39,6 @@ election %&gt;%
   scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()</code></pre>
-<pre><code>## Warning in grid.Call(C_stringMetric, as.graphicsAnnot(x$label)): font family not
-## found in Windows font database</code></pre>
 <p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="voting-mix-of-the-least-populated-constituencies" class="section level3">
@@ -56,8 +53,6 @@ election %&gt;%
   scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()</code></pre>
-<pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
-## family not found in Windows font database</code></pre>
 <p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="where-are-the-conservative-strongholds" class="section level3">
@@ -73,25 +68,10 @@ election %&gt;%
   scale_y_continuous(label=scales::percent_format()) +
   coord_flip()+
   bbc_style()</code></pre>
-<pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
-## family not found in Windows font database</code></pre>
 <p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<pre class="r"><code>election %&gt;% 
-  mutate(constituency_name=fct_reorder(constituency_name, -con_p)) %&gt;% 
-  gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %&gt;% 
-  ggplot(aes(constituency_name, Proportion, fill = Party)) +
-  geom_col()+
-  scale_fill_manual(values=party_colours)+
-  labs(
-    x=&quot;&quot;,
-    y=&quot;Vote Share&quot;
-  )+
-  scale_x_discrete()+
-  bbc_style()</code></pre>
-<pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
-## family not found in Windows font database</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>Reordering by voteshare</p>
+</div>
+<div id="brexit-party-significance" class="section level3">
+<h3>Brexit Party significance</h3>
 <pre class="r"><code>election %&gt;% 
   view()
 election %&gt;% 
@@ -109,35 +89,45 @@ election %&gt;%
   )+
  bbc_style()+
   theme(axis.text.x = element_blank())</code></pre>
-<pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
-## family not found in Windows font database</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code>election %&gt;% 
   ggplot(aes(con_p)) +
-  geom_histogram()+
+  geom_histogram(fill=party_colours[2])+
   bbc_style()</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<pre><code>## Warning in grid.Call(C_textBounds, as.graphicsAnnot(x$label), x$x, x$y, : font
-## family not found in Windows font database</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>election %&gt;% 
   ggplot(aes(lab_p))+
-  geom_histogram()+
+  geom_histogram(fill=party_colours[3])+
   bbc_style()</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<pre class="r"><code>election %&gt;% 
+  ggplot(aes(brexit_p))+
+  geom_histogram(fill=party_colours[1])+
+  bbc_style()</code></pre>
+<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-3.png" width="672" /></p>
 <pre class="r"><code>election_noscotland &lt;- election %&gt;% 
   filter(!country_name==&quot;Scotland&quot;)
   
-lm(brexit_p ~ con_p + lab_p + ld_p, data = election_noscotland)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = brexit_p ~ con_p + lab_p + ld_p, data = election_noscotland)
-## 
-## Coefficients:
-## (Intercept)        con_p        lab_p         ld_p  
-##     0.04638     -0.06509      0.04360     -0.06613</code></pre>
+model.lm &lt;- lm(brexit_p ~ con_p + lab_p + ld_p, data = election_noscotland)
+library(broom)
+tidy(model.lm)</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   0.0464   0.00802      5.78 1.19e- 8
+## 2 con_p        -0.0651   0.0104      -6.29 6.36e-10
+## 3 lab_p         0.0436   0.0109       3.99 7.58e- 5
+## 4 ld_p         -0.0661   0.0170      -3.88 1.16e- 4</code></pre>
 <pre class="r"><code>election_wales &lt;- election %&gt;% 
   filter(country_name==&quot;Wales&quot;)
-#tidy(lm(brexit_p ~ con_p + lab_p + ld_p, data = election_wales))</code></pre>
+model.lm &lt;- lm(brexit_p ~ con_p + lab_p + ld_p, data = election_wales)
+tidy(model.lm)</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   term         estimate std.error statistic   p.value
+##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)  0.157       0.0369   4.26    0.000140 
+## 2 con_p       -0.264       0.0547  -4.82    0.0000261
+## 3 lab_p        0.000206    0.0563   0.00365 0.997    
+## 4 ld_p        -0.104       0.0926  -1.12    0.271</code></pre>
+<p>Significant evidence shows that the participation of the Brexit Party in the election tends to reduce the Conservative vote share. Conversely, as the Brexit Party vote share increases, the Labour vote share increases by a small amount. This may suggest that the selective nature of the Brexit Party choosing which seats to contest has aided the Conservatives in the FPTP system.</p>
 </div>

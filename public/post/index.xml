@@ -12,7 +12,7 @@
     
     
     <item>
-      <title>compositional analysis</title>
+      <title>Compositional analysis</title>
       <link>/2020/07/03/compositional-analysis/</link>
       <pubDate>Fri, 03 Jul 2020 00:00:00 +0000</pubDate>
       
@@ -33,12 +33,12 @@
     </item>
     
     <item>
-      <title>BBC style ggplot</title>
+      <title>Election2019</title>
       <link>/2020/07/01/bbc-style-ggplot/</link>
       <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/01/bbc-style-ggplot/</guid>
-      <description>knitr::opts_chunk$set(echo = TRUE)library(tidyverse)#setwd(&amp;quot;~/University/R/election2019&amp;quot;)library(readr)election &amp;lt;- read_csv(&amp;quot;HoC-2019GE-results-by-constituency.csv&amp;quot;) %&amp;gt;% mutate(con_p=con/valid_votes,lab_p=lab/valid_votes,brexit_p=brexit/valid_votes,ld_p=ld/valid_votes,snp_p=snp/valid_votes)Voting mix of the most populated constituenciesparty_colours &amp;lt;- c(&amp;quot;purple&amp;quot;, &amp;quot;lightblue&amp;quot;, &amp;quot;red&amp;quot;,&amp;quot;orange&amp;quot;,&amp;quot;yellow&amp;quot;)election %&amp;gt;% arrange(desc(valid_votes)) %&amp;gt;% mutate(constituency_name=fct_reorder(constituency_name,con_p)) %&amp;gt;% head(30) %&amp;gt;% gather(key=&amp;quot;Party&amp;quot;, value=&amp;quot;Number&amp;quot;, con, lab, ld, snp, brexit) %&amp;gt;% ggplot(aes(constituency_name,Number,fill=Party))+geom_col()+scale_fill_manual(values=party_colours)+coord_flip()+bbc_style()## Warning in grid.Call(C_stringMetric, as.graphicsAnnot(x$label)): font family not## found in Windows font databaseVoting mix of the least populated constituencieselection %&amp;gt;% arrange(valid_votes) %&amp;gt;% mutate(constituency_name=fct_reorder(constituency_name,valid_votes)) %&amp;gt;% head(30) %&amp;gt;% gather(key=&amp;quot;Party&amp;quot;, value=&amp;quot;Number&amp;quot;, con, lab, ld, snp, brexit) %&amp;gt;% ggplot(aes(constituency_name,Number,fill=Party))+geom_col()+scale_fill_manual(values=party_colours)+coord_flip()+bbc_style()## Warning in grid.</description>
+      <description>library(tidyverse)#setwd(&amp;quot;~/University/R/election2019&amp;quot;)library(readr)election &amp;lt;- read_csv(&amp;quot;HoC-2019GE-results-by-constituency.csv&amp;quot;) %&amp;gt;% mutate(con_p=con/valid_votes,lab_p=lab/valid_votes,brexit_p=brexit/valid_votes,ld_p=ld/valid_votes,snp_p=snp/valid_votes)Voting mix of the most populated constituenciesparty_colours &amp;lt;- c(&amp;quot;purple&amp;quot;, &amp;quot;dodgerblue&amp;quot;, &amp;quot;red&amp;quot;,&amp;quot;orange&amp;quot;,&amp;quot;yellow&amp;quot;)election %&amp;gt;% arrange(desc(valid_votes)) %&amp;gt;% mutate(constituency_name=fct_reorder(constituency_name,con_p)) %&amp;gt;% head(30) %&amp;gt;% gather(key=&amp;quot;Party&amp;quot;, value=&amp;quot;Number&amp;quot;, con, lab, ld, snp, brexit) %&amp;gt;% ggplot(aes(constituency_name,Number,fill=Party))+geom_col()+scale_fill_manual(values=party_colours)+coord_flip()+bbc_style()Voting mix of the least populated constituencieselection %&amp;gt;% arrange(valid_votes) %&amp;gt;% mutate(constituency_name=fct_reorder(constituency_name,valid_votes)) %&amp;gt;% head(30) %&amp;gt;% gather(key=&amp;quot;Party&amp;quot;, value=&amp;quot;Number&amp;quot;, con, lab, ld, snp, brexit) %&amp;gt;% ggplot(aes(constituency_name,Number,fill=Party))+geom_col()+scale_fill_manual(values=party_colours)+coord_flip()+bbc_style()Where are the Conservative strongholds?</description>
     </item>
     
     <item>

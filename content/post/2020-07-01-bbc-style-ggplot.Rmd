@@ -1,13 +1,13 @@
 ---
-title: BBC style ggplot
-author: ~
+title: Election2019
+author: Roy
 date: '2020-07-01'
 slug: bbc-style-ggplot
 categories: []
 tags: []
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=TRUE,echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -66,8 +66,8 @@ election <- read_csv("HoC-2019GE-results-by-constituency.csv") %>%
 
 ### Voting mix of the most populated constituencies
 
-```{r}
-party_colours <- c("purple", "lightblue", "red","orange","yellow")
+```{r, message=FALSE, warning=FALSE}
+party_colours <- c("purple", "dodgerblue", "red","orange","yellow")
 election %>% 
   arrange(desc(valid_votes)) %>% 
   mutate(constituency_name=fct_reorder(constituency_name,con_p)) %>% 
@@ -83,7 +83,7 @@ election %>%
 ### Voting mix of the least populated constituencies
 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 election %>% 
   arrange(valid_votes) %>% 
   mutate(constituency_name=fct_reorder(constituency_name,valid_votes)) %>% 
@@ -98,7 +98,7 @@ election %>%
 
 ### Where are the Conservative strongholds?
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 election %>% 
   arrange(desc(con_p)) %>% 
   mutate(constituency_name=fct_reorder(constituency_name,con_p)) %>% 
@@ -113,26 +113,9 @@ election %>%
 ```
 
 
+### Brexit Party significance
 
-```{r}
-election %>% 
-  mutate(constituency_name=fct_reorder(constituency_name, -con_p)) %>% 
-  gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %>% 
-  ggplot(aes(constituency_name, Proportion, fill = Party)) +
-  geom_col()+
-  scale_fill_manual(values=party_colours)+
-  labs(
-    x="",
-    y="Vote Share"
-  )+
-  scale_x_discrete()+
-  bbc_style()
-  
-```
-
-Reordering by voteshare
-
-```{r}
+```{r, message=FALSE, warning=FALSE}
 
 election %>% 
   view()
@@ -155,26 +138,36 @@ election %>%
 
 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 election %>% 
   ggplot(aes(con_p)) +
-  geom_histogram()+
+  geom_histogram(fill=party_colours[2])+
   bbc_style()
 election %>% 
   ggplot(aes(lab_p))+
-  geom_histogram()+
+  geom_histogram(fill=party_colours[3])+
+  bbc_style()
+election %>% 
+  ggplot(aes(brexit_p))+
+  geom_histogram(fill=party_colours[1])+
   bbc_style()
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 election_noscotland <- election %>% 
   filter(!country_name=="Scotland")
   
-lm(brexit_p ~ con_p + lab_p + ld_p, data = election_noscotland)
+model.lm <- lm(brexit_p ~ con_p + lab_p + ld_p, data = election_noscotland)
+library(broom)
+tidy(model.lm)
 ```
-```{r}
+```{r, message=FALSE, warning=FALSE}
 election_wales <- election %>% 
   filter(country_name=="Wales")
-#tidy(lm(brexit_p ~ con_p + lab_p + ld_p, data = election_wales))
+model.lm <- lm(brexit_p ~ con_p + lab_p + ld_p, data = election_wales)
+tidy(model.lm)
+
 ```
+
+Significant evidence shows that the participation of the Brexit Party in the election tends to reduce the Conservative vote share. Conversely, as the Brexit Party vote share increases, the Labour vote share increases by a small amount. This may suggest that the selective nature of the Brexit Party choosing which seats to contest has aided the Conservatives in the FPTP system. 
 
