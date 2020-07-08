@@ -17,8 +17,8 @@
       <pubDate>Tue, 07 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/07/time-series-and-yfinance-api/</guid>
-      <description>Python integration using the reticulate package
-library(reticulate)import yfinance as yfmsft = yf.Ticker(&amp;quot;MSFT&amp;quot;)data=msft.history(period=&amp;quot;max&amp;quot;)library(tidyverse)## -- Attaching packages ------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.0 v purrr 0.3.4## v tibble 3.0.1 v dplyr 0.8.5## v tidyr 1.0.3 v stringr 1.4.0## v readr 1.3.1 v forcats 0.5.0## -- Conflicts ---------------------------- tidyverse_conflicts() --## x dplyr::filter() masks stats::filter()## x dplyr::lag() masks stats::lag()library(lubridate)## ## Attaching package: &amp;#39;lubridate&amp;#39;## The following objects are masked from &amp;#39;package:dplyr&amp;#39;:## ## intersect, setdiff, union## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## date, intersect, setdiff, uniondata &amp;lt;- py$datadata &amp;lt;- cbind(date = rownames(data), data)rownames(data) &amp;lt;- 1:nrow(data)data &amp;lt;- data %&amp;gt;% mutate(date=ymd(date))data %&amp;gt;% ggplot(aes(date,Close))+geom_point(shape=&amp;quot;.</description>
+      <description>Python integration using the reticulate package.
+library(reticulate)## Warning: package &amp;#39;reticulate&amp;#39; was built under R version 4.0.2import yfinance as yfdef yfinance01(ticker,period):g = yf.Ticker(ticker)data=g.history(period=period)return datalibrary(tidyquant)## Warning: package &amp;#39;tidyquant&amp;#39; was built under R version 4.0.2## Loading required package: lubridate## ## Attaching package: &amp;#39;lubridate&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## date, intersect, setdiff, union## Loading required package: PerformanceAnalytics## Warning: package &amp;#39;PerformanceAnalytics&amp;#39; was built under R version 4.</description>
     </item>
     
     <item>

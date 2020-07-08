@@ -7,10 +7,10 @@ categories: []
 tags: []
 ---
 
-Python integration using the reticulate package
+Python integration using the reticulate package.
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE,warning = TRUE)
 ```
 
 
@@ -22,26 +22,95 @@ library(reticulate)
 
 ```{python}
 import yfinance as yf
-msft = yf.Ticker("MSFT")
+    
+def yfinance01(ticker,period):
+    g = yf.Ticker(ticker)
+    data=g.history(period=period)
+    return data
+
 ```
 
-```{python}
-data=msft.history(period="max")
-```
+
 
 ```{r}
+library(tidyquant)
+library(timetk)
+library(sweep)
+library(forecast)
 library(tidyverse)
+library(bbplot)
 library(lubridate)
-data <- py$data
-data <- cbind(date = rownames(data), data)
-rownames(data) <- 1:nrow(data)
-data <- data %>% 
-  mutate(date=ymd(date))
 
-data %>% 
-  ggplot(aes(date,Close))+
-  geom_point(shape=".")+
-  theme_void()
+
+
+fixcol01 <- function(g){
+  g <- cbind(date = rownames(g), g)
+  rownames(g) <- 1:nrow(g)
+  return(g)
+}
+
+
+retrieve01 <- function(ticker,period="max"){
+  g <- py$yfinance01(ticker,period)
+  g <- fixcol01(g)
+  g <- g %>% 
+    select(date, Close)%>% 
+    mutate(date=as_date(ymd(date)))
+  
+  colnames(g) <- c("date", ticker)
+
+  return(g)
+}
+
+
+
+
+  
+
+plotting01 <- function(ticker, period="max"){
+  g <- retrieve01(ticker, period)
+  plot <- g %>%  
+    ggplot(aes(date, get(ticker), group=1))+
+    geom_point(shape=".")+
+    labs(title=ticker)+
+    theme_void()+
+    scale_y_continuous()+
+    theme(axis.text = element_text())+
+    geom_line(size=1)
+  return(plot)
+}
+
+
+
+multiplot <- function(..., period = "1mo"){
+  x <- list(...)
+  #c(seq(today()-30,by="day",length.out = 30))
+  y <- data.frame("date"=c(seq(today()-1000,by="day",length.out = 1000)))
+  for (val in x){
+    #y <- merge(y,retrieve01(val, period),by="date",all=T)
+    y <- left_join(y,retrieve01(val, period),by="date")
+  }
+  
+  h <- y %>%
+    pivot_longer(cols = c(...),names_to = "ticker",values_to = "price")
+    
+  
+  return(h)
+}
+
+
+
+multiplot("WMT","GOOG","TSCO", period = "max") %>% 
+  filter(!is.na(price)) %>% 
+  mutate(price=log(price)) %>% 
+  ggplot(aes(date, price, colour=ticker))+
+  geom_line()+
+  theme_bw()
+
+
+
+
 
 ```
+
 
