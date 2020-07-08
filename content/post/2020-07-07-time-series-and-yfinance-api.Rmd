@@ -9,8 +9,12 @@ tags: []
 
 Python integration using the reticulate package.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,warning = TRUE)
+yFinance api from https://pypi.org/project/yfinance/
+
+Python exchange rate api from www.exchangerate-api.com
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 ```
 
 
@@ -84,10 +88,10 @@ plotting01 <- function(ticker, period="max"){
 
 multiplot <- function(..., period = "1mo"){
   x <- list(...)
-  #c(seq(today()-30,by="day",length.out = 30))
+  
   y <- data.frame("date"=c(seq(today()-1000,by="day",length.out = 1000)))
   for (val in x){
-    #y <- merge(y,retrieve01(val, period),by="date",all=T)
+    
     y <- left_join(y,retrieve01(val, period),by="date")
   }
   
@@ -100,12 +104,13 @@ multiplot <- function(..., period = "1mo"){
 
 
 
-multiplot("WMT","GOOG","TSCO", period = "max") %>% 
+multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max") %>% 
   filter(!is.na(price)) %>% 
   mutate(price=log(price)) %>% 
+  
   ggplot(aes(date, price, colour=ticker))+
   geom_line()+
-  theme_bw()
+  theme_void()
 
 
 

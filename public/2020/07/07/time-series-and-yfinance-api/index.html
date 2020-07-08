@@ -64,7 +64,7 @@
 
   <article class="article">
     
-    <span class="article-duration">3 min read</span>
+    <span class="article-duration">1 min read</span>
     
 
     <h1 class="article-title">Time-series and yfinance api</h1>
@@ -78,72 +78,21 @@
 
 
 <p>Python integration using the reticulate package.</p>
+<p>yFinance api from <a href="https://pypi.org/project/yfinance/" class="uri">https://pypi.org/project/yfinance/</a></p>
+<p>Python exchange rate api from www.exchangerate-api.com</p>
 <pre class="r"><code>library(reticulate)</code></pre>
-<pre><code>## Warning: package &#39;reticulate&#39; was built under R version 4.0.2</code></pre>
 <pre class="python"><code>import yfinance as yf
     
 def yfinance01(ticker,period):
     g = yf.Ticker(ticker)
     data=g.history(period=period)
     return data</code></pre>
-<pre class="r"><code>library(tidyquant)</code></pre>
-<pre><code>## Warning: package &#39;tidyquant&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Loading required package: lubridate</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lubridate&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     date, intersect, setdiff, union</code></pre>
-<pre><code>## Loading required package: PerformanceAnalytics</code></pre>
-<pre><code>## Warning: package &#39;PerformanceAnalytics&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Loading required package: xts</code></pre>
-<pre><code>## Warning: package &#39;xts&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Loading required package: zoo</code></pre>
-<pre><code>## Warning: package &#39;zoo&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## 
-## Attaching package: &#39;zoo&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     as.Date, as.Date.numeric</code></pre>
-<pre><code>## 
-## Attaching package: &#39;PerformanceAnalytics&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:graphics&#39;:
-## 
-##     legend</code></pre>
-<pre><code>## Loading required package: quantmod</code></pre>
-<pre><code>## Warning: package &#39;quantmod&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Loading required package: TTR</code></pre>
-<pre><code>## Warning: package &#39;TTR&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;quantmod&#39;:
-##   method            from
-##   as.zoo.data.frame zoo</code></pre>
-<pre><code>## Version 0.4-0 included new data defaults. See ?getSymbols.</code></pre>
-<pre><code>## == Need to Learn tidyquant? =======================================================
-## Business Science offers a 1-hour course - Learning Lab #9: Performance Analysis &amp; Portfolio Optimization with tidyquant!
-## &lt;/&gt; Learn more at: https://university.business-science.io/p/learning-labs-pro &lt;/&gt;</code></pre>
-<pre class="r"><code>library(timetk)</code></pre>
-<pre><code>## Warning: package &#39;timetk&#39; was built under R version 4.0.2</code></pre>
-<pre class="r"><code>library(sweep)</code></pre>
-<pre><code>## Warning: package &#39;sweep&#39; was built under R version 4.0.2</code></pre>
-<pre class="r"><code>library(forecast)</code></pre>
-<pre><code>## Warning: package &#39;forecast&#39; was built under R version 4.0.2</code></pre>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ------------------------------------------ tidyverse 1.3.0 --</code></pre>
-<pre><code>## v ggplot2 3.3.0     v purrr   0.3.4
-## v tibble  3.0.1     v dplyr   0.8.5
-## v tidyr   1.0.3     v stringr 1.4.0
-## v readr   1.3.1     v forcats 0.5.0</code></pre>
-<pre><code>## -- Conflicts --------------------------------------------- tidyverse_conflicts() --
-## x lubridate::as.difftime() masks base::as.difftime()
-## x lubridate::date()        masks base::date()
-## x dplyr::filter()          masks stats::filter()
-## x dplyr::first()           masks xts::first()
-## x lubridate::intersect()   masks base::intersect()
-## x dplyr::lag()             masks stats::lag()
-## x dplyr::last()            masks xts::last()
-## x lubridate::setdiff()     masks base::setdiff()
-## x lubridate::union()       masks base::union()</code></pre>
-<pre class="r"><code>library(bbplot)
+<pre class="r"><code>library(tidyquant)
+library(timetk)
+library(sweep)
+library(forecast)
+library(tidyverse)
+library(bbplot)
 library(lubridate)
 
 
@@ -189,10 +138,10 @@ plotting01 &lt;- function(ticker, period=&quot;max&quot;){
 
 multiplot &lt;- function(..., period = &quot;1mo&quot;){
   x &lt;- list(...)
-  #c(seq(today()-30,by=&quot;day&quot;,length.out = 30))
+  
   y &lt;- data.frame(&quot;date&quot;=c(seq(today()-1000,by=&quot;day&quot;,length.out = 1000)))
   for (val in x){
-    #y &lt;- merge(y,retrieve01(val, period),by=&quot;date&quot;,all=T)
+    
     y &lt;- left_join(y,retrieve01(val, period),by=&quot;date&quot;)
   }
   
@@ -205,12 +154,13 @@ multiplot &lt;- function(..., period = &quot;1mo&quot;){
 
 
 
-multiplot(&quot;WMT&quot;,&quot;GOOG&quot;,&quot;TSCO&quot;, period = &quot;max&quot;) %&gt;% 
+multiplot(&quot;WMT&quot;,&quot;MRW.L&quot;,&quot;TSCO.L&quot;,&quot;MKS.L&quot;, period = &quot;max&quot;) %&gt;% 
   filter(!is.na(price)) %&gt;% 
   mutate(price=log(price)) %&gt;% 
+  
   ggplot(aes(date, price, colour=ticker))+
   geom_line()+
-  theme_bw()</code></pre>
+  theme_void()</code></pre>
 <p><img src="/post/2020-07-07-time-series-and-yfinance-api_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 
     </div>
