@@ -30,6 +30,8 @@ library(lubridate)
 library(Mcomp)
 library(smooth)
 library(broom)
+library(plotly)
+library(readxl)
 
 py_config()
 
@@ -41,7 +43,6 @@ use_miniconda()
 ```{python}
 import yfinance as yf
 
-  
 
 def yfinance01(ticker,period):
     g = yf.Ticker(ticker)
@@ -53,7 +54,9 @@ def yfinance01(ticker,period):
 
 
 ```{r functions}
+
 fixcol01 <- function(g){
+  
   g <- cbind(date = rownames(g), g)
   rownames(g) <- 1:nrow(g)
   return(g)
@@ -69,6 +72,15 @@ retrieve01 <- function(ticker,period="max"){
   return(g)
 }
 
+
+retrieve02 <- function(ticker,period="max"){
+  g <- py$yfinance01(ticker,period)
+  
+  return(g)
+}
+
+
+
 plotting01 <- function(ticker, period="max"){
   g <- retrieve01(ticker, period)
   plot <- g %>%  
@@ -82,26 +94,23 @@ plotting01 <- function(ticker, period="max"){
   return(plot)
 }
 
-multiplot <- function(..., period = "1max",length=1000){
+multiplot <- function(..., period = "max",length=1000){
   x <- list(...)
   y <- data.frame("date"=c(seq(today()-length,by="day",length.out = length)))
   for (val in x){
-    y <- left_join(y,retrieve01(val, period),by="date")
+    #y <- left_join(y, retrieve01(val, period),by=c("date"))
+    y <- merge(y, retrieve01(val, period), by = "date", allow.cartesian = TRUE)
   }
   h <- y %>%
     pivot_longer(cols = c(...),names_to = "ticker",values_to = "price")
   return(h)
 }
 
-
 ```
 
 ### Retail industry
 
 M&S Morrisons Tesco Walmart
-
-
-
 
 ```{r}
 (data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 12000) %>% 
@@ -156,13 +165,378 @@ taking log prices
   theme(axis.text = element_text(),
         legend.position = "bottom"))
   
+ggplotly(data)
+```
+
+### Car industry financial analysis 
+A profitability decomposition analysis with a focus on Tesla (TSLA)
+
+
+```{r}
+
+
+
+
+(data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
+  filter(!is.na(price),
+         price>1) %>%
+  mutate(price=log(price)) %>% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+  theme_void()+
+  labs(colour = "Ticker",
+       title="Share prices of global car companies (5year)")+
+  theme(axis.text = element_text(),
+        legend.position = "bottom"))
 
 ```
 
 ```{r}
-library(plotly)
-ggplotly(data)
+decomp <- function(x) {
+  data <- read_excel(x, sheet = 3,col_names = T)
+  namesheet <- read_excel(x, sheet = 1,col_names = FALSE)
+  
+  data.frame(
+    "id" = c(1:5),
+    "ROCE" = c(
+      paste(as.numeric(data[7, 3])),
+      paste(as.numeric(data[7, 4])),
+      paste(as.numeric(data[7, 5])),
+      paste(as.numeric(data[7, 6])),
+      paste(as.numeric(data[7, 7]))
+    ),
+    "year" = c(
+      paste(data[4, 3]),
+      paste(data[4, 4]),
+      paste(data[4, 5]),
+      paste(data[4, 6]),
+      paste(data[4, 7])
+    ),
+    company = paste(namesheet[1, 1]),
+    "RNOA" = c(
+      paste(as.numeric(data[9, 3])),
+      paste(as.numeric(data[9, 4])),
+      paste(as.numeric(data[9, 5])),
+      paste(as.numeric(data[9, 6])),
+      paste(as.numeric(data[9, 7]))
+    ),
+    "FLEV" = c(
+      paste(as.numeric(data[10, 3])),
+      paste(as.numeric(data[10, 4])),
+      paste(as.numeric(data[10, 5])),
+      paste(as.numeric(data[10, 6])),
+      paste(as.numeric(data[10, 7]))
+    ),
+    "NBC" = c(
+      paste(as.numeric(data[11, 3])),
+      paste(as.numeric(data[11, 4])),
+      paste(as.numeric(data[11, 5])),
+      paste(as.numeric(data[11, 6])),
+      paste(as.numeric(data[11, 7]))
+    ),
+    "spread" = c(
+      paste(as.numeric(data[12, 3])),
+      paste(as.numeric(data[12, 4])),
+      paste(as.numeric(data[12, 5])),
+      paste(as.numeric(data[12, 6])),
+      paste(as.numeric(data[12, 7]))
+    ),
+    "PM" = c(
+      paste(as.numeric(data[15, 3])),
+      paste(as.numeric(data[15, 4])),
+      paste(as.numeric(data[15, 5])),
+      paste(as.numeric(data[15, 6])),
+      paste(as.numeric(data[15, 7]))
+    ),
+    "ATO" = c(
+      paste(as.numeric(data[16, 3])),
+      paste(as.numeric(data[16, 4])),
+      paste(as.numeric(data[16, 5])),
+      paste(as.numeric(data[16, 6])),
+      paste(as.numeric(data[16, 7]))
+    ),
+    "GPM" = c(
+      paste(as.numeric(data[20, 3])),
+      paste(as.numeric(data[20, 4])),
+      paste(as.numeric(data[20, 5])),
+      paste(as.numeric(data[20, 6])),
+      paste(as.numeric(data[20, 7]))
+    ),
+    "operating expense over sales" = c(
+      paste(as.numeric(data[21, 3])),
+      paste(as.numeric(data[21, 4])),
+      paste(as.numeric(data[21, 5])),
+      paste(as.numeric(data[21, 6])),
+      paste(as.numeric(data[21, 7]))
+    ),
+    "taxes_over_sales" = c(
+      paste(as.numeric(data[22, 3])),
+      paste(as.numeric(data[22, 4])),
+      paste(as.numeric(data[22, 5])),
+      paste(as.numeric(data[22, 6])),
+      paste(as.numeric(data[22, 7]))
+    ),
+    "other_income_over_sales" = c(
+      paste(as.numeric(data[23, 3])),
+      paste(as.numeric(data[23, 4])),
+      paste(as.numeric(data[23, 5])),
+      paste(as.numeric(data[23, 6])),
+      paste(as.numeric(data[23, 7]))
+    ),
+    "one_over_ATO" = c(
+      paste(as.numeric(data[26, 3])),
+      paste(as.numeric(data[26, 4])),
+      paste(as.numeric(data[26, 5])),
+      paste(as.numeric(data[26, 6])),
+      paste(as.numeric(data[26, 7]))
+    ),
+    "cash over sales" = c(
+      paste(as.numeric(data[27, 3])),
+      paste(as.numeric(data[27, 4])),
+      paste(as.numeric(data[27, 5])),
+      paste(as.numeric(data[27, 6])),
+      paste(as.numeric(data[27, 7]))
+    ),
+    "receivables over sales" = c(
+      paste(as.numeric(data[28, 3])),
+      paste(as.numeric(data[28, 4])),
+      paste(as.numeric(data[28, 5])),
+      paste(as.numeric(data[28, 6])),
+      paste(as.numeric(data[28, 7]))
+    ),
+    "inventory_over_sales" = c(
+      paste(as.numeric(data[29, 3])),
+      paste(as.numeric(data[29, 4])),
+      paste(as.numeric(data[29, 5])),
+      paste(as.numeric(data[29, 6])),
+      paste(as.numeric(data[29, 7]))
+    ),
+    "other_current_assets_over_sales" = c(
+      paste(as.numeric(data[30, 3])),
+      paste(as.numeric(data[30, 4])),
+      paste(as.numeric(data[30, 5])),
+      paste(as.numeric(data[30, 6])),
+      paste(as.numeric(data[30, 7]))
+    ),
+    "PPE_over_sales" = c(
+      paste(as.numeric(data[31, 3])),
+      paste(as.numeric(data[31, 4])),
+      paste(as.numeric(data[31, 5])),
+      paste(as.numeric(data[31, 6])),
+      paste(as.numeric(data[31, 7]))
+    ),
+    "accounts_payable_over_sales" = c(
+      paste(as.numeric(data[33, 3])),
+      paste(as.numeric(data[33, 4])),
+      paste(as.numeric(data[33, 5])),
+      paste(as.numeric(data[33, 6])),
+      paste(as.numeric(data[33, 7]))
+    ),
+    "income_taxes_over_sales" = c(
+      paste(as.numeric(data[34, 3])),
+      paste(as.numeric(data[34, 4])),
+      paste(as.numeric(data[34, 5])),
+      paste(as.numeric(data[34, 6])),
+      paste(as.numeric(data[34, 7]))
+    ),
+    "other_liabilities_over_sales" = c(
+      paste(as.numeric(data[35, 3])),
+      paste(as.numeric(data[35, 4])),
+      paste(as.numeric(data[35, 5])),
+      paste(as.numeric(data[35, 6])),
+      paste(as.numeric(data[35, 7]))
+    )
+  )
+}
 ```
+
+
+```{r}
+
+profitability <- decomp("Decompositions\\Ferrari.xlsx") %>% 
+  union_all(decomp("Decompositions\\Fiat Chrysler.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Ford.xlsx")) %>% 
+  union_all(decomp("Decompositions\\GM.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Honda.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Hyundai.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Nissan.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Tesla.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Toyota.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Volkswagen.xlsx")) %>% 
+  union_all(decomp("Decompositions\\BMW.xlsx")) %>% 
+  union_all(decomp("Decompositions\\Daimler.xlsx")) %>% 
+  mutate(ROCE=as.numeric(ROCE),
+         RNOA=as.numeric(RNOA),
+         FLEV=as.numeric(FLEV),
+         NBC=as.numeric(NBC),
+         spread=as.numeric(spread),
+         PM=as.numeric(PM),
+         ATO=as.numeric(ATO),
+         GPM=as.numeric(GPM),
+         operating.expense.over.sales=as.numeric(operating.expense.over.sales),
+         taxes_over_sales=as.numeric(taxes_over_sales),
+         other_income_over_sales=as.numeric(other_income_over_sales),
+         one_over_ATO=as.numeric(one_over_ATO),
+         cash.over.sales=as.numeric(cash.over.sales),
+         receivables.over.sales=as.numeric(receivables.over.sales),
+         inventory_over_sales=as.numeric(inventory_over_sales),
+         other_current_assets_over_sales=as.numeric(other_current_assets_over_sales),
+         PPE_over_sales=as.numeric(PPE_over_sales),
+         accounts_payable_over_sales=as.numeric(accounts_payable_over_sales),
+         income_taxes_over_sales=as.numeric(income_taxes_over_sales),
+         other_liabilities_over_sales=as.numeric(other_liabilities_over_sales)) %>% 
+  mutate(name=case_when(str_detect(company, "BMW") ~ "BMW",
+                        str_detect(company, "Daim") ~ "Daimler",
+                        str_detect(company, "FORD") ~ "Ford",
+                        str_detect(company, "GENERAL") ~ "GM",
+                        str_detect(company, "Ferrar") ~ "Ferrari",
+                        str_detect(company, "Fiat") ~ "Fiat Chrysler",
+                        str_detect(company, "HONDA") ~ "Honda",
+                        str_detect(company, "HYUNDAI") ~ "Hyundai",
+                        str_detect(company, "NISSAN") ~ "Nissan",
+                        str_detect(company, "TESLA") ~ "Tesla",
+                        str_detect(company, "TOYOTA") ~ "Toyota",
+                        str_detect(company, "Volkswagen") ~ "Volkswagen"),
+         period=case_when(id==5 ~ 2015,
+                          id==4 ~ 2016,
+                          id==3 ~ 2017,
+                          id==2 ~ 2018,
+                          id==1 ~ 2019))
+
+
+
+```
+
+# Investigating industry ROCE
+
+Ferrari has a wildy changing ROCE value over the investigation period so will have to be examined separately.
+
+```{r warning=F}
+investigate01 <- function(data, y,title="",subtitle=""){
+  g <- ggplot(data,aes(period,y,colour=name))+
+  geom_smooth(aes(period,y,group=1),lty=2,colour="black",fill="green",alpha=0.1)+
+  geom_point()+
+    stat_smooth(geom = "line",lty=2,method = "lm",se=F)+
+    geom_smooth(se=F)+
+  theme_void()+
+  labs(title=title,
+       subtitle = subtitle,
+       colour="Company")+
+  theme(axis.text = element_text()) 
+  return(g)
+}
+
+investigate01(profitability,profitability$ROCE)
+```
+
+
+Having removed Ferrari,  the data points look to be reasonably distributed around the average. Tesla looks to be consistently under performing within the industry as a measure of ROCE.
+
+```{r warning=F}
+profit_roce_no_outlier <- profitability %>% 
+      filter(!str_detect(name,"Ferrari"))
+
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$ROCE,title="Industry return on capital employed (ROCE)"))
+
+
+```
+
+### ROCE = RNOA + FLEV(RNOA - NBC)
+### ROCE = (PM - ATO) + FLEV(RNOA - NBC)
+### ROCE = (GM ratio + OE ratio + tax ratio + OI ratio) - ((1/ATO + cash ratio + inventory ratio + other curr. assets ratio + PPE ratio) - (payables ratio + income tax ratio + other liabilities ratio)) + FLEV(RNOA - NBC)
+
+### First level decomposition
+# RNOA
+
+```{r}
+investigate01(profitability,profitability$RNOA)
+
+ggplotly(investigate01(profitability,profitability$RNOA, title="Industry return on net assets (RNOA)"))
+```
+
+# FLEV
+
+```{r}
+investigate01(profitability,profitability$FLEV)
+
+ggplotly(investigate01(profitability,profitability$FLEV, title="Industry financial leverage (FLEV)"))
+```
+
+ignoring Ferrari in FLEV
+
+```{r}
+investigate01(profit_roce_no_outlier,profit_roce_no_outlier$FLEV)
+
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$FLEV, title="Industry financial leverage (FLEV, no Ferrari)"))
+
+```
+
+# NBC
+
+```{r}
+investigate01(profitability,profitability$FLEV)
+
+ggplotly(investigate01(profitability,profitability$FLEV, title="Industry financial leverage (FLEV)"))
+
+```
+
+NBC without ferrari
+
+```{r}
+investigate01(profit_roce_no_outlier,profit_roce_no_outlier$NBC)
+
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$NBC, title="Industry financial leverage (FLEV, no Ferrari)"))
+
+```
+
+# Spread
+
+```{r}
+
+investigate01(profitability,profitability$spread, title="Industry spread (RNOA - NBC)")
+ggplotly(investigate01(profitability,profitability$spread, title="Industry spread (RNOA - NBC)"))
+
+```
+
+### Second level decomposition RNOA = PM - ATO
+
+# PM
+
+```{r}
+investigate01(profitability,profitability$PM, title="Industry profit margin (OI / sales)")
+
+ggplotly(investigate01(profitability,profitability$PM, title="Industry profit margin (OI / sales)"))
+```
+
+# ATO
+
+```{r}
+investigate01(profitability,profitability$ATO, title="Industry asset turnover ratio (sales / NOA)")
+
+ggplotly(investigate01(profitability,profitability$ATO, title="Industry asset turnover ratio (sales / NOA)"))
+```
+
+Fiat Chrysler has an unusually high asset turnover ratio. 
+
+# Third level decomposition
+
+Ignoring ferrari
+
+```{r}
+investigate01(profit_roce_no_outlier,profit_roce_no_outlier$GPM, title="Industry gross margin ratio (GM / sales)")
+
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$GPM, title="Industry gross margin ratio (GM / sales)"))
+
+
+
+
+
+```
+
+
+
 
 
 

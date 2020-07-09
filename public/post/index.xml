@@ -20,7 +20,7 @@
       <description>Python integration using the reticulate package.
 yFinance api from https://pypi.org/project/yfinance/
 Python exchange rate api from www.exchangerate-api.com
-library(reticulate)library(tidyquant)library(timetk)library(sweep)library(forecast)library(tidyverse)library(bbplot)library(lubridate)library(Mcomp)library(smooth)library(broom)py_config()## python: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate/python.exe## libpython: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate/python36.dll## pythonhome: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate## version: 3.6.10 (default, Mar 5 2020, 10:17:47) [MSC v.1900 64 bit (AMD64)]## Architecture: 64bit## numpy: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate/Lib/site-packages/numpy## numpy_version: 1.18.5use_miniconda()import yfinance as yfdef yfinance01(ticker,period):g = yf.</description>
+library(reticulate)library(tidyquant)library(timetk)library(sweep)library(forecast)library(tidyverse)library(bbplot)library(lubridate)library(Mcomp)library(smooth)library(broom)library(plotly)library(readxl)py_config()## python: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate/python.exe## libpython: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate/python36.dll## pythonhome: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate## version: 3.6.10 (default, Mar 5 2020, 10:17:47) [MSC v.1900 64 bit (AMD64)]## Architecture: 64bit## numpy: C:/Users/Roy/AppData/Local/r-miniconda/envs/r-reticulate/Lib/site-packages/numpy## numpy_version: 1.18.5use_miniconda()import yfinance as yfdef yfinance01(ticker,period):g = yf.</description>
     </item>
     
     <item>
