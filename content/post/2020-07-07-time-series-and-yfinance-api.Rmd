@@ -29,13 +29,20 @@ library(bbplot)
 library(lubridate)
 library(Mcomp)
 library(smooth)
+library(broom)
+
+py_config()
+
+use_miniconda()
 ```
 
 
 
 ```{python}
 import yfinance as yf
-    
+
+  
+
 def yfinance01(ticker,period):
     g = yf.Ticker(ticker)
     data=g.history(period=period)
@@ -93,15 +100,17 @@ multiplot <- function(..., period = "1max",length=1000){
 
 M&S Morrisons Tesco Walmart
 
+
+
+
 ```{r}
-(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
+(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 12000) %>% 
   filter(!is.na(price)) %>% 
   ggplot()+
   geom_line(aes(date, price, colour = ticker))+
-  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-  geom_smooth(aes(date, price, colour = ticker),se = F)+
   theme_void()+
-  labs(colour = "Ticker")+
+  labs(colour = "Ticker",
+       title="Retail industry - 30 year overview")+
   theme(axis.text = element_text(),
         legend.position = "bottom"))
 
@@ -110,25 +119,34 @@ M&S Morrisons Tesco Walmart
   ggplot()+
   geom_line(aes(date, price, colour = ticker))+
   geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-  geom_smooth(aes(date, price, colour = ticker),se = F)+
   theme_void()+
-  labs(colour = "Ticker")+
+  labs(colour = "Ticker",
+       title = "Retail industry - 10 year overview")+
   theme(axis.text = element_text(),
         legend.position = "bottom"))
+```
 
+
+taking log prices
+
+```{r}
 (data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
   filter(!is.na(price)) %>% 
+  mutate(price=log(price)) %>% 
   ggplot()+
   geom_point(aes(date, price, colour = ticker), shape=".")+
-  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  geom_smooth(aes(date, price, colour = ticker), se = F)+
+  stat_smooth(aes(date, price),se = F,geom="line",lty=4)+
   theme_void()+
   labs(colour = "Ticker")+
   theme(axis.text = element_text(),
         legend.position = "bottom"))
 
-(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 1000) %>% 
-  filter(!is.na(price)) %>% 
+
+(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
+  filter(!is.na(price),
+         price>1) %>% 
+  mutate(price=log(price)) %>% 
   ggplot()+
   geom_line(aes(date, price, colour = ticker))+
   geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
@@ -140,5 +158,11 @@ M&S Morrisons Tesco Walmart
   
 
 ```
+
+```{r}
+library(plotly)
+ggplotly(data)
+```
+
 
 
