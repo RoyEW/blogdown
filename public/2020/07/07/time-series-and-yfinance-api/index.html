@@ -64,7 +64,7 @@
 
   <article class="article">
     
-    <span class="article-duration">1 min read</span>
+    <span class="article-duration">2 min read</span>
     
 
     <h1 class="article-title">Time-series and yfinance api</h1>
@@ -80,29 +80,27 @@
 <p>Python integration using the reticulate package.</p>
 <p>yFinance api from <a href="https://pypi.org/project/yfinance/" class="uri">https://pypi.org/project/yfinance/</a></p>
 <p>Python exchange rate api from www.exchangerate-api.com</p>
-<pre class="r"><code>library(reticulate)</code></pre>
-<pre class="python"><code>import yfinance as yf
-    
-def yfinance01(ticker,period):
-    g = yf.Ticker(ticker)
-    data=g.history(period=period)
-    return data</code></pre>
-<pre class="r"><code>library(tidyquant)
+<pre class="r"><code>library(reticulate)
+library(tidyquant)
 library(timetk)
 library(sweep)
 library(forecast)
 library(tidyverse)
 library(bbplot)
 library(lubridate)
-
-
-
-fixcol01 &lt;- function(g){
+library(Mcomp)
+library(smooth)</code></pre>
+<pre class="python"><code>import yfinance as yf
+    
+def yfinance01(ticker,period):
+    g = yf.Ticker(ticker)
+    data=g.history(period=period)
+    return data</code></pre>
+<pre class="r"><code>fixcol01 &lt;- function(g){
   g &lt;- cbind(date = rownames(g), g)
   rownames(g) &lt;- 1:nrow(g)
   return(g)
 }
-
 
 retrieve01 &lt;- function(ticker,period=&quot;max&quot;){
   g &lt;- py$yfinance01(ticker,period)
@@ -110,16 +108,9 @@ retrieve01 &lt;- function(ticker,period=&quot;max&quot;){
   g &lt;- g %&gt;% 
     select(date, Close)%&gt;% 
     mutate(date=as_date(ymd(date)))
-  
   colnames(g) &lt;- c(&quot;date&quot;, ticker)
-
   return(g)
 }
-
-
-
-
-  
 
 plotting01 &lt;- function(ticker, period=&quot;max&quot;){
   g &lt;- retrieve01(ticker, period)
@@ -134,34 +125,64 @@ plotting01 &lt;- function(ticker, period=&quot;max&quot;){
   return(plot)
 }
 
-
-
-multiplot &lt;- function(..., period = &quot;1mo&quot;){
+multiplot &lt;- function(..., period = &quot;1max&quot;,length=1000){
   x &lt;- list(...)
-  
-  y &lt;- data.frame(&quot;date&quot;=c(seq(today()-1000,by=&quot;day&quot;,length.out = 1000)))
+  y &lt;- data.frame(&quot;date&quot;=c(seq(today()-length,by=&quot;day&quot;,length.out = length)))
   for (val in x){
-    
     y &lt;- left_join(y,retrieve01(val, period),by=&quot;date&quot;)
   }
-  
   h &lt;- y %&gt;%
     pivot_longer(cols = c(...),names_to = &quot;ticker&quot;,values_to = &quot;price&quot;)
-    
-  
   return(h)
-}
-
-
-
-multiplot(&quot;WMT&quot;,&quot;MRW.L&quot;,&quot;TSCO.L&quot;,&quot;MKS.L&quot;, period = &quot;max&quot;) %&gt;% 
+}</code></pre>
+<div id="retail-industry" class="section level3">
+<h3>Retail industry</h3>
+<p>M&amp;S Morrisons Tesco Walmart</p>
+<pre class="r"><code>(data &lt;- multiplot(&quot;WMT&quot;,&quot;MRW.L&quot;,&quot;TSCO.L&quot;,&quot;MKS.L&quot;, period = &quot;max&quot;,length = 15000) %&gt;% 
   filter(!is.na(price)) %&gt;% 
-  mutate(price=log(price)) %&gt;% 
-  
-  ggplot(aes(date, price, colour=ticker))+
-  geom_line()+
-  theme_void()</code></pre>
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(colour = &quot;black&quot;, lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = &quot;Ticker&quot;)+
+  theme(axis.text = element_text(),
+        legend.position = &quot;bottom&quot;))</code></pre>
 <p><img src="/post/2020-07-07-time-series-and-yfinance-api_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>(data &lt;- multiplot(&quot;WMT&quot;,&quot;MRW.L&quot;,&quot;TSCO.L&quot;,&quot;MKS.L&quot;, period = &quot;max&quot;,length = 3650) %&gt;% 
+  filter(!is.na(price)) %&gt;% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(colour = &quot;black&quot;, lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = &quot;Ticker&quot;)+
+  theme(axis.text = element_text(),
+        legend.position = &quot;bottom&quot;))</code></pre>
+<p><img src="/post/2020-07-07-time-series-and-yfinance-api_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>(data &lt;- multiplot(&quot;WMT&quot;,&quot;MRW.L&quot;,&quot;TSCO.L&quot;,&quot;MKS.L&quot;, period = &quot;max&quot;,length = 3650) %&gt;% 
+  filter(!is.na(price)) %&gt;% 
+  ggplot()+
+  geom_point(aes(date, price, colour = ticker), shape=&quot;.&quot;)+
+  geom_smooth(colour = &quot;black&quot;, lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = &quot;Ticker&quot;)+
+  theme(axis.text = element_text(),
+        legend.position = &quot;bottom&quot;))</code></pre>
+<p><img src="/post/2020-07-07-time-series-and-yfinance-api_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+<pre class="r"><code>(data &lt;- multiplot(&quot;WMT&quot;,&quot;MRW.L&quot;,&quot;TSCO.L&quot;,&quot;MKS.L&quot;, period = &quot;max&quot;,length = 1000) %&gt;% 
+  filter(!is.na(price)) %&gt;% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(colour = &quot;black&quot;, lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = &quot;Ticker&quot;)+
+  theme(axis.text = element_text(),
+        legend.position = &quot;bottom&quot;))</code></pre>
+<p><img src="/post/2020-07-07-time-series-and-yfinance-api_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+</div>
 
     </div>
   </article>

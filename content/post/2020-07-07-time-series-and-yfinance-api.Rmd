@@ -20,6 +20,15 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 
 ```{r}
 library(reticulate)
+library(tidyquant)
+library(timetk)
+library(sweep)
+library(forecast)
+library(tidyverse)
+library(bbplot)
+library(lubridate)
+library(Mcomp)
+library(smooth)
 ```
 
 
@@ -36,23 +45,12 @@ def yfinance01(ticker,period):
 
 
 
-```{r}
-library(tidyquant)
-library(timetk)
-library(sweep)
-library(forecast)
-library(tidyverse)
-library(bbplot)
-library(lubridate)
-
-
-
+```{r functions}
 fixcol01 <- function(g){
   g <- cbind(date = rownames(g), g)
   rownames(g) <- 1:nrow(g)
   return(g)
 }
-
 
 retrieve01 <- function(ticker,period="max"){
   g <- py$yfinance01(ticker,period)
@@ -60,16 +58,9 @@ retrieve01 <- function(ticker,period="max"){
   g <- g %>% 
     select(date, Close)%>% 
     mutate(date=as_date(ymd(date)))
-  
   colnames(g) <- c("date", ticker)
-
   return(g)
 }
-
-
-
-
-  
 
 plotting01 <- function(ticker, period="max"){
   g <- retrieve01(ticker, period)
@@ -84,37 +75,69 @@ plotting01 <- function(ticker, period="max"){
   return(plot)
 }
 
-
-
-multiplot <- function(..., period = "1mo"){
+multiplot <- function(..., period = "1max",length=1000){
   x <- list(...)
-  
-  y <- data.frame("date"=c(seq(today()-1000,by="day",length.out = 1000)))
+  y <- data.frame("date"=c(seq(today()-length,by="day",length.out = length)))
   for (val in x){
-    
     y <- left_join(y,retrieve01(val, period),by="date")
   }
-  
   h <- y %>%
     pivot_longer(cols = c(...),names_to = "ticker",values_to = "price")
-    
-  
   return(h)
 }
 
 
+```
 
-multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max") %>% 
+### Retail industry
+
+M&S Morrisons Tesco Walmart
+
+```{r}
+(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
   filter(!is.na(price)) %>% 
-  mutate(price=log(price)) %>% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = "Ticker")+
+  theme(axis.text = element_text(),
+        legend.position = "bottom"))
+
+(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
+  filter(!is.na(price)) %>% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = "Ticker")+
+  theme(axis.text = element_text(),
+        legend.position = "bottom"))
+
+(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
+  filter(!is.na(price)) %>% 
+  ggplot()+
+  geom_point(aes(date, price, colour = ticker), shape=".")+
+  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = "Ticker")+
+  theme(axis.text = element_text(),
+        legend.position = "bottom"))
+
+(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 1000) %>% 
+  filter(!is.na(price)) %>% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  theme_void()+
+  labs(colour = "Ticker")+
+  theme(axis.text = element_text(),
+        legend.position = "bottom"))
   
-  ggplot(aes(date, price, colour=ticker))+
-  geom_line()+
-  theme_void()
-
-
-
-
 
 ```
 
