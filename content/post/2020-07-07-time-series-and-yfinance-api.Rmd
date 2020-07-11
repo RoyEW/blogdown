@@ -14,7 +14,7 @@ yFinance api from https://pypi.org/project/yfinance/
 Python exchange rate api from www.exchangerate-api.com
 
 ```{r setup, include=FALSE, message=FALSE,warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
 ```
 
 
@@ -33,8 +33,6 @@ library(broom)
 library(plotly)
 library(readxl)
 
-py_config()
-
 use_miniconda()
 ```
 
@@ -43,12 +41,10 @@ use_miniconda()
 ```{python}
 import yfinance as yf
 
-
 def yfinance01(ticker,period):
     g = yf.Ticker(ticker)
     data=g.history(period=period)
     return data
-
 ```
 
 
@@ -56,7 +52,6 @@ def yfinance01(ticker,period):
 ```{r functions}
 
 fixcol01 <- function(g){
-  
   g <- cbind(date = rownames(g), g)
   rownames(g) <- 1:nrow(g)
   return(g)
@@ -72,15 +67,6 @@ retrieve01 <- function(ticker,period="max"){
   return(g)
 }
 
-
-retrieve02 <- function(ticker,period="max"){
-  g <- py$yfinance01(ticker,period)
-  
-  return(g)
-}
-
-
-
 plotting01 <- function(ticker, period="max"){
   g <- retrieve01(ticker, period)
   plot <- g %>%  
@@ -94,78 +80,86 @@ plotting01 <- function(ticker, period="max"){
   return(plot)
 }
 
-multiplot <- function(..., period = "max",length=1000){
+multiplot <- function(...,
+                      period = "max",
+                      length = 1000) {
   x <- list(...)
-  y <- data.frame("date"=c(seq(today()-length,by="day",length.out = length)))
-  for (val in x){
+  y <-
+    data.frame("date" = c(seq(
+      today() - length, by = "day", length.out = length
+    )))
+  for (val in x) {
     #y <- left_join(y, retrieve01(val, period),by=c("date"))
-    y <- merge(y, retrieve01(val, period), by = "date", allow.cartesian = TRUE)
+    y <-
+      merge(y,
+            retrieve01(val, period),
+            by = "date",
+            allow.cartesian = TRUE)
   }
   h <- y %>%
-    pivot_longer(cols = c(...),names_to = "ticker",values_to = "price")
+    pivot_longer(cols = c(...),
+                 names_to = "ticker",
+                 values_to = "price")
   return(h)
 }
 
 ```
 
-### Retail industry
 
-M&S Morrisons Tesco Walmart
+```{r include = FALSE, echo=F}
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 12000) %>% 
+#  filter(!is.na(price)) %>% 
+#  ggplot()+
+#  geom_line(aes(date, price, colour = ticker))+
+#  theme_void()+
+#  labs(colour = "Ticker",
+#       title="Retail industry - 30 year overview")+
+#  theme(axis.text = element_text(),
+#        legend.position = "bottom"))
 
-```{r}
-(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 12000) %>% 
-  filter(!is.na(price)) %>% 
-  ggplot()+
-  geom_line(aes(date, price, colour = ticker))+
-  theme_void()+
-  labs(colour = "Ticker",
-       title="Retail industry - 30 year overview")+
-  theme(axis.text = element_text(),
-        legend.position = "bottom"))
-
-(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
-  filter(!is.na(price)) %>% 
-  ggplot()+
-  geom_line(aes(date, price, colour = ticker))+
-  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-  theme_void()+
-  labs(colour = "Ticker",
-       title = "Retail industry - 10 year overview")+
-  theme(axis.text = element_text(),
-        legend.position = "bottom"))
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
+#  filter(!is.na(price)) %>% 
+#  ggplot()+
+#  geom_line(aes(date, price, colour = ticker))+
+#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+ ## theme_void()+
+#  labs(colour = "Ticker",
+ #      title = "Retail industry - 10 year overview")+
+#  theme(axis.text = element_text(),
+#        legend.position = "bottom"))
 ```
 
 
-taking log prices
-
-```{r}
-(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
-  filter(!is.na(price)) %>% 
-  mutate(price=log(price)) %>% 
-  ggplot()+
-  geom_point(aes(date, price, colour = ticker), shape=".")+
-  geom_smooth(aes(date, price, colour = ticker), se = F)+
-  stat_smooth(aes(date, price),se = F,geom="line",lty=4)+
-  theme_void()+
-  labs(colour = "Ticker")+
-  theme(axis.text = element_text(),
-        legend.position = "bottom"))
 
 
-(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
-  filter(!is.na(price),
-         price>1) %>% 
-  mutate(price=log(price)) %>% 
-  ggplot()+
-  geom_line(aes(date, price, colour = ticker))+
-  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-  geom_smooth(aes(date, price, colour = ticker),se = F)+
-  theme_void()+
-  labs(colour = "Ticker")+
-  theme(axis.text = element_text(),
-        legend.position = "bottom"))
+```{r include = FALSE, echo=F}
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
+#  filter(!is.na(price)) %>% 
+#  mutate(price=log(price)) %>% 
+#  ggplot()+
+#  geom_point(aes(date, price, colour = ticker), shape=".")+
+#  geom_smooth(aes(date, price, colour = ticker), se = F)+
+#  stat_smooth(aes(date, price),se = F,geom="line",lty=4)+
+#  theme_void()+
+#  labs(colour = "Ticker")+
+#  theme(axis.text = element_text(),
+#        legend.position = "bottom"))
+
+
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
+#  filter(!is.na(price),
+#         price>1) %>% 
+#  mutate(price=log(price)) %>% 
+#  ggplot()+
+#  geom_line(aes(date, price, colour = ticker))+
+#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+#  geom_smooth(aes(date, price, colour = ticker),se = F)+
+ # theme_void()+
+#  labs(colour = "Ticker")+
+ # theme(axis.text = element_text(),
+#        legend.position = "bottom"))
   
-ggplotly(data)
+#ggplotly(data)
 ```
 
 ### Car industry financial analysis 
@@ -173,9 +167,6 @@ A profitability decomposition analysis with a focus on Tesla (TSLA)
 
 
 ```{r}
-
-
-
 
 (data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
   filter(!is.na(price),
@@ -197,7 +188,6 @@ A profitability decomposition analysis with a focus on Tesla (TSLA)
 decomp <- function(x) {
   data <- read_excel(x, sheet = 3,col_names = T)
   namesheet <- read_excel(x, sheet = 1,col_names = FALSE)
-  
   data.frame(
     "id" = c(1:5),
     "ROCE" = c(
@@ -353,7 +343,7 @@ decomp <- function(x) {
 ```
 
 
-```{r}
+```{r message=F, warning= F}
 
 profitability <- decomp("Decompositions\\Ferrari.xlsx") %>% 
   union_all(decomp("Decompositions\\Fiat Chrysler.xlsx")) %>% 
@@ -405,28 +395,36 @@ profitability <- decomp("Decompositions\\Ferrari.xlsx") %>%
                           id==2 ~ 2018,
                           id==1 ~ 2019))
 
-
+investigate01 <- function(data,
+                          y,
+                          title = "",
+                          subtitle = "") {
+  g <- ggplot(data, aes(period, y, colour = name)) +
+    geom_smooth(
+      aes(period, y, group = 1),
+      lty = 2,
+      colour = "black",
+      fill = "blue",
+      alpha = 0.1
+    ) +
+    geom_point() +
+    #stat_smooth(geom = "line",lty=2,method = "lm",se=F)+
+    geom_smooth(se = F) +
+    theme_void() +
+    labs(title = title,
+         subtitle = subtitle,
+         colour = "Company") +
+    theme(axis.text = element_text())
+  return(g)
+}
 
 ```
 
 # Investigating industry ROCE
 
-Ferrari has a wildy changing ROCE value over the investigation period so will have to be examined separately.
+Ferrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.
 
 ```{r warning=F}
-investigate01 <- function(data, y,title="",subtitle=""){
-  g <- ggplot(data,aes(period,y,colour=name))+
-  geom_smooth(aes(period,y,group=1),lty=2,colour="black",fill="green",alpha=0.1)+
-  geom_point()+
-    stat_smooth(geom = "line",lty=2,method = "lm",se=F)+
-    geom_smooth(se=F)+
-  theme_void()+
-  labs(title=title,
-       subtitle = subtitle,
-       colour="Company")+
-  theme(axis.text = element_text()) 
-  return(g)
-}
 
 investigate01(profitability,profitability$ROCE)
 ```
@@ -450,24 +448,17 @@ ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$ROCE,title=
 ### First level decomposition
 # RNOA
 
-```{r}
-investigate01(profitability,profitability$RNOA)
+```{r warning=F, message=F}
+
 
 ggplotly(investigate01(profitability,profitability$RNOA, title="Industry return on net assets (RNOA)"))
 ```
 
 # FLEV
 
-```{r}
-investigate01(profitability,profitability$FLEV)
-
-ggplotly(investigate01(profitability,profitability$FLEV, title="Industry financial leverage (FLEV)"))
-```
-
 ignoring Ferrari in FLEV
 
-```{r}
-investigate01(profit_roce_no_outlier,profit_roce_no_outlier$FLEV)
+```{r warning=F, message=F}
 
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$FLEV, title="Industry financial leverage (FLEV, no Ferrari)"))
 
@@ -476,27 +467,16 @@ ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$FLEV, title
 # NBC
 
 ```{r}
-investigate01(profitability,profitability$FLEV)
-
-ggplotly(investigate01(profitability,profitability$FLEV, title="Industry financial leverage (FLEV)"))
-
-```
-
-NBC without ferrari
-
-```{r}
-investigate01(profit_roce_no_outlier,profit_roce_no_outlier$NBC)
-
-ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$NBC, title="Industry financial leverage (FLEV, no Ferrari)"))
+ggplotly(investigate01(profitability,profitability$NBC, title="Industry net borrowing costs (NBC)"))
 
 ```
 
 # Spread
 
-```{r}
+```{r warning=F, message=F}
 
-investigate01(profitability,profitability$spread, title="Industry spread (RNOA - NBC)")
 ggplotly(investigate01(profitability,profitability$spread, title="Industry spread (RNOA - NBC)"))
+
 
 ```
 
@@ -504,39 +484,174 @@ ggplotly(investigate01(profitability,profitability$spread, title="Industry sprea
 
 # PM
 
-```{r}
-investigate01(profitability,profitability$PM, title="Industry profit margin (OI / sales)")
-
+```{r warning=F, message=F}
 ggplotly(investigate01(profitability,profitability$PM, title="Industry profit margin (OI / sales)"))
 ```
 
 # ATO
 
-```{r}
-investigate01(profitability,profitability$ATO, title="Industry asset turnover ratio (sales / NOA)")
-
+```{r warning=F, message=F}
 ggplotly(investigate01(profitability,profitability$ATO, title="Industry asset turnover ratio (sales / NOA)"))
 ```
 
 Fiat Chrysler has an unusually high asset turnover ratio. 
 
-# Third level decomposition
+### Third level decomposition (profit margin)
+
+# Gross profit margin ratio (GM / Sales)
 
 Ignoring ferrari
 
 ```{r}
-investigate01(profit_roce_no_outlier,profit_roce_no_outlier$GPM, title="Industry gross margin ratio (GM / sales)")
-
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$GPM, title="Industry gross margin ratio (GM / sales)"))
 
+```
+
+# Operating expense over sales
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$operating.expense.over.sales, title="Industry operating expense over sales ratio (OE / sales)"))
+```
+
+# Taxes over sales
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$taxes_over_sales, title="Industry taxes over sales ratio (taxes / sales)"))
+```
+
+# Other income over sales
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$other_income_over_sales, title="Industry other income over sales ratio"))
+```
+
+### Third level decomposition (ATO)
+
+# One over ATO
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$one_over_ATO, title="Industry one over ATO ratio (1 / ATO)"))
+```
+
+# Cash over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$cash.over.sales, title="Industry cash over sales ratio (cash / sales)"))
+```
+
+# Receivables over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$receivables.over.sales, title="Industry receivables over sales ratio (receivables / sales)"))
+```
+
+# Inventory over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$inventory_over_sales, title="Industry inventory over sales ratio (inventory / sales)"))
+```
+
+# Other current assets over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$other_current_assets_over_sales, title="Industry other current assets over sales ratio"))
+```
 
 
+# PPE over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$PPE_over_sales, title="Industry PPE over sales ratio (PPE / sales)"))
+```
+
+# Payables over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$accounts_payable_over_sales, title="Industry accounts payable over sales ratio"))
+```
+
+# Income taxes over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$income_taxes_over_sales, title="Income taxes over sales ratio"))
+```
+
+# Other liabilities over sales ratio
+
+```{r}
+ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$other_liabilities_over_sales, title="Industry other liabilities over sales ratio"))
+```
+
+### Trend analysis
+
+```{r}
+
+  drivers <-
+    c(colnames(profitability[2]), colnames(profitability[5:23]))
+  
+  
+  
+  trend_analysis <- profitability %>%
+    group_by(name) %>%
+    arrange(period, .by_group = TRUE) %>%
+    mutate(perc_ROCE = (ROCE / lag(ROCE)) * 100)
+  
+
+  
+  
+  profitability %>%
+    group_by(name, period) %>%
+    mutate(ROCE_change = (ROCE / lag(ROCE)))
+  
+  
+  
+  
+  profitability %>%
+    filter(period == 2019,
+           name == "BMW") %>%
+    select(drivers) %>%
+    pivot_longer(cols = drivers,
+                 names_to = "driver",
+                 values_to = "value") %>%
+    ggplot(aes(driver, value)) + geom_point() +
+    coord_flip()
+  
+  drivers <-
+    c(colnames(profitability[2]), colnames(profitability[5:23]))
+  
+  
+  
+  boxplot <- profitability %>%
+    filter(!name == "Ferrari") %>%
+    pivot_longer(cols = c(drivers),
+                 names_to = "driver",
+                 values_to = "value") %>%
+    ggplot(aes(driver, value, colour = name)) +
+    geom_boxplot() +
+    coord_flip() +
+    theme_bw()
+  #find
+  ggplotly(boxplot)
+  
+  
+  boxplot <- profitability %>%
+    filter(!name == "Ferrari") %>%
+    pivot_longer(cols = c(drivers),
+                 names_to = "driver",
+                 values_to = "value") %>%
+    ggplot(aes(driver, value, colour = name)) +
+    geom_point() +
+    coord_flip() +
+    labs(colour = "Company") +
+    theme_bw()
+  
+  
+  ggplotly(boxplot)
+  
 
 
 ```
 
-
-
-
+### Common size analysis
 
 
