@@ -128,9 +128,7 @@ head(dd)</code></pre>
   return(1/(16.6*3*(x+273)))
 }
 
-f2 &lt;- function(){
-  ifelse(x&lt;0,-x,-x)
-}
+
 library(plotly)
 library(ggrepel)
 data %&gt;% 
@@ -146,7 +144,7 @@ data %&gt;%
   theme_classic()</code></pre>
 <p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>library(broom)
-augment(glm(CTE ~ mp, data = data, family = &quot;binomial&quot;)) %&gt;%
+augment(lm(CTE ~ mp, data = data)) %&gt;%
   ggplot(aes(mp,CTE))+
   geom_point()+
   geom_point(aes(mp, .fitted), colour= &quot;blue&quot;)+

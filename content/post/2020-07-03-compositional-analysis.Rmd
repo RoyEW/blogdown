@@ -136,9 +136,7 @@ f1 <- function(x){
   return(1/(16.6*3*(x+273)))
 }
 
-f2 <- function(){
-  ifelse(x<0,-x,-x)
-}
+
 library(plotly)
 library(ggrepel)
 data %>% 
@@ -153,7 +151,7 @@ data %>%
   ggrepel::geom_text_repel()+
   theme_classic()
 library(broom)
-augment(glm(CTE ~ mp, data = data, family = "binomial")) %>%
+augment(lm(CTE ~ mp, data = data)) %>%
   ggplot(aes(mp,CTE))+
   geom_point()+
   geom_point(aes(mp, .fitted), colour= "blue")+
