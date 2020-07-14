@@ -8,18 +8,18 @@ tags: []
 ---
 
 ```{r}
-#install.packages("compositions")
-#install.packages("robustbase")
-#install.packages("gtools")
-library(robustbase)
-library(energy)
-library(gtools)
+
+#library(robustbase)
+#library(energy)
+#library(gtools)
 library(compositions)
 library(readr)
 library(tidyverse)
 library(neuralnet)
 library(caret)
 library(caretEnsemble)
+library(httr)
+library(readxl)
 ```
 
 ```{r}
@@ -55,46 +55,68 @@ barplot.acomp(xc)
 
 Order of hardness desc
 
-Using Aitchison (1986) rescaling 'acomp'
+
 
 ```{r}
+
 barplot.acomp(xc_ordered)
-data %>% 
-  arrange(desc(hardness)) %>% 
-  head(20)
+
 ```
 
 Possibly drop copper and nickel
 
-```{r}
-mw <- acomp(c(0.400,	0.200,	0.200,	0.0001,	0.200,	0.0001))	
-int <- xc+mw
-full <- as_tibble(int) %>% 
-  mutate(hardness=data$hardness)
-
-model.ann <- neuralnet(hardness ~., data = full,hidden = c(3,5))
-predict(model.ann,newdata =data)
-
-
-myControl <- trainControl(method="cv", number=5)
-modellist <- caretList(hardness ~.,data=full, trControl = myControl,methodList = c("lm","glm"))
-modellist$lm
-```
-```{r}
-
-```
 
 ```{r}
-X <- data[,1:6]
-Y <- log(data$hardness)
-(model = lm(Y~ilr(X)))
+dd <-
+  read.table(text = content(GET("https://gist.githubusercontent.com/MrFlick/c1183c911bc5398105d4/raw/715868fba2d0d17a61a8081de17c468bbc525ab1/elements.txt")),
+  sep = ",",
+  header = TRUE) %>%
+  mutate(
+    ElementName = ifelse(ElementName == "Sulfer", "Sulfur", ElementName),
+    ElementName = ifelse(ElementName == "Phosphorous", "Phosphorus", ElementName),
+    ElementName = ifelse(ElementName == "Flourine", "Fluorine", ElementName))
 
-(a = coef(model)[1])
-(b = ilrInv(coef(model)[-1],orig=X))
-plot(X)
-X
-myY = pretty(Y)
-mean(X)
-refX =  + ((myY - a)/norm(b)^2) * b
+data <- read_excel("melting_points.xlsx", sheet = 2)
+
+colnames(dd) <- c(colnames(dd)[1:7], "element", colnames(dd)[9:13])
+
+dd %>%
+  left_join(data, by = "element") %>%
+  ggplot(aes(Column,-Row)) +
+  geom_tile(aes(fill = crystal_structure), color = "black") +
+  geom_text(aes(label = symbol)) +
+  theme_void() +
+  labs(fill = "Crystal Structure") +
+  annotate(
+    "text",
+    x = 7,
+    y = 0.2,
+    label = "Periodic Table of the elements",
+    size = 5)
+
+dd %>%
+  left_join(data, by = "element") %>%
+  mutate(
+    log_cte = log(CTE),
+    new_cte = CTE * 1000000,
+    is_extreme = ifelse(new_cte < 10, 0, 1)
+  ) %>%
+  ggplot(aes(Column,-Row)) +
+  geom_tile(aes(fill = log10(CTE)), color = "black", size = 1) +
+  geom_text(aes(label = symbol), colour = "white") +
+  geom_text(aes(label = new_cte), colour = "black", nudge_y = -0.3) +
+  scale_fill_gradient(low = "red", high = "green") +
+  theme_void() +
+  labs(fill = expression(paste("CTE", 10 ^ 6))) +
+  annotate(
+    "text",
+    x = 7,
+    y = 0.2,
+    label = "Periodic Table of the elements",
+    size = 5)
+
+
 ```
+
+
 

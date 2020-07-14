@@ -29,7 +29,7 @@ library(reticulate)library(tidyquant)library(timetk)library(sweep)library(fo
       <pubDate>Fri, 03 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/03/compositional-analysis/</guid>
-      <description>#install.packages(&amp;quot;compositions&amp;quot;)#install.packages(&amp;quot;robustbase&amp;quot;)#install.packages(&amp;quot;gtools&amp;quot;)library(robustbase)## Warning: package &amp;#39;robustbase&amp;#39; was built under R version 4.0.2library(energy)## Warning: package &amp;#39;energy&amp;#39; was built under R version 4.0.2library(gtools)library(compositions)## Warning: package &amp;#39;compositions&amp;#39; was built under R version 4.0.2## Loading required package: tensorA## ## Attaching package: &amp;#39;tensorA&amp;#39;## The following object is masked from &amp;#39;package:base&amp;#39;:## ## norm## Loading required package: bayesm## Warning: package &amp;#39;bayesm&amp;#39; was built under R version 4.</description>
+      <description>#library(robustbase)#library(energy)#library(gtools)library(compositions)## Warning: package &amp;#39;compositions&amp;#39; was built under R version 4.0.2## Loading required package: tensorA## ## Attaching package: &amp;#39;tensorA&amp;#39;## The following object is masked from &amp;#39;package:base&amp;#39;:## ## norm## Loading required package: robustbase## Warning: package &amp;#39;robustbase&amp;#39; was built under R version 4.0.2## Loading required package: bayesm## Warning: package &amp;#39;bayesm&amp;#39; was built under R version 4.0.2## Welcome to compositions, a package for compositional data analysis.</description>
     </item>
     
     <item>

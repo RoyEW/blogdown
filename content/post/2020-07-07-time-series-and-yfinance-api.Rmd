@@ -103,88 +103,6 @@ multiplot <- function(...,
   return(h)
 }
 
-```
-
-
-```{r include = FALSE, echo=F}
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 12000) %>% 
-#  filter(!is.na(price)) %>% 
-#  ggplot()+
-#  geom_line(aes(date, price, colour = ticker))+
-#  theme_void()+
-#  labs(colour = "Ticker",
-#       title="Retail industry - 30 year overview")+
-#  theme(axis.text = element_text(),
-#        legend.position = "bottom"))
-
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
-#  filter(!is.na(price)) %>% 
-#  ggplot()+
-#  geom_line(aes(date, price, colour = ticker))+
-#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
- ## theme_void()+
-#  labs(colour = "Ticker",
- #      title = "Retail industry - 10 year overview")+
-#  theme(axis.text = element_text(),
-#        legend.position = "bottom"))
-```
-
-
-
-
-```{r include = FALSE, echo=F}
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
-#  filter(!is.na(price)) %>% 
-#  mutate(price=log(price)) %>% 
-#  ggplot()+
-#  geom_point(aes(date, price, colour = ticker), shape=".")+
-#  geom_smooth(aes(date, price, colour = ticker), se = F)+
-#  stat_smooth(aes(date, price),se = F,geom="line",lty=4)+
-#  theme_void()+
-#  labs(colour = "Ticker")+
-#  theme(axis.text = element_text(),
-#        legend.position = "bottom"))
-
-
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
-#  filter(!is.na(price),
-#         price>1) %>% 
-#  mutate(price=log(price)) %>% 
-#  ggplot()+
-#  geom_line(aes(date, price, colour = ticker))+
-#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-#  geom_smooth(aes(date, price, colour = ticker),se = F)+
- # theme_void()+
-#  labs(colour = "Ticker")+
- # theme(axis.text = element_text(),
-#        legend.position = "bottom"))
-  
-#ggplotly(data)
-```
-
-### Car industry financial analysis 
-A profitability decomposition analysis with a focus on Tesla (TSLA)
-
-
-```{r}
-
-(data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
-  filter(!is.na(price),
-         price>1) %>%
-  mutate(price=log(price)) %>% 
-  ggplot()+
-  geom_line(aes(date, price, colour = ticker))+
-  geom_smooth(aes(date, price, colour = ticker),se = F)+
-  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-  theme_void()+
-  labs(colour = "Ticker",
-       title="Share prices of global car companies (5year)")+
-  theme(axis.text = element_text(),
-        legend.position = "bottom"))
-
-```
-
-```{r}
 decomp <- function(x) {
   data <- read_excel(x, sheet = 3,col_names = T)
   namesheet <- read_excel(x, sheet = 1,col_names = FALSE)
@@ -340,6 +258,114 @@ decomp <- function(x) {
     )
   )
 }
+
+extract_eps <- function(x) {
+  data <- read_excel(x, sheet = 1,col_names = F)
+  namesheet <- read_excel(x, sheet = 1,col_names = FALSE)
+  return(data.frame(
+    "id" = c(2019:2015),
+    "net_earnings" = c(
+      paste(as.numeric(data[43, 3])),
+      paste(as.numeric(data[43, 4])),
+      paste(as.numeric(data[43, 5])),
+      paste(as.numeric(data[43, 6])),
+      paste(as.numeric(data[43, 7]))
+    )))
+}
+
+eps <- extract_eps("Decompositions\\Raw income statements\\Ferrari.xls") %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Fiat Chrysler.xls"))
+eps
+```
+
+
+```{r include = FALSE, echo=F}
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 12000) %>% 
+#  filter(!is.na(price)) %>% 
+#  ggplot()+
+#  geom_line(aes(date, price, colour = ticker))+
+#  theme_void()+
+#  labs(colour = "Ticker",
+#       title="Retail industry - 30 year overview")+
+#  theme(axis.text = element_text(),
+#        legend.position = "bottom"))
+
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
+#  filter(!is.na(price)) %>% 
+#  ggplot()+
+#  geom_line(aes(date, price, colour = ticker))+
+#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+ ## theme_void()+
+#  labs(colour = "Ticker",
+ #      title = "Retail industry - 10 year overview")+
+#  theme(axis.text = element_text(),
+#        legend.position = "bottom"))
+```
+
+
+
+
+```{r include = FALSE, echo=F}
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
+#  filter(!is.na(price)) %>% 
+#  mutate(price=log(price)) %>% 
+#  ggplot()+
+#  geom_point(aes(date, price, colour = ticker), shape=".")+
+#  geom_smooth(aes(date, price, colour = ticker), se = F)+
+#  stat_smooth(aes(date, price),se = F,geom="line",lty=4)+
+#  theme_void()+
+#  labs(colour = "Ticker")+
+#  theme(axis.text = element_text(),
+#        legend.position = "bottom"))
+
+
+#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
+#  filter(!is.na(price),
+#         price>1) %>% 
+#  mutate(price=log(price)) %>% 
+#  ggplot()+
+#  geom_line(aes(date, price, colour = ticker))+
+#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+#  geom_smooth(aes(date, price, colour = ticker),se = F)+
+ # theme_void()+
+#  labs(colour = "Ticker")+
+ # theme(axis.text = element_text(),
+#        legend.position = "bottom"))
+  
+#ggplotly(data)
+```
+
+### Car industry financial analysis 
+A profitability decomposition analysis with a focus on Tesla (TSLA)
+
+
+```{r}
+
+(data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
+  filter(!is.na(price),
+         price>1) %>%
+  mutate(price=log(price)) %>% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+  theme_void()+
+  labs(colour = "Ticker",
+       title="Share prices of global car companies (5year)")+
+  theme(axis.text = element_text(),
+        legend.position = "bottom"))
+
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
 ```
 
 
