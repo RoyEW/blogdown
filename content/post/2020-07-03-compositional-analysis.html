@@ -9,70 +9,6 @@ tags: []
 
 
 
-<pre class="r"><code>#library(robustbase)
-#library(energy)
-#library(gtools)
-library(compositions)</code></pre>
-<pre><code>## Warning: package &#39;compositions&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Loading required package: tensorA</code></pre>
-<pre><code>## 
-## Attaching package: &#39;tensorA&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:base&#39;:
-## 
-##     norm</code></pre>
-<pre><code>## Loading required package: robustbase</code></pre>
-<pre><code>## Warning: package &#39;robustbase&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Loading required package: bayesm</code></pre>
-<pre><code>## Warning: package &#39;bayesm&#39; was built under R version 4.0.2</code></pre>
-<pre><code>## Welcome to compositions, a package for compositional data analysis.
-## Find an intro with &quot;? compositions&quot;</code></pre>
-<pre><code>## 
-## Attaching package: &#39;compositions&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     cor, cov, dist, var</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     %*%, scale, scale.default</code></pre>
-<pre class="r"><code>library(readr)
-library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ------------------------------------------------------------------------------------------------------------------------------------ tidyverse 1.3.0 --</code></pre>
-<pre><code>## v ggplot2 3.3.0     v dplyr   0.8.5
-## v tibble  3.0.1     v stringr 1.4.0
-## v tidyr   1.0.3     v forcats 0.5.0
-## v purrr   0.3.4</code></pre>
-<pre><code>## -- Conflicts --------------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(neuralnet)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;neuralnet&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     compute</code></pre>
-<pre class="r"><code>library(caret)</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## 
-## Attaching package: &#39;caret&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     lift</code></pre>
-<pre><code>## The following object is masked from &#39;package:compositions&#39;:
-## 
-##     R2</code></pre>
-<pre class="r"><code>library(caretEnsemble)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;caretEnsemble&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
-## 
-##     autoplot</code></pre>
-<pre class="r"><code>library(httr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;httr&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:caret&#39;:
-## 
-##     progress</code></pre>
-<pre class="r"><code>library(readxl)</code></pre>
 <pre class="r"><code>divide01 &lt;- function(x){
   return(x/100)
 }
@@ -127,9 +63,35 @@ data &lt;- read_excel(&quot;melting_points.xlsx&quot;, sheet = 2)
 
 colnames(dd) &lt;- c(colnames(dd)[1:7], &quot;element&quot;, colnames(dd)[9:13])
 
-dd %&gt;%
-  left_join(data, by = &quot;element&quot;) %&gt;%
-  ggplot(aes(Column,-Row)) +
+data &lt;- dd %&gt;% 
+  left_join(data, by = &quot;element&quot;)
+
+
+head(dd)</code></pre>
+<pre><code>##   AtomicNumber AtomicWeight GroupNumber      GroupName Period   Block
+## 1            1            1           5     Non-metals      1 s-block
+## 2            2            0           4    Noble gases     NA        
+## 3            3            0           0   Alkali earth     NA        
+## 4            4            0           1 Alkaline earth     NA        
+## 5            5            0           3     Metalloids     NA        
+## 6            6            0           5     Non-metals     NA        
+##   CASRegistryID   element ElementSymbol DiscoveryDate  DiscovererName Row
+## 1     1333-74-0  Hydrogen             H          1766 Henry Cavendish   1
+## 2                  Helium            He            NA                   1
+## 3                 Lithium            Li            NA                   2
+## 4               Beryllium            Be            NA                   2
+## 5                   Boron             B            NA                   2
+## 6                  Carbon             C            NA                   2
+##   Column
+## 1      1
+## 2     18
+## 3      1
+## 4      2
+## 5     13
+## 6     14</code></pre>
+<pre class="r"><code>dd %&gt;%
+  left_join(data, by = &quot;element&quot;, ) %&gt;%
+  ggplot(aes(Column.x,-Row.x)) +
   geom_tile(aes(fill = crystal_structure), color = &quot;black&quot;) +
   geom_text(aes(label = symbol)) +
   theme_void() +
@@ -140,7 +102,6 @@ dd %&gt;%
     y = 0.2,
     label = &quot;Periodic Table of the elements&quot;,
     size = 5)</code></pre>
-<pre><code>## Warning: Removed 17 rows containing missing values (geom_text).</code></pre>
 <p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>dd %&gt;%
   left_join(data, by = &quot;element&quot;) %&gt;%
@@ -149,9 +110,9 @@ dd %&gt;%
     new_cte = CTE * 1000000,
     is_extreme = ifelse(new_cte &lt; 10, 0, 1)
   ) %&gt;%
-  ggplot(aes(Column,-Row)) +
+  ggplot(aes(Column.x,-Row.x)) +
   geom_tile(aes(fill = log10(CTE)), color = &quot;black&quot;, size = 1) +
-  geom_text(aes(label = symbol), colour = &quot;white&quot;) +
+  geom_text(aes(label = symbol), colour = &quot;black&quot;) +
   geom_text(aes(label = new_cte), colour = &quot;black&quot;, nudge_y = -0.3) +
   scale_fill_gradient(low = &quot;red&quot;, high = &quot;green&quot;) +
   theme_void() +
@@ -162,6 +123,32 @@ dd %&gt;%
     y = 0.2,
     label = &quot;Periodic Table of the elements&quot;,
     size = 5)</code></pre>
-<pre><code>## Warning: Removed 17 rows containing missing values (geom_text).</code></pre>
-<pre><code>## Warning: Removed 54 rows containing missing values (geom_text).</code></pre>
 <p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<pre class="r"><code>f1 &lt;- function(x){
+  return(1/(16.6*3*(x+273)))
+}
+
+f2 &lt;- function(){
+  ifelse(x&lt;0,-x,-x)
+}
+library(plotly)
+library(ggrepel)
+data %&gt;% 
+  ggplot(aes(mp, CTE, label=element))+
+  geom_point()+
+  stat_function(fun=f1)+
+  lims(
+    x=c(1500,4000),
+    y=c(0,0.000025)
+  )+
+  theme(legend.position = &quot;none&quot;)+
+  ggrepel::geom_text_repel()+
+  theme_classic()</code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>library(broom)
+augment(glm(CTE ~ mp, data = data, family = &quot;binomial&quot;)) %&gt;%
+  ggplot(aes(mp,CTE))+
+  geom_point()+
+  geom_point(aes(mp, .fitted), colour= &quot;blue&quot;)+
+  theme_classic()</code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>

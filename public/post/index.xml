@@ -29,7 +29,7 @@ library(reticulate)library(tidyquant)library(timetk)library(sweep)library(fo
       <pubDate>Fri, 03 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/03/compositional-analysis/</guid>
-      <description>#library(robustbase)#library(energy)#library(gtools)library(compositions)## Warning: package &amp;#39;compositions&amp;#39; was built under R version 4.0.2## Loading required package: tensorA## ## Attaching package: &amp;#39;tensorA&amp;#39;## The following object is masked from &amp;#39;package:base&amp;#39;:## ## norm## Loading required package: robustbase## Warning: package &amp;#39;robustbase&amp;#39; was built under R version 4.0.2## Loading required package: bayesm## Warning: package &amp;#39;bayesm&amp;#39; was built under R version 4.0.2## Welcome to compositions, a package for compositional data analysis.</description>
+      <description>divide01 &amp;lt;- function(x){return(x/100)}head(data)## ## 1 function (..., list = character(), package = NULL, lib.loc = NULL, ## 2 verbose = getOption(&amp;quot;verbose&amp;quot;), envir = .GlobalEnv, overwrite = TRUE) ## 3 { ## 4 fileExt &amp;lt;- function(x) { ## 5 db &amp;lt;- grepl(&amp;quot;\\\\.[^.]+\\\\.(gz|bz2|xz)$&amp;quot;, x) ## 6 ans &amp;lt;- sub(&amp;quot;.*\\\\.&amp;quot;, &amp;quot;&amp;quot;, x)data &amp;lt;- read.csv(&amp;quot;hardness.csv&amp;quot;) %&amp;gt;% mutate(Al=divide01(Al),Co=divide01(Co),Cr=divide01(Cr),Cu=divide01(Cu),Fe=divide01(Fe),Ni=divide01(Ni))data_ordered &amp;lt;- read.csv(&amp;quot;hardness.csv&amp;quot;) %&amp;gt;% mutate(Al=divide01(Al),Co=divide01(Co),Cr=divide01(Cr),Cu=divide01(Cu),Fe=divide01(Fe),Ni=divide01(Ni)) %&amp;gt;% arrange(desc(hardness))closed &amp;lt;- clo(data, parts = 1:6,total=100)cx &amp;lt;- acomp(data, c(&amp;quot;Al&amp;quot;,&amp;quot;Co&amp;quot;,&amp;quot;Cr&amp;quot;))plot(cx)xc &amp;lt;- acomp(data, c(&amp;quot;Al&amp;quot;,&amp;quot;Co&amp;quot;,&amp;quot;Cr&amp;quot;,&amp;quot;Cu&amp;quot;,&amp;quot;Fe&amp;quot;,&amp;quot;Ni&amp;quot;))xc_ordered &amp;lt;- acomp(data_ordered, c(&amp;quot;Al&amp;quot;,&amp;quot;Co&amp;quot;,&amp;quot;Cr&amp;quot;,&amp;quot;Cu&amp;quot;,&amp;quot;Fe&amp;quot;,&amp;quot;Ni&amp;quot;))plot(xc)barplot.</description>
     </item>
     
     <item>
@@ -38,10 +38,8 @@ library(reticulate)library(tidyquant)library(timetk)library(sweep)library(fo
       <pubDate>Thu, 02 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/02/bank-transactions-and-asda/</guid>
-      <description>BBC News ggplot style exampleThis is an example article using the BBC News ggplot style package. Data is sourced from bank statements.
-Another headlineAnd some text to separate the graphs.
-ASDACumulative wages and costs specific to ASDA. The graph clearly shows that I spend too much money during my lunch breaks.
-</description>
+      <description>BBC News ggplot style exampleThis is an example article using the BBC News ggplot style package. Data is sourced from bank statements.
+year2020 &amp;lt;- read_csv(&amp;quot;2019-2020.csv&amp;quot;)year2019 &amp;lt;- read_csv(&amp;quot;2018-2019.csv&amp;quot;)year2018 &amp;lt;- read_csv(&amp;quot;2017-2018.csv&amp;quot;)year2017 &amp;lt;- read_csv(&amp;quot;2016-2017.csv&amp;quot;)year2016 &amp;lt;- read_csv(&amp;quot;2015-2016.csv&amp;quot;)data &amp;lt;- year2020 %&amp;gt;% union_all(year2019) %&amp;gt;% union_all(year2018) %&amp;gt;% union_all(year2017) %&amp;gt;% union_all(year2016)colnames(data) &amp;lt;- c(&amp;quot;date&amp;quot;,&amp;quot;type&amp;quot;,&amp;quot;code&amp;quot;,&amp;quot;number&amp;quot;,&amp;quot;description&amp;quot;,&amp;quot;dr&amp;quot;,&amp;quot;cr&amp;quot;,&amp;quot;balance&amp;quot;)data &amp;lt;- data %&amp;gt;%mutate(date = dmy(date),year_month = as.numeric(paste(year(date), month(date), sep = &amp;quot;&amp;quot;))) %&amp;gt;% arrange(date)data_asda_wages &amp;lt;- data %&amp;gt;% filter(!</description>
     </item>
     
     <item>

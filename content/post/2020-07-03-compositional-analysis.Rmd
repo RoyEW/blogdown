@@ -7,7 +7,12 @@ categories: []
 tags: []
 ---
 
-```{r}
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
 
 #library(robustbase)
 #library(energy)
@@ -60,7 +65,7 @@ Order of hardness desc
 ```{r}
 
 barplot.acomp(xc_ordered)
-
+         
 ```
 
 Possibly drop copper and nickel
@@ -80,9 +85,14 @@ data <- read_excel("melting_points.xlsx", sheet = 2)
 
 colnames(dd) <- c(colnames(dd)[1:7], "element", colnames(dd)[9:13])
 
+data <- dd %>% 
+  left_join(data, by = "element")
+
+
+head(dd)
 dd %>%
-  left_join(data, by = "element") %>%
-  ggplot(aes(Column,-Row)) +
+  left_join(data, by = "element", ) %>%
+  ggplot(aes(Column.x,-Row.x)) +
   geom_tile(aes(fill = crystal_structure), color = "black") +
   geom_text(aes(label = symbol)) +
   theme_void() +
@@ -101,9 +111,9 @@ dd %>%
     new_cte = CTE * 1000000,
     is_extreme = ifelse(new_cte < 10, 0, 1)
   ) %>%
-  ggplot(aes(Column,-Row)) +
+  ggplot(aes(Column.x,-Row.x)) +
   geom_tile(aes(fill = log10(CTE)), color = "black", size = 1) +
-  geom_text(aes(label = symbol), colour = "white") +
+  geom_text(aes(label = symbol), colour = "black") +
   geom_text(aes(label = new_cte), colour = "black", nudge_y = -0.3) +
   scale_fill_gradient(low = "red", high = "green") +
   theme_void() +
@@ -119,4 +129,37 @@ dd %>%
 ```
 
 
+
+```{r}
+
+f1 <- function(x){
+  return(1/(16.6*3*(x+273)))
+}
+
+f2 <- function(){
+  ifelse(x<0,-x,-x)
+}
+library(plotly)
+library(ggrepel)
+data %>% 
+  ggplot(aes(mp, CTE, label=element))+
+  geom_point()+
+  stat_function(fun=f1)+
+  lims(
+    x=c(1500,4000),
+    y=c(0,0.000025)
+  )+
+  theme(legend.position = "none")+
+  ggrepel::geom_text_repel()+
+  theme_classic()
+library(broom)
+augment(glm(CTE ~ mp, data = data, family = "binomial")) %>%
+  ggplot(aes(mp,CTE))+
+  geom_point()+
+  geom_point(aes(mp, .fitted), colour= "blue")+
+  theme_classic()
+
+
+
+```
 

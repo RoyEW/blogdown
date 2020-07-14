@@ -7,6 +7,11 @@ categories: []
 tags: []
 ---
 
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
+```
+
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(tidyverse)
 library(readr)
@@ -18,7 +23,7 @@ library(bbplot)
 
 This is an example article using the BBC News ggplot style package. Data is sourced from bank statements.
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r}
 year2020 <- read_csv("2019-2020.csv")
 year2019 <- read_csv("2018-2019.csv")
 year2018 <- read_csv("2017-2018.csv")
@@ -26,7 +31,7 @@ year2017 <- read_csv("2016-2017.csv")
 year2016 <- read_csv("2015-2016.csv")
 ```
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
+```{r}
 data <- year2020 %>% 
   union_all(year2019) %>% 
   union_all(year2018) %>% 
@@ -52,7 +57,7 @@ data_asda_costs <- data %>%
   mutate(cumsum_asda=cumsum(dr)) 
 ```
 
-```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+```{r}
 data %>%
   ggplot(aes(date,balance))+
   geom_line()+
@@ -66,7 +71,7 @@ data %>%
 
 And some text to separate the graphs. 
 
-```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+```{r}
   
   data %>%
   filter(year_month > "2020-1-1") %>% 
@@ -82,7 +87,7 @@ And some text to separate the graphs.
 
 Cumulative wages and costs specific to ASDA. The graph clearly shows that I spend too much money during my lunch breaks.
 
-```{r message=FALSE, warning=FALSE, include=FALSE,echo=FALSE}
+```{r}
 data_asda_costs %>% 
   union_all(data_asda_wages) %>% 
   arrange(date) %>% 
@@ -98,7 +103,7 @@ data_asda_costs %>%
   annotate("text", x = dmy("01032020"), y = 2100, size=6, label = "costs",colour="white")
 ```
 
-```{r message=FALSE, warning=FALSE, include=TRUE,echo=FALSE}
+```{r}
 data_asda_costs %>% 
   union_all(data_asda_wages) %>% 
   arrange(date) %>% 

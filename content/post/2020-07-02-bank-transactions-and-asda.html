@@ -12,15 +12,85 @@ tags: []
 <div id="bbc-news-ggplot-style-example" class="section level1">
 <h1>BBC News ggplot style example</h1>
 <p>This is an example article using the BBC News ggplot style package. Data is sourced from bank statements.</p>
+<pre class="r"><code>year2020 &lt;- read_csv(&quot;2019-2020.csv&quot;)
+year2019 &lt;- read_csv(&quot;2018-2019.csv&quot;)
+year2018 &lt;- read_csv(&quot;2017-2018.csv&quot;)
+year2017 &lt;- read_csv(&quot;2016-2017.csv&quot;)
+year2016 &lt;- read_csv(&quot;2015-2016.csv&quot;)</code></pre>
+<pre class="r"><code>data &lt;- year2020 %&gt;% 
+  union_all(year2019) %&gt;% 
+  union_all(year2018) %&gt;% 
+  union_all(year2017) %&gt;% 
+  union_all(year2016)
+
+colnames(data) &lt;- c(&quot;date&quot;,&quot;type&quot;,&quot;code&quot;,&quot;number&quot;,&quot;description&quot;,&quot;dr&quot;,&quot;cr&quot;,&quot;balance&quot;)
+
+data &lt;- data %&gt;%
+  mutate(date = dmy(date),
+         year_month = as.numeric(paste(year(date), month(date), sep = &quot;&quot;))) %&gt;% 
+  arrange(date)
+
+
+data_asda_wages &lt;- data %&gt;% 
+  filter(!cr==is.na(cr),
+         description==&quot;ASDA STORES PLC&quot;) %&gt;% 
+  mutate(cumsum_asda_wage=cumsum(cr))
+
+data_asda_costs &lt;- data %&gt;% 
+  filter(!dr==is.na(dr),
+         description==&quot;ASDA STORES 4510&quot;) %&gt;% 
+  mutate(cumsum_asda=cumsum(dr)) </code></pre>
+<pre class="r"><code>data %&gt;%
+  ggplot(aes(date,balance))+
+  geom_line()+
+  geom_smooth()+
+  bbc_style()+
+  labs(title = &quot;Bank Balance 2015-2020&quot;,
+       subtitle=&quot;Bank balance summary for university years&quot;)</code></pre>
 <p><img src="/post/2020-07-02-bank-transactions-and-asda_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="another-headline" class="section level1">
 <h1>Another headline</h1>
 <p>And some text to separate the graphs.</p>
+<pre class="r"><code>  data %&gt;%
+  filter(year_month &gt; &quot;2020-1-1&quot;) %&gt;% 
+  ggplot(aes(date,balance))+
+  geom_line()+
+  geom_smooth()+
+  bbc_style()+
+  labs(title = &quot;Bank Balance 2020&quot;,
+       subtitle=&quot;Bank balance summary&quot;)</code></pre>
 <p><img src="/post/2020-07-02-bank-transactions-and-asda_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="asda" class="section level1">
 <h1>ASDA</h1>
 <p>Cumulative wages and costs specific to ASDA. The graph clearly shows that I spend too much money during my lunch breaks.</p>
+<pre class="r"><code>data_asda_costs %&gt;% 
+  union_all(data_asda_wages) %&gt;% 
+  arrange(date) %&gt;% 
+  filter(date&gt;dmy(&quot;30092016&quot;)) %&gt;% 
+  ggplot(aes(date))+
+  geom_ribbon(aes(ymax=cumsum_asda_wage,ymin=0),na.rm = T,alpha=0.7,colour=&quot;black&quot;,fill=&quot;darkgreen&quot;,size=1)+
+  geom_ribbon(aes(ymax=cumsum_asda,ymin=0),na.rm=T,alpha=0.9,colour=&quot;black&quot;,fill=&quot;red&quot;,size=1)+
+  theme_bw()+
+  labs(title=&quot;ASDA (theme_bw)&quot;,
+    subtitle=&quot;ASDA cumulative wages and costs in store&quot;
+  )+ 
+  annotate(&quot;text&quot;, x = dmy(&quot;01032020&quot;), y = 12000, size=6,label = &quot;wages&quot;,colour=&quot;white&quot;)+ 
+  annotate(&quot;text&quot;, x = dmy(&quot;01032020&quot;), y = 2100, size=6, label = &quot;costs&quot;,colour=&quot;white&quot;)</code></pre>
+<p><img src="/post/2020-07-02-bank-transactions-and-asda_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>data_asda_costs %&gt;% 
+  union_all(data_asda_wages) %&gt;% 
+  arrange(date) %&gt;% 
+  filter(date&gt;dmy(&quot;30092016&quot;)) %&gt;% 
+  ggplot(aes(date))+
+  geom_ribbon(aes(ymax=cumsum_asda_wage,ymin=0),na.rm = T,alpha=0.7,colour=&quot;black&quot;,fill=&quot;darkgreen&quot;,size=1)+
+  geom_ribbon(aes(ymax=cumsum_asda,ymin=0),na.rm=T,alpha=0.9,colour=&quot;black&quot;,fill=&quot;red&quot;,size=1)+
+  bbc_style()+
+  labs(title=&quot;ASDA&quot;,
+    subtitle=&quot;ASDA cumulative wages and costs in store&quot;
+  )+ 
+  annotate(&quot;text&quot;, x = dmy(&quot;01032020&quot;), y = 12000, size=6,label = &quot;wages&quot;,colour=&quot;white&quot;)+ 
+  annotate(&quot;text&quot;, x = dmy(&quot;01032020&quot;), y = 2100, size=6, label = &quot;costs&quot;,colour=&quot;white&quot;)</code></pre>
 <p><img src="/post/2020-07-02-bank-transactions-and-asda_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
