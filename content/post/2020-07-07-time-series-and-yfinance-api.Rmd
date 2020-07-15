@@ -49,8 +49,7 @@ def yfinance01(ticker,period):
 
 
 
-```{r functions}
-
+```{r}
 fixcol01 <- function(g){
   g <- cbind(date = rownames(g), g)
   rownames(g) <- 1:nrow(g)
@@ -259,7 +258,7 @@ decomp <- function(x) {
   )
 }
 
-extract_eps <- function(x) {
+extract_eps <- function(x,name) {
   data <- read_excel(x, sheet = 1,col_names = F)
   namesheet <- read_excel(x, sheet = 1,col_names = FALSE)
   return(data.frame(
@@ -270,12 +269,21 @@ extract_eps <- function(x) {
       paste(as.numeric(data[43, 5])),
       paste(as.numeric(data[43, 6])),
       paste(as.numeric(data[43, 7]))
-    )))
+    ),
+    "name" = c(
+      paste(name),
+      paste(name),
+      paste(name),
+      paste(name),
+      paste(name)
+    )
+    ))
 }
+```
 
-eps <- extract_eps("Decompositions\\Raw income statements\\Ferrari.xls") %>% 
-  union_all(extract_eps("Decompositions\\Raw income statements\\Fiat Chrysler.xls"))
-eps
+
+```{r functions}
+
 ```
 
 
@@ -359,14 +367,33 @@ A profitability decomposition analysis with a focus on Tesla (TSLA)
 
 
 
-```{r}
+```{r echo=F, include=F}
+
+
+
+eps <- extract_eps("Decompositions\\Raw income statements\\Ferrari.xls", name="Ferrari") %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Fiat Chrysler.xls", name="Ferrari")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Ford.xls", name="Ford")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\GM.xls", name="GM")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Honda.xls", name="Honda")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Hyundai.xls", name="Hyundai")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Nissan.xls", name="Nissan")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Tesla.xls", name="Tesla")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Toyota.xls", name="Toyota")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Volkswagen.xls", name="Ferrari")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\BMW.xls", name="BMW")) %>% 
+  union_all(extract_eps("Decompositions\\Raw income statements\\Daimler.xls", name="Daimler"))
+
+eps <- eps %>% 
+  mutate(net_earnings=as.numeric(net_earnings))
+eps %>% 
+  ggplot(aes(id,net_earnings, colour=name))+
+  geom_point()+
+  scale_y_log10(labels=scales::number_format())
+
 
 ```
 
-
-```{r}
-
-```
 
 
 ```{r message=F, warning= F}
