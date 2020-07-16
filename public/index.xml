@@ -17,7 +17,7 @@
       <pubDate>Thu, 16 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/16/climate-change-data/</guid>
-      <description>Climate change datadata sourced from the World Banks using Quandl R package api.
+      <description>Climate change datadata sourced from the World Bank using WDI R package api.
 library(Quandl)## Warning: package &amp;#39;Quandl&amp;#39; was built under R version 4.0.2## Loading required package: xts## Warning: package &amp;#39;xts&amp;#39; was built under R version 4.0.2## Loading required package: zoo## Warning: package &amp;#39;zoo&amp;#39; was built under R version 4.0.2## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.</description>
     </item>
     

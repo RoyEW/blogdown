@@ -358,7 +358,7 @@ tsla_states <- tsla %>%
 tsla %>% 
   mutate(is_tesla=ifelse(ticker=="TSLA",1,0)) %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-1,ymin=ifelse(market_state=="+",0,tsla_states$percentage_price),xmax=date,ymax=ifelse(market_state=="+",tsla_states$percentage_price,0)),alpha=0.2)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-0.5,ymin=ifelse(market_state=="+",0,tsla_states$percentage_price),xmax=date+0.5,ymax=ifelse(market_state=="+",tsla_states$percentage_price,0)),alpha=0.2)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
   #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
