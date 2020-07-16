@@ -360,7 +360,7 @@ tsla %>%
    ggplot()+
    geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-1,ymin=-Inf,xmax=date,ymax=Inf),alpha=0.2)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
-  geom_line(aes(date, percentage_price, colour = ticker))+
+  geom_step(aes(date, percentage_price, colour = ticker))+
   #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
   #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
    theme_void()+
@@ -372,6 +372,7 @@ tsla %>%
   annotate("text",label="Tesla (TSLA) monthly price change",x=today()-20,y=-0.15)+
   annotate("text",label=today(),colour="black",x=today()-2,y=-0.1,angle=90)+
   annotate("text",label=paste(round((tsla_states$price[length(tsla_states$price)]-tsla_states$price[1])/tsla_states$price[1]*100,2),"%",sep=""),colour="black",x=today()-20,y=-0.1,size=20)+
+  scale_y_continuous(labels=scales::percent_format())+
   theme(axis.text = element_text(),
         legend.position = "none")+
   lims(x=c(today()-28,today()))
@@ -382,11 +383,11 @@ tsla %>%
 (data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
   filter(!is.na(price),
          price>1) %>%
-  mutate(price=log(price)) %>% 
+  mutate(price=price) %>% 
   ggplot()+
   geom_line(aes(date, price, colour = ticker))+
   geom_smooth(aes(date, price, colour = ticker),se = F)+
-  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
+   scale_y_log10(labels=scales::dollar_format())+
   theme_void()+
   labs(colour = "Ticker",
        title="Share prices of global car companies (5year)")+
@@ -418,9 +419,9 @@ states <- data %>%
 
 data %>% 
    ggplot()+
-   geom_rect(data=states,aes(fill=market_state, alpha=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.08)+
+   geom_rect(data=states,aes(fill=market_state, alpha=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.04)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
-  geom_line(aes(date, percentage_price, colour = ticker))+
+  geom_step(aes(date, percentage_price, colour = ticker))+
   geom_hline(yintercept = 0)+
   #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
   #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
@@ -450,12 +451,10 @@ tsla_states <- tsla %>%
 
 tsla %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.08)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.04)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
-  geom_line(aes(date, percentage_price, colour = ticker))+
-  #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
-  #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
-   theme_classic()+
+  geom_step(aes(date, percentage_price, colour = ticker))+
+   theme_bw()+
   geom_hline(yintercept = 0)+
   scale_y_continuous(labels=scales::percent_format())+
   labs(colour = "Ticker",
@@ -468,9 +467,8 @@ tsla %>%
         legend.position = "none")+
   lims(x=c(today()-365,today()))
 
+
 ```
-
-
 
 
 
