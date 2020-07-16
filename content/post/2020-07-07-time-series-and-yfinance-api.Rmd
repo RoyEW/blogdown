@@ -417,15 +417,15 @@ data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","H
 states <- data %>% 
   distinct(date, .keep_all = TRUE)
 
+#fill=market_state,xmin=date-0.5,ymin=ifelse(market_state=="+",0,tsla_states$percentage_price
+
 data %>% 
    ggplot()+
-   geom_rect(data=states,aes(fill=market_state, alpha=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.04)+
+   geom_rect(data=states,aes(fill=market_state,xmin=date-14,ymin=ifelse(market_state=="+",0,percentage_price),xmax=date+7,ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.04)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
   geom_hline(yintercept = 0)+
-  #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
-  #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
-  theme_classic()+
+  ggdark::dark_theme_minimal()+
   labs(colour = "Ticker",
        title="Industry share prices changes of global car companies (1year)")+
   annotate("text",label="Covid-19",colour="black",x=ymd(20200216),y=-0.4,angle=90)+
@@ -451,15 +451,15 @@ tsla_states <- tsla %>%
 
 tsla %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.04)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=ifelse(market_state=="+",0,percentage_price),xmax=date+7,ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.04)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
-   theme_bw()+
+  ggdark::dark_theme_minimal()+
   geom_hline(yintercept = 0)+
   scale_y_continuous(labels=scales::percent_format())+
   labs(colour = "Ticker",
        title="Tesla share prices changes (1year)")+
-  annotate("text",label="Covid-19",colour="black",x=ymd(20200216),y=-0.4,angle=90)+
+  annotate("text",label="Covid-19",colour="white",x=ymd(20200216),y=-0.4,angle=90)+
   geom_vline(xintercept = ymd("20200224"),lty=2)+
   labs(y="Percentage change",
        x="")+
