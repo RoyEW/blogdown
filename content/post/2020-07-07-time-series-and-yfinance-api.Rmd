@@ -338,7 +338,7 @@ extract_eps <- function(x,name) {
 #ggplotly(data)
 ```
 
-### Car industry financial analysis 
+# Car industry financial analysis 
 A profitability decomposition analysis with a focus on Tesla (TSLA)
 
 
@@ -528,7 +528,7 @@ investigate01 <- function(data,
 
 ```
 
-# Investigating industry ROCE
+### Investigating industry ROCE
 
 Ferrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.
 
@@ -549,12 +549,12 @@ ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$ROCE,title=
 
 ```
 
-### ROCE = RNOA + FLEV(RNOA - NBC)
+### ROCE = RNOA + FLEV(Spread)
 ### ROCE = (PM - ATO) + FLEV(RNOA - NBC)
-### ROCE = (GM ratio + OE ratio + tax ratio + OI ratio) - ((1/ATO + cash ratio + inventory ratio + other curr. assets ratio + PPE ratio) - (payables ratio + income tax ratio + other liabilities ratio)) + FLEV(RNOA - NBC)
+### ROCE = (GM/S + OE/S + T/S + OI/S) - ((1/ATO + C/S + I/S + OCA/S + PPE/S) - (pay/S + IT/S + OL/S)) + FLEV(RNOA - NBC)
 
-### First level decomposition
-# RNOA
+# First level decomposition
+### RNOA
 
 ```{r warning=F, message=F}
 
@@ -562,7 +562,7 @@ ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$ROCE,title=
 ggplotly(investigate01(profitability,profitability$RNOA, title="Industry return on net assets (RNOA)"))
 ```
 
-# FLEV
+### FLEV
 
 ignoring Ferrari in FLEV
 
@@ -572,14 +572,14 @@ ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$FLEV, title
 
 ```
 
-# NBC
+### NBC
 
 ```{r}
 ggplotly(investigate01(profitability,profitability$NBC, title="Industry net borrowing costs (NBC)"))
 
 ```
 
-# Spread
+### Spread
 
 ```{r warning=F, message=F}
 
@@ -588,15 +588,15 @@ ggplotly(investigate01(profitability,profitability$spread, title="Industry sprea
 
 ```
 
-### Second level decomposition RNOA = PM - ATO
+# Second level decomposition RNOA = PM - ATO
 
-# PM
+### PM
 
 ```{r warning=F, message=F}
 ggplotly(investigate01(profitability,profitability$PM, title="Industry profit margin (OI / sales)"))
 ```
 
-# ATO
+### ATO
 
 ```{r warning=F, message=F}
 ggplotly(investigate01(profitability,profitability$ATO, title="Industry asset turnover ratio (sales / NOA)"))
@@ -604,9 +604,9 @@ ggplotly(investigate01(profitability,profitability$ATO, title="Industry asset tu
 
 Fiat Chrysler has an unusually high asset turnover ratio. 
 
-### Third level decomposition (profit margin)
+# Third level decomposition (PM)
 
-# Gross profit margin ratio (GM / Sales)
+### Gross profit margin ratio (GM / Sales)
 
 Ignoring ferrari
 
@@ -615,82 +615,82 @@ ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$GPM, title=
 
 ```
 
-# Operating expense over sales
+### Operating expense over sales
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$operating.expense.over.sales, title="Industry operating expense over sales ratio (OE / sales)"))
 ```
 
-# Taxes over sales
+### Taxes over sales
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$taxes_over_sales, title="Industry taxes over sales ratio (taxes / sales)"))
 ```
 
-# Other income over sales
+### Other income over sales
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$other_income_over_sales, title="Industry other income over sales ratio"))
 ```
 
-### Third level decomposition (ATO)
+# Third level decomposition (ATO)
 
-# One over ATO
+### One over ATO
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$one_over_ATO, title="Industry one over ATO ratio (1 / ATO)"))
 ```
 
-# Cash over sales ratio
+### Cash over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$cash.over.sales, title="Industry cash over sales ratio (cash / sales)"))
 ```
 
-# Receivables over sales ratio
+### Receivables over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$receivables.over.sales, title="Industry receivables over sales ratio (receivables / sales)"))
 ```
 
-# Inventory over sales ratio
+### Inventory over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$inventory_over_sales, title="Industry inventory over sales ratio (inventory / sales)"))
 ```
 
-# Other current assets over sales ratio
+### Other current assets over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$other_current_assets_over_sales, title="Industry other current assets over sales ratio"))
 ```
 
 
-# PPE over sales ratio
+### PPE over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$PPE_over_sales, title="Industry PPE over sales ratio (PPE / sales)"))
 ```
 
-# Payables over sales ratio
+### Payables over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$accounts_payable_over_sales, title="Industry accounts payable over sales ratio"))
 ```
 
-# Income taxes over sales ratio
+### Income taxes over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$income_taxes_over_sales, title="Income taxes over sales ratio"))
 ```
 
-# Other liabilities over sales ratio
+### Other liabilities over sales ratio
 
 ```{r}
 ggplotly(investigate01(profit_roce_no_outlier,profit_roce_no_outlier$other_liabilities_over_sales, title="Industry other liabilities over sales ratio"))
 ```
 
-### First level overview
+# First level decomposition overview
 ROCE = RNOA + FLEV*spread. 
 
 The first component (RNOA) measures the return on net operating assets. The second component (Flev*spread) measures the effects of financial leverage. ROCE is increased by adding financial leverage as long as RNOA is greater than the firm's Weighted Average Cost of Capital (WACC).
@@ -700,41 +700,7 @@ The first component (RNOA) measures the return on net operating assets. The seco
 drivers <-
     c(colnames(profitability[2]), colnames(profitability[5:23]))
   
-  
-  
-  trend_analysis <- profitability %>%
-    group_by(name) %>%
-    arrange(period, .by_group = TRUE) %>%
-    mutate(perc_ROCE = (ROCE / lag(ROCE)) * 100)
-  
-
-  
-  
-  profitability %>%
-    group_by(name, period) %>%
-    mutate(ROCE_change = (ROCE / lag(ROCE)))
-  
-  
-  
-  
-  profitability %>%
-    filter(period == 2019,
-           name == "BMW") %>%
-    select(drivers) %>%
-    pivot_longer(cols = drivers,
-                 names_to = "driver",
-                 values_to = "value") %>%
-    ggplot(aes(driver, value)) + geom_point() +
-    coord_flip()
-  
-  drivers <-
-    c(colnames(profitability[2]), colnames(profitability[5:23]))
-  
-  
-  
-  
-  
- first_level <-  profit_roce_no_outlier %>%
+first_level <-  profit_roce_no_outlier %>%
     filter(id==1) %>% 
     select(ROCE,RNOA,FLEV,spread,id,name) %>% 
     mutate(flev_and_spread = FLEV*spread) %>% 
@@ -757,7 +723,7 @@ drivers <-
 
 The overview shows that Tesla is not productive enough with its assets to contribute to ROCE and is essentially erroding away its assets. This shows that Tesla is making poor use of its capital assets.
 
-### Second level decomposition overview (2019)
+# Second level decomposition overview (2019)
 
 ```{r}
 second_level <-  profit_roce_no_outlier %>%
@@ -780,10 +746,10 @@ Tesla has a slightly higher than 1 ATO which suggests that they are typically us
 
 A negative PM suggests that Tesla struggles to control costs effectively. The combined effect of  PM and ATO results in a negative RNOA.
 
-### Third level decomposition overview (2019)
+# Third level decomposition overview (2019)
 
 ```{r}
-head(profitability)
+
 third_level <-  profitability %>%
     filter(id==1) %>% 
     select(GPM,operating.expense.over.sales,taxes_over_sales,other_income_over_sales,cash.over.sales,receivables.over.sales,inventory_over_sales,other_current_assets_over_sales,PPE_over_sales,accounts_payable_over_sales,income_taxes_over_sales,other_liabilities_over_sales,id,name) %>%
@@ -802,8 +768,25 @@ ggplotly(third_level)
 
 At this level, it is clear that Tesla pays a larger Tax rate as a proportion of revenue than other companies in the car industry. Tesla also has a large Property, Plant, and Equipment ratio compared to other companies. This may be because of other companies being streamlined for the production of consumer cars, whereas Tesla may be more exploratory in its business endeavours with large amounts of assets reserved for other projects. Tesla also has more capital stored in cash which is not being used to generate further value. 
 
-### Trend analysis
+# Trend analysis
 
-### Common size analysis
+
+```{r}
+  trend_analysis <- profitability %>%
+    group_by(name) %>%
+    arrange(period, .by_group = TRUE) %>%
+    mutate(perc_ROCE = (ROCE / lag(ROCE)) * 100)
+
+  profitability %>%
+    group_by(name, period) %>%
+    mutate(ROCE_change = (ROCE / lag(ROCE)))
+```
+  
+
+  
+  
+
+
+# Common size analysis
 
 

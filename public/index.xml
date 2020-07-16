@@ -21,7 +21,7 @@
 yFinance api from https://pypi.org/project/yfinance/
 Python exchange rate api from www.exchangerate-api.com
 Car industry financial analysisA profitability decomposition analysis with a focus on Tesla (TSLA)
-Investigating industry ROCEFerrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.
+Investigating industry ROCEFerrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.
 Having removed Ferrari, the data points look to be reasonably distributed around the average.</description>
     </item>
     
