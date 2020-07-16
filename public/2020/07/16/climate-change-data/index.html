@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.73.0" />
+
+
+<title>Climate change data - Roy Blogdown</title>
+<meta property="og:title" content="Climate change data - Roy Blogdown">
+
+
+  <link href='/featured.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/featured.png"
+         width="50"
+         height="50"
+         alt="Roy Blogdown">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://www.facebook.com/roy.wilson.94064176/">Facebook</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/roy-w-a5bb3b83/">LinkedIn</a></li>
+    
+    <li><a href="/res/">Resources</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">6 min read</span>
+    
+
+    <h1 class="article-title">Climate change data</h1>
+
+    
+    <span class="article-date">2020-07-16</span>
+    
+
+    <div class="article-content">
+      
+
+
+<div id="climate-change-data" class="section level1">
+<h1>Climate change data</h1>
+<p>data sourced from the World Banks using Quandl R package api.</p>
+<pre class="r"><code>library(Quandl)</code></pre>
+<pre><code>## Warning: package &#39;Quandl&#39; was built under R version 4.0.2</code></pre>
+<pre><code>## Loading required package: xts</code></pre>
+<pre><code>## Warning: package &#39;xts&#39; was built under R version 4.0.2</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## Warning: package &#39;zoo&#39; was built under R version 4.0.2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(wbstats)</code></pre>
+<pre><code>## Warning: package &#39;wbstats&#39; was built under R version 4.0.2</code></pre>
+<pre class="r"><code>library(rWBclimate)</code></pre>
+<pre><code>## Warning: package &#39;rWBclimate&#39; was built under R version 4.0.2</code></pre>
+<pre class="r"><code>library(WDI)</code></pre>
+<pre><code>## Warning: package &#39;WDI&#39; was built under R version 4.0.2</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages -------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.0     v purrr   0.3.4
+## v tibble  3.0.1     v dplyr   0.8.5
+## v tidyr   1.0.3     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ----------------------------------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::first()  masks xts::first()
+## x dplyr::lag()    masks stats::lag()
+## x dplyr::last()   masks xts::last()</code></pre>
+<pre class="r"><code>WDIsearch(&quot;emissions&quot;)</code></pre>
+<pre><code>##       indicator             
+##  [1,] &quot;EE.BOD.CGLS.ZS&quot;      
+##  [2,] &quot;EE.BOD.CHEM.ZS&quot;      
+##  [3,] &quot;EE.BOD.FOOD.ZS&quot;      
+##  [4,] &quot;EE.BOD.MTAL.ZS&quot;      
+##  [5,] &quot;EE.BOD.OTHR.ZS&quot;      
+##  [6,] &quot;EE.BOD.PAPR.ZS&quot;      
+##  [7,] &quot;EE.BOD.TOTL.KG&quot;      
+##  [8,] &quot;EE.BOD.TXTL.ZS&quot;      
+##  [9,] &quot;EE.BOD.WOOD.ZS&quot;      
+## [10,] &quot;EE.BOD.WRKR.KG&quot;      
+## [11,] &quot;EN.ATM.CO2E.CP.KT&quot;   
+## [12,] &quot;EN.ATM.CO2E.FF.KT&quot;   
+## [13,] &quot;EN.ATM.CO2E.FF.ZS&quot;   
+## [14,] &quot;EN.ATM.CO2E.GDP&quot;     
+## [15,] &quot;EN.ATM.CO2E.GF.KT&quot;   
+## [16,] &quot;EN.ATM.CO2E.GF.ZS&quot;   
+## [17,] &quot;EN.ATM.CO2E.GL.KT&quot;   
+## [18,] &quot;EN.ATM.CO2E.KD.87.GD&quot;
+## [19,] &quot;EN.ATM.CO2E.KD.GD&quot;   
+## [20,] &quot;EN.ATM.CO2E.KT&quot;      
+## [21,] &quot;EN.ATM.CO2E.LF.KT&quot;   
+## [22,] &quot;EN.ATM.CO2E.LF.ZS&quot;   
+## [23,] &quot;EN.ATM.CO2E.PC&quot;      
+## [24,] &quot;EN.ATM.CO2E.PP.GD&quot;   
+## [25,] &quot;EN.ATM.CO2E.PP.GD.KD&quot;
+## [26,] &quot;EN.ATM.CO2E.SF.KT&quot;   
+## [27,] &quot;EN.ATM.CO2E.SF.ZS&quot;   
+## [28,] &quot;EN.ATM.GHGO.KT.CE&quot;   
+## [29,] &quot;EN.ATM.GHGO.ZG&quot;      
+## [30,] &quot;EN.ATM.GHGT.KT.CE&quot;   
+## [31,] &quot;EN.ATM.GHGT.ZG&quot;      
+## [32,] &quot;EN.ATM.HFCG.KT.CE&quot;   
+## [33,] &quot;EN.ATM.METH.AG.KT.CE&quot;
+## [34,] &quot;EN.ATM.METH.AG.ZS&quot;   
+## [35,] &quot;EN.ATM.METH.EG.KT.CE&quot;
+## [36,] &quot;EN.ATM.METH.EG.ZS&quot;   
+## [37,] &quot;EN.ATM.METH.IN.ZS&quot;   
+## [38,] &quot;EN.ATM.METH.KT.CE&quot;   
+## [39,] &quot;EN.ATM.METH.PC&quot;      
+## [40,] &quot;EN.ATM.METH.ZG&quot;      
+## [41,] &quot;EN.ATM.NOXE.AG.KT.CE&quot;
+## [42,] &quot;EN.ATM.NOXE.AG.ZS&quot;   
+## [43,] &quot;EN.ATM.NOXE.EG.KT.CE&quot;
+## [44,] &quot;EN.ATM.NOXE.EG.ZS&quot;   
+## [45,] &quot;EN.ATM.NOXE.EI.ZS&quot;   
+## [46,] &quot;EN.ATM.NOXE.IN.KT.CE&quot;
+## [47,] &quot;EN.ATM.NOXE.IN.ZS&quot;   
+## [48,] &quot;EN.ATM.NOXE.KT.CE&quot;   
+## [49,] &quot;EN.ATM.NOXE.MT.CE&quot;   
+## [50,] &quot;EN.ATM.NOXE.PC&quot;      
+## [51,] &quot;EN.ATM.NOXE.ZG&quot;      
+## [52,] &quot;EN.ATM.PFCG.KT.CE&quot;   
+## [53,] &quot;EN.ATM.SF6G.KT.CE&quot;   
+## [54,] &quot;EN.CLC.GHGR.MT.CE&quot;   
+## [55,] &quot;EN.CO2.BLDG.MT&quot;      
+## [56,] &quot;EN.CO2.BLDG.ZS&quot;      
+## [57,] &quot;EN.CO2.ETOT.MT&quot;      
+## [58,] &quot;EN.CO2.ETOT.ZS&quot;      
+## [59,] &quot;EN.CO2.MANF.MT&quot;      
+## [60,] &quot;EN.CO2.MANF.ZS&quot;      
+## [61,] &quot;EN.CO2.OTHX.MT&quot;      
+## [62,] &quot;EN.CO2.OTHX.ZS&quot;      
+## [63,] &quot;EN.CO2.TRAN.MT&quot;      
+## [64,] &quot;EN.CO2.TRAN.ZS&quot;      
+##       name                                                                                                                               
+##  [1,] &quot;Water pollution, clay and glass industry (% of total BOD emissions)&quot;                                                              
+##  [2,] &quot;Water pollution, chemical industry (% of total BOD emissions)&quot;                                                                    
+##  [3,] &quot;Water pollution, food industry (% of total BOD emissions)&quot;                                                                        
+##  [4,] &quot;Water pollution, metal industry (% of total BOD emissions)&quot;                                                                       
+##  [5,] &quot;Water pollution, other industry (% of total BOD emissions)&quot;                                                                       
+##  [6,] &quot;Water pollution, paper and pulp industry (% of total BOD emissions)&quot;                                                              
+##  [7,] &quot;Organic water pollutant (BOD) emissions (kg per day)&quot;                                                                             
+##  [8,] &quot;Water pollution, textile industry (% of total BOD emissions)&quot;                                                                     
+##  [9,] &quot;Water pollution, wood industry (% of total BOD emissions)&quot;                                                                        
+## [10,] &quot;Organic water pollutant (BOD) emissions (kg per day per worker)&quot;                                                                  
+## [11,] &quot;CO2 emissions from cement production (thousand metric tons)&quot;                                                                      
+## [12,] &quot;CO2 emissions from fossil-fuels, total (thousand metric tons)&quot;                                                                    
+## [13,] &quot;CO2 emissions from fossil-fuels (% of total)&quot;                                                                                     
+## [14,] &quot;CO2 emissions, industrial (kg per 1987 US$ of GDP)&quot;                                                                               
+## [15,] &quot;CO2 emissions from gaseous fuel consumption (kt) &quot;                                                                                
+## [16,] &quot;CO2 emissions from gaseous fuel consumption (% of total) &quot;                                                                        
+## [17,] &quot;CO2 emissions from gas flaring (thousand metric tons)&quot;                                                                            
+## [18,] &quot;CO2 emissions, industrial (kg per 1987 US$ of GDP)&quot;                                                                               
+## [19,] &quot;CO2 emissions (kg per 2010 US$ of GDP)&quot;                                                                                           
+## [20,] &quot;CO2 emissions (kt)&quot;                                                                                                               
+## [21,] &quot;CO2 emissions from liquid fuel consumption (kt) &quot;                                                                                 
+## [22,] &quot;CO2 emissions from liquid fuel consumption (% of total) &quot;                                                                         
+## [23,] &quot;CO2 emissions (metric tons per capita)&quot;                                                                                           
+## [24,] &quot;CO2 emissions (kg per PPP $ of GDP)&quot;                                                                                              
+## [25,] &quot;CO2 emissions (kg per 2017 PPP $ of GDP)&quot;                                                                                         
+## [26,] &quot;CO2 emissions from solid fuel consumption (kt) &quot;                                                                                  
+## [27,] &quot;CO2 emissions from solid fuel consumption (% of total)&quot;                                                                           
+## [28,] &quot;Other greenhouse gas emissions, HFC, PFC and SF6 (thousand metric tons of CO2 equivalent)&quot;                                        
+## [29,] &quot;Other greenhouse gas emissions (% change from 1990)&quot;                                                                              
+## [30,] &quot;Total greenhouse gas emissions (kt of CO2 equivalent)&quot;                                                                            
+## [31,] &quot;Total greenhouse gas emissions (% change from 1990)&quot;                                                                              
+## [32,] &quot;HFC gas emissions (thousand metric tons of CO2 equivalent)&quot;                                                                       
+## [33,] &quot;Agricultural methane emissions (thousand metric tons of CO2 equivalent)&quot;                                                          
+## [34,] &quot;Agricultural methane emissions (% of total)&quot;                                                                                      
+## [35,] &quot;Methane emissions in energy sector (thousand metric tons of CO2 equivalent)&quot;                                                      
+## [36,] &quot;Energy related methane emissions (% of total)&quot;                                                                                    
+## [37,] &quot;Energy related methane emissions (% of total)&quot;                                                                                    
+## [38,] &quot;Methane emissions (kt of CO2 equivalent)&quot;                                                                                         
+## [39,] &quot;Methane emissions (kt of CO2 equivalent per capita)&quot;                                                                              
+## [40,] &quot;Methane emissions (% change from 1990)&quot;                                                                                           
+## [41,] &quot;Agricultural nitrous oxide emissions (thousand metric tons of CO2 equivalent)&quot;                                                    
+## [42,] &quot;Agricultural nitrous oxide emissions (% of total)&quot;                                                                                
+## [43,] &quot;Nitrous oxide emissions in energy sector (thousand metric tons of CO2 equivalent)&quot;                                                
+## [44,] &quot;Nitrous oxide emissions in energy sector (% of total)&quot;                                                                            
+## [45,] &quot;Nitrous oxide emissions in industrial and energy processes (% of total nitrous oxide emissions)&quot;                                  
+## [46,] &quot;Industrial nitrous oxide emissions (thousand metric tons of CO2 equivalent)&quot;                                                      
+## [47,] &quot;Nitrous oxide emissions in industrial and energy processes (% of total nitrous oxide emissions)&quot;                                  
+## [48,] &quot;Nitrous oxide emissions (thousand metric tons of CO2 equivalent)&quot;                                                                 
+## [49,] &quot;Nitrous oxide emissions (metric tons of CO2 equivalent)&quot;                                                                          
+## [50,] &quot;Nitrous oxide emissions (metric tons of CO2 equivalent per capita)&quot;                                                               
+## [51,] &quot;Nitrous oxide emissions (% change from 1990)&quot;                                                                                     
+## [52,] &quot;PFC gas emissions (thousand metric tons of CO2 equivalent)&quot;                                                                       
+## [53,] &quot;SF6 gas emissions (thousand metric tons of CO2 equivalent)&quot;                                                                       
+## [54,] &quot;GHG net emissions/removals by LUCF (Mt of CO2 equivalent)&quot;                                                                        
+## [55,] &quot;CO2 emissions from residential buildings and commercial and public services (million metric tons)&quot;                                
+## [56,] &quot;CO2 emissions from residential buildings and commercial and public services (% of total fuel combustion)&quot;                         
+## [57,] &quot;CO2 emissions from electricity and heat production, total (million metric tons)&quot;                                                  
+## [58,] &quot;CO2 emissions from electricity and heat production, total (% of total fuel combustion)&quot;                                           
+## [59,] &quot;CO2 emissions from manufacturing industries and construction (million metric tons)&quot;                                               
+## [60,] &quot;CO2 emissions from manufacturing industries and construction (% of total fuel combustion)&quot;                                        
+## [61,] &quot;CO2 emissions from other sectors, excluding residential buildings and commercial and public services (million metric tons)&quot;       
+## [62,] &quot;CO2 emissions from other sectors, excluding residential buildings and commercial and public services (% of total fuel combustion)&quot;
+## [63,] &quot;CO2 emissions from transport (million metric tons)&quot;                                                                               
+## [64,] &quot;CO2 emissions from transport (% of total fuel combustion)&quot;</code></pre>
+<pre class="r"><code>&quot;EN.ATM.GHGT.KT.CE&quot;</code></pre>
+<pre><code>## [1] &quot;EN.ATM.GHGT.KT.CE&quot;</code></pre>
+<pre class="r"><code>dat = WDI(indicator=&quot;EN.ATM.GHGT.KT.CE&quot;, country=c(&#39;CN&#39;,&#39;US&#39;,&#39;IN&#39;,&#39;RU&#39;,&#39;JP&#39;,&#39;GB&#39;,&#39;FR&#39;,&#39;DE&#39;), start=1970)
+head(dat)</code></pre>
+<pre><code>##   iso2c country EN.ATM.GHGT.KT.CE year
+## 1    CN   China                NA 2019
+## 2    CN   China                NA 2018
+## 3    CN   China                NA 2017
+## 4    CN   China                NA 2016
+## 5    CN   China                NA 2015
+## 6    CN   China                NA 2014</code></pre>
+<pre class="r"><code>dat %&gt;% 
+  ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
+  geom_line()+
+  scale_y_log10(labels=scales::number_format())+
+  theme_void()+
+  theme(axis.text.x  = element_text(),axis.text.y  = element_text(),legend.position = &quot;bottom&quot;)</code></pre>
+<pre><code>## Warning: Removed 56 row(s) containing missing values (geom_path).</code></pre>
+<p><img src="/post/2020-07-16-climate-change-data_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>data &lt;- dat %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(total_emissions = sum(EN.ATM.GHGT.KT.CE)) %&gt;% 
+  mutate(cumulative=cumsum(total_emissions))
+data %&gt;% 
+  mutate(perc_emissions = (total_emissions/lag(total_emissions)-1)*100,
+         state=ifelse(perc_emissions&gt;0,&quot;green&quot;,&quot;red&quot;)) %&gt;%
+  ggplot(aes(year, perc_emissions))+
+  geom_rect(aes(ymin=ifelse(state==&quot;red&quot;,perc_emissions,0),xmin=year,xmax=year+1,fill=state,ymax=ifelse(state==&quot;red&quot;,0,perc_emissions)),alpha=0.2)+
+  scale_color_manual(values=c(&quot;red&quot;,&quot;yellow&quot;),aesthetics = c(&quot;fill&quot;))+
+  geom_line()+
+  geom_hline(yintercept = 0)+
+  theme_classic()+
+  labs(title=&quot;Top 10 combined most polluting nations&quot;)</code></pre>
+<pre><code>## Warning: Removed 8 rows containing missing values (geom_rect).</code></pre>
+<pre><code>## Warning: Removed 8 row(s) containing missing values (geom_path).</code></pre>
+<p><img src="/post/2020-07-16-climate-change-data_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

@@ -358,7 +358,7 @@ tsla_states <- tsla %>%
 tsla %>% 
   mutate(is_tesla=ifelse(ticker=="TSLA",1,0)) %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-1,ymin=-Inf,xmax=date,ymax=Inf),alpha=0.2)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-1,ymin=ifelse(market_state=="+",0,tsla_states$percentage_price),xmax=date,ymax=ifelse(market_state=="+",tsla_states$percentage_price,0)),alpha=0.2)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
   #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
@@ -371,7 +371,7 @@ tsla %>%
   geom_hline(yintercept = 0)+
   annotate("text",label="Tesla (TSLA) monthly price change",x=today()-20,y=-0.15)+
   annotate("text",label=today(),colour="black",x=today()-2,y=-0.1,angle=90)+
-  annotate("text",label=paste(round((tsla_states$price[length(tsla_states$price)]-tsla_states$price[1])/tsla_states$price[1]*100,2),"%",sep=""),colour="black",x=today()-20,y=-0.1,size=20)+
+  annotate("text",label=paste("+",round((tsla_states$price[length(tsla_states$price)]-tsla_states$price[1])/tsla_states$price[1]*100,2),"%",sep=""),colour="black",x=today()-20,y=-0.1,size=20)+
   scale_y_continuous(labels=scales::percent_format())+
   theme(axis.text = element_text(),
         legend.position = "none")+

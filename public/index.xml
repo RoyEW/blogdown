@@ -6,10 +6,20 @@
     <description>Recent content on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 07 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 16 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Climate change data</title>
+      <link>/2020/07/16/climate-change-data/</link>
+      <pubDate>Thu, 16 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/16/climate-change-data/</guid>
+      <description>Climate change datadata sourced from the World Banks using Quandl R package api.
+library(Quandl)## Warning: package &amp;#39;Quandl&amp;#39; was built under R version 4.0.2## Loading required package: xts## Warning: package &amp;#39;xts&amp;#39; was built under R version 4.0.2## Loading required package: zoo## Warning: package &amp;#39;zoo&amp;#39; was built under R version 4.0.2## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.</description>
+    </item>
     
     <item>
       <title>Time-series and yfinance api</title>

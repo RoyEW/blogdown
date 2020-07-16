@@ -1,0 +1,50 @@
+---
+title: Climate change data
+author: ~
+date: '2020-07-16'
+slug: climate-change-data
+categories: []
+tags: []
+---
+
+
+
+# Climate change data
+data sourced from the World Banks using Quandl R package api.
+
+```{r}
+library(Quandl)
+library(wbstats)
+library(rWBclimate)
+library(WDI)
+library(tidyverse)
+
+WDIsearch("emissions")
+
+"EN.ATM.GHGT.KT.CE"
+dat = WDI(indicator="EN.ATM.GHGT.KT.CE", country=c('CN','US','IN','RU','JP','GB','FR','DE'), start=1970)
+head(dat)
+dat %>% 
+  ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
+  geom_line()+
+  scale_y_log10(labels=scales::number_format())+
+  theme_void()+
+  theme(axis.text.x  = element_text(),axis.text.y  = element_text(),legend.position = "bottom")
+
+data <- dat %>% 
+  group_by(year) %>% 
+  summarise(total_emissions = sum(EN.ATM.GHGT.KT.CE)) %>% 
+  mutate(cumulative=cumsum(total_emissions))
+data %>% 
+  mutate(perc_emissions = (total_emissions/lag(total_emissions)-1)*100,
+         state=ifelse(perc_emissions>0,"green","red")) %>%
+  ggplot(aes(year, perc_emissions))+
+  geom_rect(aes(ymin=ifelse(state=="red",perc_emissions,0),xmin=year,xmax=year+1,fill=state,ymax=ifelse(state=="red",0,perc_emissions)),alpha=0.2)+
+  scale_color_manual(values=c("red","yellow"),aesthetics = c("fill"))+
+  geom_line()+
+  geom_hline(yintercept = 0)+
+  theme_classic()+
+  labs(title="Top 10 combined most polluting nations")
+
+```
+
