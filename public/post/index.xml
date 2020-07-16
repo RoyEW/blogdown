@@ -20,11 +20,13 @@
       <description>Python integration using the reticulate package.
 yFinance api from https://pypi.org/project/yfinance/
 Python exchange rate api from www.exchangerate-api.com
-library(reticulate)library(tidyquant)library(timetk)library(sweep)library(forecast)library(tidyverse)library(bbplot)library(lubridate)library(Mcomp)library(smooth)library(broom)library(plotly)library(readxl)use_miniconda()import yfinance as yfdef yfinance01(ticker,period):g = yf.Ticker(ticker)data=g.history(period=period)return datafixcol01 &amp;lt;- function(g){g &amp;lt;- cbind(date = rownames(g), g)rownames(g) &amp;lt;- 1:nrow(g)return(g)}retrieve01 &amp;lt;- function(ticker,period=&amp;quot;max&amp;quot;){g &amp;lt;- py$yfinance01(ticker,period)g &amp;lt;- fixcol01(g)g &amp;lt;- g %&amp;gt;% select(date, Close)%&amp;gt;% mutate(date=as_date(ymd(date)))colnames(g) &amp;lt;- c(&amp;quot;date&amp;quot;, ticker)return(g)}plotting01 &amp;lt;- function(ticker, period=&amp;quot;max&amp;quot;){g &amp;lt;- retrieve01(ticker, period)plot &amp;lt;- g %&amp;gt;% ggplot(aes(date, get(ticker), group=1))+geom_point(shape=&amp;quot;.</description>
+Car industry financial analysisA profitability decomposition analysis with a focus on Tesla (TSLA)
+Investigating industry ROCEFerrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.
+Having removed Ferrari, the data points look to be reasonably distributed around the average.</description>
     </item>
     
     <item>
-      <title>Metalurgical data</title>
+      <title>Metallurgical data</title>
       <link>/2020/07/03/compositional-analysis/</link>
       <pubDate>Fri, 03 Jul 2020 00:00:00 +0000</pubDate>
       
