@@ -31,7 +31,7 @@ library(readxl)
 divide01 <- function(x){
   return(x/100)
 }
-head(data)
+
 data <- read.csv("hardness.csv") %>% 
   mutate(Al=divide01(Al),
          Co=divide01(Co),

@@ -12,15 +12,8 @@ tags: []
 <pre class="r"><code>divide01 &lt;- function(x){
   return(x/100)
 }
-head(data)</code></pre>
-<pre><code>##                                                                             
-## 1 function (..., list = character(), package = NULL, lib.loc = NULL,        
-## 2     verbose = getOption(&quot;verbose&quot;), envir = .GlobalEnv, overwrite = TRUE) 
-## 3 {                                                                         
-## 4     fileExt &lt;- function(x) {                                              
-## 5         db &lt;- grepl(&quot;\\\\.[^.]+\\\\.(gz|bz2|xz)$&quot;, x)                     
-## 6         ans &lt;- sub(&quot;.*\\\\.&quot;, &quot;&quot;, x)</code></pre>
-<pre class="r"><code>data &lt;- read.csv(&quot;hardness.csv&quot;) %&gt;% 
+
+data &lt;- read.csv(&quot;hardness.csv&quot;) %&gt;% 
   mutate(Al=divide01(Al),
          Co=divide01(Co),
          Cr=divide01(Cr),

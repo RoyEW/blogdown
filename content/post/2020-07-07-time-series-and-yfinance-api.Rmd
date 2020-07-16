@@ -343,7 +343,42 @@ A profitability decomposition analysis with a focus on Tesla (TSLA)
 
 
 ```{r}
+tsla <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 30) %>% 
+  filter(!is.na(price),
+         price>1) %>%
+  group_by(ticker) %>% 
+  mutate(percentage_price = ((price/lag(price,1)) - 1)) %>%
+  ungroup() %>% 
+  mutate(market_state=case_when(percentage_price>0.02 ~ "+",
+                                 percentage_price<(-0.02)~ "-",
+                                 TRUE ~ ""))
+tsla_states <- tsla %>%
+  filter(ticker=="TSLA")
 
+tsla %>% 
+  mutate(is_tesla=ifelse(ticker=="TSLA",1,0)) %>% 
+   ggplot()+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-1,ymin=-Inf,xmax=date,ymax=Inf),alpha=0.2)+
+  scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
+  geom_line(aes(date, percentage_price, colour = ticker))+
+  #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
+  #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
+   theme_void()+
+  labs(colour = "Ticker",
+       title="")+
+  geom_smooth(aes(date,percentage_price,group=is_tesla),colour="grey",lty=2,se=F,method="lm")+
+  geom_vline(xintercept = today()-1,lty=2)+
+  geom_hline(yintercept = 0)+
+  annotate("text",label="Tesla (TSLA) monthly price change",x=today()-20,y=-0.15)+
+  annotate("text",label=today(),colour="black",x=today()-2,y=-0.1,angle=90)+
+  annotate("text",label=paste(round((tsla_states$price[length(tsla_states$price)]-tsla_states$price[1])/tsla_states$price[1]*100,2),"%",sep=""),colour="black",x=today()-20,y=-0.1,size=20)+
+  theme(axis.text = element_text(),
+        legend.position = "none")+
+  lims(x=c(today()-28,today()))
+```
+
+
+```{r}
 (data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
   filter(!is.na(price),
          price>1) %>%
@@ -360,9 +395,14 @@ A profitability decomposition analysis with a focus on Tesla (TSLA)
 
 ```
 
-```{r}
 
-data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 365) %>% 
+### <i>"Global stocks have worst day in two years as coronavirus fears spread"</i> - FT 24th Feb 2020
+
+https://www.ft.com/content/5ec9aeae-56a1-11ea-a528-dd0f971febbc
+
+
+```{r}
+data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 400) %>% 
   filter(!is.na(price),
          price>1) %>%
   group_by(ticker) %>% 
@@ -378,20 +418,25 @@ states <- data %>%
 
 data %>% 
    ggplot()+
-   geom_rect(data=states,aes(fill=market_state, alpha=market_state,xmin=date,ymin=-Inf,xmax=date+14,ymax=Inf),alpha=0.05)+
+   geom_rect(data=states,aes(fill=market_state, alpha=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.08)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_line(aes(date, percentage_price, colour = ticker))+
+  geom_hline(yintercept = 0)+
   #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
   #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
-   theme_void()+
+  theme_classic()+
   labs(colour = "Ticker",
        title="Industry share prices changes of global car companies (1year)")+
-  annotate("text",label="Covid-19",colour="black",x=ymd(20200315),y=0.1,angle=90)+
+  annotate("text",label="Covid-19",colour="black",x=ymd(20200216),y=-0.4,angle=90)+
+    geom_vline(xintercept = ymd("20200224"),lty=2)+
   theme(axis.text = element_text(),
-        legend.position = "none")
+        legend.position = "none")+
+  lims(x=c(today()-365,today()))
+```
 
 
-tsla <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 365) %>% 
+```{r}
+tsla <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 400) %>% 
   filter(!is.na(price),
          price>1) %>%
   group_by(ticker) %>% 
@@ -405,19 +450,28 @@ tsla_states <- tsla %>%
 
 tsla %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date,ymin=-Inf,xmax=date+14,ymax=Inf),alpha=0.05)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=-Inf,xmax=date+7,ymax=Inf),alpha=0.08)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_line(aes(date, percentage_price, colour = ticker))+
   #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
   #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
-   theme_void()+
+   theme_classic()+
+  geom_hline(yintercept = 0)+
+  scale_y_continuous(labels=scales::percent_format())+
   labs(colour = "Ticker",
        title="Tesla share prices changes (1year)")+
-  annotate("text",label="Covid-19",colour="black",x=ymd(20200315),y=0.1,angle=90)+
+  annotate("text",label="Covid-19",colour="black",x=ymd(20200216),y=-0.4,angle=90)+
+  geom_vline(xintercept = ymd("20200224"),lty=2)+
+  labs(y="Percentage change",
+       x="")+
   theme(axis.text = element_text(),
-        legend.position = "none")
+        legend.position = "none")+
+  lims(x=c(today()-365,today()))
 
 ```
+
+
+
 
 
 
@@ -777,7 +831,7 @@ At this level, it is clear that Tesla pays a larger Tax rate as a proportion of 
     arrange(period, .by_group = TRUE) %>%
     mutate(perc_ROCE = (ROCE / lag(ROCE)) * 100)
 
-  profitability %>%
+  something <- profitability %>%
     group_by(name, period) %>%
     mutate(ROCE_change = (ROCE / lag(ROCE)))
 ```
