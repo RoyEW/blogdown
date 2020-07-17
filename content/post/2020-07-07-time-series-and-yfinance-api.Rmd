@@ -410,8 +410,8 @@ data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","H
   mutate(percentage_price = ((price/lag(price,14)) - 1)) %>%
   ungroup() %>% 
   group_by(date) %>% 
-   mutate(market_state=case_when(mean(percentage_price)>0.02 ~ "+",
-                                 mean(percentage_price)<(-0.02)~ "-",
+   mutate(market_state=case_when(percentage_price>0 ~ "+",
+                                 percentage_price<(-0)~ "-",
                                  TRUE ~ "")) 
 
 
@@ -422,8 +422,10 @@ data %>%
   geom_step(aes(date, percentage_price, colour = ticker))+
   geom_hline(yintercept = 0)+
   ggdark::dark_theme_minimal()+
+  scale_y_continuous(labels=scales::percent_format())+
   labs(colour = "Ticker",
-       title="Industry share prices changes of global car companies (1year)")+
+       title="Industry share prices changes of global car companies (1year)",
+  y="Percentage change")+
     annotate("text",label="Covid-19",colour="white",x=ymd(20200216),y=-0.4,angle=90)+
     geom_vline(xintercept = ymd("20200224"),lty=2,colour="grey")+
   theme(axis.text = element_text(),
