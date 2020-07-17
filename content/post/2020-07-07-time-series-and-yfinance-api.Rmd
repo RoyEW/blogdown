@@ -11,7 +11,6 @@ Python integration using the reticulate package.
 
 yFinance api from https://pypi.org/project/yfinance/
 
-Python exchange rate api from www.exchangerate-api.com
 
 ```{r setup, include=FALSE, message=FALSE,warning=FALSE}
 knitr::opts_chunk$set(echo = F,warning = FALSE, message = FALSE)
@@ -20,15 +19,9 @@ knitr::opts_chunk$set(echo = F,warning = FALSE, message = FALSE)
 
 ```{r}
 library(reticulate)
-library(tidyquant)
-library(timetk)
-library(sweep)
-library(forecast)
 library(tidyverse)
 library(bbplot)
 library(lubridate)
-library(Mcomp)
-library(smooth)
 library(broom)
 library(plotly)
 library(readxl)
@@ -40,16 +33,18 @@ use_miniconda()
 
 ```{python}
 import yfinance as yf
+import requests
 
 def yfinance01(ticker,period):
     g = yf.Ticker(ticker)
     data=g.history(period=period)
     return data
+    
 ```
 
 
-
 ```{r}
+
 fixcol01 <- function(g){
   g <- cbind(date = rownames(g), g)
   rownames(g) <- 1:nrow(g)
@@ -282,64 +277,7 @@ extract_eps <- function(x,name) {
 ```
 
 
-```{r include = FALSE, echo=F}
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 12000) %>% 
-#  filter(!is.na(price)) %>% 
-#  ggplot()+
-#  geom_line(aes(date, price, colour = ticker))+
-#  theme_void()+
-#  labs(colour = "Ticker",
-#       title="Retail industry - 30 year overview")+
-#  theme(axis.text = element_text(),
-#        legend.position = "bottom"))
 
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
-#  filter(!is.na(price)) %>% 
-#  ggplot()+
-#  geom_line(aes(date, price, colour = ticker))+
-#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
- ## theme_void()+
-#  labs(colour = "Ticker",
- #      title = "Retail industry - 10 year overview")+
-#  theme(axis.text = element_text(),
-#        legend.position = "bottom"))
-```
-
-
-
-
-```{r include = FALSE, echo=F}
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 3650) %>% 
-#  filter(!is.na(price)) %>% 
-#  mutate(price=log(price)) %>% 
-#  ggplot()+
-#  geom_point(aes(date, price, colour = ticker), shape=".")+
-#  geom_smooth(aes(date, price, colour = ticker), se = F)+
-#  stat_smooth(aes(date, price),se = F,geom="line",lty=4)+
-#  theme_void()+
-#  labs(colour = "Ticker")+
-#  theme(axis.text = element_text(),
-#        legend.position = "bottom"))
-
-
-#(data <- multiplot("WMT","MRW.L","TSCO.L","MKS.L", period = "max",length = 15000) %>% 
-#  filter(!is.na(price),
-#         price>1) %>% 
-#  mutate(price=log(price)) %>% 
-#  ggplot()+
-#  geom_line(aes(date, price, colour = ticker))+
-#  geom_smooth(colour = "black", lty = 2, aes(date, price), se = F)+
-#  geom_smooth(aes(date, price, colour = ticker),se = F)+
- # theme_void()+
-#  labs(colour = "Ticker")+
- # theme(axis.text = element_text(),
-#        legend.position = "bottom"))
-  
-#ggplotly(data)
-```
-
-# Car industry financial analysis 
-A profitability decomposition analysis with a focus on Tesla (TSLA)
 
 
 ```{r}
@@ -358,24 +296,36 @@ tsla_states <- tsla %>%
 tsla %>% 
   mutate(is_tesla=ifelse(ticker=="TSLA",1,0)) %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-0.5,ymin=ifelse(market_state=="+",0,tsla_states$percentage_price),xmax=date+0.5,ymax=ifelse(market_state=="+",tsla_states$percentage_price,0)),alpha=0.2)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date,ymin=ifelse(market_state=="+",0,percentage_price),xmax=date+1,ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.3)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
-  geom_step(aes(date, percentage_price, colour = ticker))+
-  #geom_smooth(aes(date, percentage_price, colour = ticker),se = F)+
-  #geom_smooth(colour = "black", lty = 2, aes(date, percentage_price), se = F)+
+  geom_step(aes(date, percentage_price, colour = ticker, alpha=ifelse(is_tesla==1,1,0.5)))+
    theme_void()+
   labs(colour = "Ticker",
        title="")+
-  geom_smooth(aes(date,percentage_price,group=is_tesla),colour="grey",lty=2,se=F,method="lm")+
+  geom_line(stat="smooth",aes(date,percentage_price,group=is_tesla,alpha=ifelse(is_tesla==1,1,0.6)),colour="blue",lty=3,size=1,se=F,method="lm")+
   geom_vline(xintercept = today()-1,lty=2)+
   geom_hline(yintercept = 0)+
   annotate("text",label="Tesla (TSLA) monthly price change",x=today()-20,y=-0.15)+
   annotate("text",label=today(),colour="black",x=today()-2,y=-0.1,angle=90)+
+  labs(title="Tesla (TSLA)",
+       subtitle="Tesla and top global car producers % price change")+
   annotate("text",label=paste("+",round((tsla_states$price[length(tsla_states$price)]-tsla_states$price[1])/tsla_states$price[1]*100,2),"%",sep=""),colour="black",x=today()-20,y=-0.1,size=20)+
   scale_y_continuous(labels=scales::percent_format())+
   theme(axis.text = element_text(),
         legend.position = "none")+
   lims(x=c(today()-28,today()))
+
+
+additional <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 30) %>% 
+  filter(!is.na(price),
+         price>1) %>%
+  group_by(ticker) %>% 
+  mutate(percentage_price = ((price/lag(price,1)) - 1)) %>%
+  ungroup() %>% 
+  mutate(market_state=case_when(percentage_price>0.02 ~ "+",
+                                 percentage_price<(-0.02)~ "-",
+                                 TRUE ~ ""))
+
 ```
 
 
@@ -407,7 +357,7 @@ data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","H
   filter(!is.na(price),
          price>1) %>%
   group_by(ticker) %>% 
-  mutate(percentage_price = ((price/lag(price,14)) - 1)) %>%
+  mutate(percentage_price = ((price/lag(price,7)) - 1)) %>%
   ungroup() %>% 
   group_by(date) %>% 
    mutate(market_state=case_when(percentage_price>0 ~ "+",
@@ -417,7 +367,7 @@ data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","H
 
 data %>% 
    ggplot()+
-   geom_rect(aes(fill=market_state,xmin=date-14,xmax=date+7,ymin=ifelse(market_state=="+",0,data$percentage_price),ymax=ifelse(market_state=="+",data$percentage_price,0)),alpha=0.02)+
+   geom_rect(aes(fill=market_state,xmin=date-5,xmax=date+5,ymin=ifelse(market_state=="+",0,data$percentage_price),ymax=ifelse(market_state=="+",data$percentage_price,0)),alpha=0.03)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
   geom_hline(yintercept = 0)+
@@ -431,6 +381,11 @@ data %>%
   theme(axis.text = element_text(),
         legend.position = "none")+
   lims(x=c(today()-365,today()))
+
+ 
+
+
+
 ```
 
 
@@ -449,7 +404,7 @@ tsla_states <- tsla %>%
 
 tsla %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=ifelse(market_state=="+",0,percentage_price),xmax=date+7,ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.04)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=ifelse(market_state=="+",0,percentage_price),xmax=date+7,ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.05)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
   ggdark::dark_theme_minimal()+
@@ -470,7 +425,8 @@ tsla %>%
 
 
 
-
+# Car industry financial analysis 
+A profitability decomposition analysis with a focus on Tesla (TSLA)
 
 ```{r echo=F, include=F}
 

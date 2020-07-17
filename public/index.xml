@@ -6,10 +6,19 @@
     <description>Recent content on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Coronavirus</title>
+      <link>/2020/07/17/coronavirus/</link>
+      <pubDate>Fri, 17 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/17/coronavirus/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Climate change data</title>
@@ -29,10 +38,9 @@ library(Quandl)## Warning: package &amp;#39;Quandl&amp;#39; was built under R v
       <guid>/2020/07/07/time-series-and-yfinance-api/</guid>
       <description>Python integration using the reticulate package.
 yFinance api from https://pypi.org/project/yfinance/
-Python exchange rate api from www.exchangerate-api.com
-Car industry financial analysisA profitability decomposition analysis with a focus on Tesla (TSLA)
 “Global stocks have worst day in two years as coronavirus fears spread” - FT 24th Feb 2020https://www.ft.com/content/5ec9aeae-56a1-11ea-a528-dd0f971febbc
-Investigating industry ROCEFerrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.</description>
+Car industry financial analysisA profitability decomposition analysis with a focus on Tesla (TSLA)
+Investigating industry ROCEFerrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.</description>
     </item>
     
     <item>
