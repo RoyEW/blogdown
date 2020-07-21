@@ -12,32 +12,51 @@ tags: []
 library(tidyverse)
 library(lubridate)
 library(httr)
+library(zoo)
 
+theme_set(theme_bw())
 
 ```
 
 ```{r}
 covid_raw <- read.csv("covid_data.csv")
 
-critical_dates <- c("20120323")
+
   
 covid <- covid_raw %>% 
   mutate(date=ymd(date))
 
-head(covid)
+covid_uk <- covid %>% 
+   filter(iso_code=="GBR",
+         new_cases_per_million>0,
+         new_cases>0)
 
-covid %>% 
-  filter(iso_code=="GBR",
-         new_cases_per_million>0) %>% 
+critical_dates_uk <- covid_uk %>% 
+  mutate(critical_date = case_when(
+    date == ymd(20200323) ~ "Lockdown",
+    date == ymd(20200623) ~ "Lockdown lifted"
+  )) %>% 
+  select(date,critical_date)
+
+covid_uk <- covid_uk %>% 
+  left_join(critical_dates_uk, by = "date",keepall=F) %>% 
+  mutate(cases_7day=rollmean(new_cases, k=7, fill=NA))
+
+
+covid_uk %>%
   ggplot(aes(date,new_cases,colour=location))+
   geom_col()+
   theme_bw()+
   theme(legend.position = "none")+
   labs(title="UK New cases")
   
-#ale_color_manual(values=c("dodgerblue","red"),aesthetics = c("colour"))+  
-#scale_y_log10(labels=scales::number_format())
+covid_uk
 
+covid_uk %>% 
+  ggplot(aes(date, cases_7day))+
+  geom_col()+
+  geom_smooth(method = "loess")
+  
 
 ```
 

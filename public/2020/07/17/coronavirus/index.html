@@ -64,7 +64,7 @@
 
   <article class="article">
     
-    <span class="article-duration">3 min read</span>
+    <span class="article-duration">40 min read</span>
     
 
     <h1 class="article-title">Coronavirus</h1>
@@ -78,12 +78,12 @@
 
 
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ------------------------------------------------- tidyverse 1.3.0 --</code></pre>
-<pre><code>## v ggplot2 3.3.0     v purrr   0.3.4
+<pre><code>## -- Attaching packages ------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.2     v purrr   0.3.4
 ## v tibble  3.0.1     v dplyr   0.8.5
-## v tidyr   1.0.3     v stringr 1.4.0
+## v tidyr   1.1.0     v stringr 1.4.0
 ## v readr   1.3.1     v forcats 0.5.0</code></pre>
-<pre><code>## -- Conflicts ---------------------------------------------------- tidyverse_conflicts() --
+<pre><code>## -- Conflicts ---------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(lubridate)</code></pre>
@@ -95,89 +95,1395 @@
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     date, intersect, setdiff, union</code></pre>
-<pre class="r"><code>library(httr)</code></pre>
+<pre class="r"><code>library(httr)
+library(zoo)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>theme_set(theme_bw())</code></pre>
 <pre class="r"><code>covid_raw &lt;- read.csv(&quot;covid_data.csv&quot;)
 
-critical_dates &lt;- c(&quot;20120323&quot;)
+
   
 covid &lt;- covid_raw %&gt;% 
   mutate(date=ymd(date))
 
-head(covid)</code></pre>
-<pre><code>##   iso_code continent    location       date total_cases new_cases total_deaths
-## 1      AFG      Asia Afghanistan 2019-12-31           0         0            0
-## 2      AFG      Asia Afghanistan 2020-01-01           0         0            0
-## 3      AFG      Asia Afghanistan 2020-01-02           0         0            0
-## 4      AFG      Asia Afghanistan 2020-01-03           0         0            0
-## 5      AFG      Asia Afghanistan 2020-01-04           0         0            0
-## 6      AFG      Asia Afghanistan 2020-01-05           0         0            0
-##   new_deaths total_cases_per_million new_cases_per_million
-## 1          0                       0                     0
-## 2          0                       0                     0
-## 3          0                       0                     0
-## 4          0                       0                     0
-## 5          0                       0                     0
-## 6          0                       0                     0
-##   total_deaths_per_million new_deaths_per_million total_tests new_tests
-## 1                        0                      0          NA        NA
-## 2                        0                      0          NA        NA
-## 3                        0                      0          NA        NA
-## 4                        0                      0          NA        NA
-## 5                        0                      0          NA        NA
-## 6                        0                      0          NA        NA
-##   total_tests_per_thousand new_tests_per_thousand new_tests_smoothed
-## 1                       NA                     NA                 NA
-## 2                       NA                     NA                 NA
-## 3                       NA                     NA                 NA
-## 4                       NA                     NA                 NA
-## 5                       NA                     NA                 NA
-## 6                       NA                     NA                 NA
-##   new_tests_smoothed_per_thousand tests_units stringency_index population
-## 1                              NA                           NA   38928341
-## 2                              NA                            0   38928341
-## 3                              NA                            0   38928341
-## 4                              NA                            0   38928341
-## 5                              NA                            0   38928341
-## 6                              NA                            0   38928341
-##   population_density median_age aged_65_older aged_70_older gdp_per_capita
-## 1             54.422       18.6         2.581         1.337       1803.987
-## 2             54.422       18.6         2.581         1.337       1803.987
-## 3             54.422       18.6         2.581         1.337       1803.987
-## 4             54.422       18.6         2.581         1.337       1803.987
-## 5             54.422       18.6         2.581         1.337       1803.987
-## 6             54.422       18.6         2.581         1.337       1803.987
-##   extreme_poverty cardiovasc_death_rate diabetes_prevalence female_smokers
-## 1              NA               597.029                9.59             NA
-## 2              NA               597.029                9.59             NA
-## 3              NA               597.029                9.59             NA
-## 4              NA               597.029                9.59             NA
-## 5              NA               597.029                9.59             NA
-## 6              NA               597.029                9.59             NA
-##   male_smokers handwashing_facilities hospital_beds_per_thousand
-## 1           NA                 37.746                        0.5
-## 2           NA                 37.746                        0.5
-## 3           NA                 37.746                        0.5
-## 4           NA                 37.746                        0.5
-## 5           NA                 37.746                        0.5
-## 6           NA                 37.746                        0.5
-##   life_expectancy
-## 1           64.83
-## 2           64.83
-## 3           64.83
-## 4           64.83
-## 5           64.83
-## 6           64.83</code></pre>
-<pre class="r"><code>covid %&gt;% 
-  filter(iso_code==&quot;GBR&quot;,
-         new_cases_per_million&gt;0) %&gt;% 
+covid_uk &lt;- covid %&gt;% 
+   filter(iso_code==&quot;GBR&quot;,
+         new_cases_per_million&gt;0,
+         new_cases&gt;0)
+
+critical_dates_uk &lt;- covid_uk %&gt;% 
+  mutate(critical_date = case_when(
+    date == ymd(20200323) ~ &quot;Lockdown&quot;,
+    date == ymd(20200623) ~ &quot;Lockdown lifted&quot;
+  )) %&gt;% 
+  select(date,critical_date)
+
+covid_uk &lt;- covid_uk %&gt;% 
+  left_join(critical_dates_uk, by = &quot;date&quot;,keepall=F) %&gt;% 
+  mutate(cases_7day=rollmean(new_cases, k=7, fill=NA))
+
+
+covid_uk %&gt;%
   ggplot(aes(date,new_cases,colour=location))+
   geom_col()+
   theme_bw()+
   theme(legend.position = &quot;none&quot;)+
   labs(title=&quot;UK New cases&quot;)</code></pre>
 <p><img src="/post/2020-07-17-coronavirus_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre class="r"><code>#ale_color_manual(values=c(&quot;dodgerblue&quot;,&quot;red&quot;),aesthetics = c(&quot;colour&quot;))+  
-#scale_y_log10(labels=scales::number_format())</code></pre>
+<pre class="r"><code>covid_uk</code></pre>
+<pre><code>##     iso_code continent       location       date total_cases new_cases
+## 1        GBR    Europe United Kingdom 2020-01-31           2         2
+## 2        GBR    Europe United Kingdom 2020-02-07           3         1
+## 3        GBR    Europe United Kingdom 2020-02-09           4         1
+## 4        GBR    Europe United Kingdom 2020-02-11           8         4
+## 5        GBR    Europe United Kingdom 2020-02-13           9         1
+## 6        GBR    Europe United Kingdom 2020-02-24          13         4
+## 7        GBR    Europe United Kingdom 2020-02-28          16         3
+## 8        GBR    Europe United Kingdom 2020-02-29          18         2
+## 9        GBR    Europe United Kingdom 2020-03-01          23         5
+## 10       GBR    Europe United Kingdom 2020-03-02          36        13
+## 11       GBR    Europe United Kingdom 2020-03-03          40         4
+## 12       GBR    Europe United Kingdom 2020-03-04          51        11
+## 13       GBR    Europe United Kingdom 2020-03-05          85        34
+## 14       GBR    Europe United Kingdom 2020-03-06         115        30
+## 15       GBR    Europe United Kingdom 2020-03-07         163        48
+## 16       GBR    Europe United Kingdom 2020-03-08         206        43
+## 17       GBR    Europe United Kingdom 2020-03-09         273        67
+## 18       GBR    Europe United Kingdom 2020-03-10         321        48
+## 19       GBR    Europe United Kingdom 2020-03-11         373        52
+## 20       GBR    Europe United Kingdom 2020-03-12         456        83
+## 21       GBR    Europe United Kingdom 2020-03-13         590       134
+## 22       GBR    Europe United Kingdom 2020-03-14         707       117
+## 23       GBR    Europe United Kingdom 2020-03-15        1140       433
+## 24       GBR    Europe United Kingdom 2020-03-16        1391       251
+## 25       GBR    Europe United Kingdom 2020-03-17        1543       152
+## 26       GBR    Europe United Kingdom 2020-03-18        1950       407
+## 27       GBR    Europe United Kingdom 2020-03-19        2630       680
+## 28       GBR    Europe United Kingdom 2020-03-20        3277       647
+## 29       GBR    Europe United Kingdom 2020-03-21        3983       706
+## 30       GBR    Europe United Kingdom 2020-03-22        5018      1035
+## 31       GBR    Europe United Kingdom 2020-03-23        5683       665
+## 32       GBR    Europe United Kingdom 2020-03-24        6650       967
+## 33       GBR    Europe United Kingdom 2020-03-25        8077      1427
+## 34       GBR    Europe United Kingdom 2020-03-26        9529      1452
+## 35       GBR    Europe United Kingdom 2020-03-27       11658      2129
+## 36       GBR    Europe United Kingdom 2020-03-28       14543      2885
+## 37       GBR    Europe United Kingdom 2020-03-29       17089      2546
+## 38       GBR    Europe United Kingdom 2020-03-30       19522      2433
+## 39       GBR    Europe United Kingdom 2020-03-31       22141      2619
+## 40       GBR    Europe United Kingdom 2020-04-01       25150      3009
+## 41       GBR    Europe United Kingdom 2020-04-02       29474      4324
+## 42       GBR    Europe United Kingdom 2020-04-03       33718      4244
+## 43       GBR    Europe United Kingdom 2020-04-04       38168      4450
+## 44       GBR    Europe United Kingdom 2020-04-05       41903      3735
+## 45       GBR    Europe United Kingdom 2020-04-06       47806      5903
+## 46       GBR    Europe United Kingdom 2020-04-07       51608      3802
+## 47       GBR    Europe United Kingdom 2020-04-08       55242      3634
+## 48       GBR    Europe United Kingdom 2020-04-09       60733      5491
+## 49       GBR    Europe United Kingdom 2020-04-10       65077      4344
+## 50       GBR    Europe United Kingdom 2020-04-11       70272      5195
+## 51       GBR    Europe United Kingdom 2020-04-12       78991      8719
+## 52       GBR    Europe United Kingdom 2020-04-13       84279      5288
+## 53       GBR    Europe United Kingdom 2020-04-14       88621      4342
+## 54       GBR    Europe United Kingdom 2020-04-15       93873      5252
+## 55       GBR    Europe United Kingdom 2020-04-16       98476      4603
+## 56       GBR    Europe United Kingdom 2020-04-17      103093      4617
+## 57       GBR    Europe United Kingdom 2020-04-18      108692      5599
+## 58       GBR    Europe United Kingdom 2020-04-19      114217      5525
+## 59       GBR    Europe United Kingdom 2020-04-20      120067      5850
+## 60       GBR    Europe United Kingdom 2020-04-21      124743      4676
+## 61       GBR    Europe United Kingdom 2020-04-22      129044      4301
+## 62       GBR    Europe United Kingdom 2020-04-23      133495      4451
+## 63       GBR    Europe United Kingdom 2020-04-24      138078      4583
+## 64       GBR    Europe United Kingdom 2020-04-25      143464      5386
+## 65       GBR    Europe United Kingdom 2020-04-26      148377      4913
+## 66       GBR    Europe United Kingdom 2020-04-27      152840      4463
+## 67       GBR    Europe United Kingdom 2020-04-28      157149      4309
+## 68       GBR    Europe United Kingdom 2020-04-29      161145      3996
+## 69       GBR    Europe United Kingdom 2020-04-30      165221      4076
+## 70       GBR    Europe United Kingdom 2020-05-01      171253      6032
+## 71       GBR    Europe United Kingdom 2020-05-02      177454      6201
+## 72       GBR    Europe United Kingdom 2020-05-03      182260      4806
+## 73       GBR    Europe United Kingdom 2020-05-04      186599      4339
+## 74       GBR    Europe United Kingdom 2020-05-05      190584      3985
+## 75       GBR    Europe United Kingdom 2020-05-06      194990      4406
+## 76       GBR    Europe United Kingdom 2020-05-07      201201      6211
+## 77       GBR    Europe United Kingdom 2020-05-08      206715      5514
+## 78       GBR    Europe United Kingdom 2020-05-09      211364      4649
+## 79       GBR    Europe United Kingdom 2020-05-10      215260      3896
+## 80       GBR    Europe United Kingdom 2020-05-11      219183      3923
+## 81       GBR    Europe United Kingdom 2020-05-12      223060      3877
+## 82       GBR    Europe United Kingdom 2020-05-13      226463      3403
+## 83       GBR    Europe United Kingdom 2020-05-14      229705      3242
+## 84       GBR    Europe United Kingdom 2020-05-15      233151      3446
+## 85       GBR    Europe United Kingdom 2020-05-16      236711      3560
+## 86       GBR    Europe United Kingdom 2020-05-17      240161      3450
+## 87       GBR    Europe United Kingdom 2020-05-18      243695      3534
+## 88       GBR    Europe United Kingdom 2020-05-19      246406      2711
+## 89       GBR    Europe United Kingdom 2020-05-20      248818      2412
+## 90       GBR    Europe United Kingdom 2020-05-22      250908      2615
+## 91       GBR    Europe United Kingdom 2020-05-23      254195      3287
+## 92       GBR    Europe United Kingdom 2020-05-24      257154      2959
+## 93       GBR    Europe United Kingdom 2020-05-25      259559      2405
+## 94       GBR    Europe United Kingdom 2020-05-26      261184      1625
+## 95       GBR    Europe United Kingdom 2020-05-27      265227      4043
+## 96       GBR    Europe United Kingdom 2020-05-28      267240      2013
+## 97       GBR    Europe United Kingdom 2020-05-29      269127      1887
+## 98       GBR    Europe United Kingdom 2020-05-30      271222      2095
+## 99       GBR    Europe United Kingdom 2020-05-31      272826      1604
+## 100      GBR    Europe United Kingdom 2020-06-01      274762      1936
+## 101      GBR    Europe United Kingdom 2020-06-02      276332      1570
+## 102      GBR    Europe United Kingdom 2020-06-03      277985      1653
+## 103      GBR    Europe United Kingdom 2020-06-04      279856      1871
+## 104      GBR    Europe United Kingdom 2020-06-05      281661      1805
+## 105      GBR    Europe United Kingdom 2020-06-06      283311      1650
+## 106      GBR    Europe United Kingdom 2020-06-07      284868      1557
+## 107      GBR    Europe United Kingdom 2020-06-08      286194      1326
+## 108      GBR    Europe United Kingdom 2020-06-09      287399      1205
+## 109      GBR    Europe United Kingdom 2020-06-10      289140      1741
+## 110      GBR    Europe United Kingdom 2020-06-11      290143      1003
+## 111      GBR    Europe United Kingdom 2020-06-12      291409      1266
+## 112      GBR    Europe United Kingdom 2020-06-13      292950      1541
+## 113      GBR    Europe United Kingdom 2020-06-14      294375      1425
+## 114      GBR    Europe United Kingdom 2020-06-15      295889      1514
+## 115      GBR    Europe United Kingdom 2020-06-16      296857       968
+## 116      GBR    Europe United Kingdom 2020-06-17      298136      1279
+## 117      GBR    Europe United Kingdom 2020-06-18      299251      1115
+## 118      GBR    Europe United Kingdom 2020-06-19      300469      1218
+## 119      GBR    Europe United Kingdom 2020-06-20      301815      1346
+## 120      GBR    Europe United Kingdom 2020-06-21      303110      1295
+## 121      GBR    Europe United Kingdom 2020-06-22      304331      1221
+## 122      GBR    Europe United Kingdom 2020-06-23      305289       958
+## 123      GBR    Europe United Kingdom 2020-06-24      306210       921
+## 124      GBR    Europe United Kingdom 2020-06-25      306862       652
+## 125      GBR    Europe United Kingdom 2020-06-26      307980      1118
+## 126      GBR    Europe United Kingdom 2020-06-27      309360      1380
+## 127      GBR    Europe United Kingdom 2020-06-28      310250       890
+## 128      GBR    Europe United Kingdom 2020-06-29      311151       901
+## 129      GBR    Europe United Kingdom 2020-06-30      311965       814
+## 130      GBR    Europe United Kingdom 2020-07-01      312654       689
+## 131      GBR    Europe United Kingdom 2020-07-02      313483       829
+## 132      GBR    Europe United Kingdom 2020-07-04      284276       519
+## 133      GBR    Europe United Kingdom 2020-07-05      284900       624
+## 134      GBR    Europe United Kingdom 2020-07-06      285416       516
+## 135      GBR    Europe United Kingdom 2020-07-07      285768       352
+## 136      GBR    Europe United Kingdom 2020-07-08      286349       581
+## 137      GBR    Europe United Kingdom 2020-07-09      286979       630
+## 138      GBR    Europe United Kingdom 2020-07-10      287621       642
+## 139      GBR    Europe United Kingdom 2020-07-11      288133       512
+## 140      GBR    Europe United Kingdom 2020-07-12      288953       820
+## 141      GBR    Europe United Kingdom 2020-07-13      289603       650
+## 142      GBR    Europe United Kingdom 2020-07-14      290133       530
+## 143      GBR    Europe United Kingdom 2020-07-15      291373      1240
+## 144      GBR    Europe United Kingdom 2020-07-16      291911       538
+## 145      GBR    Europe United Kingdom 2020-07-17      292552       641
+## 146      GBR    Europe United Kingdom 2020-07-18      293239       687
+## 147      GBR    Europe United Kingdom 2020-07-19      294066       827
+## 148      GBR    Europe United Kingdom 2020-07-20      294792       726
+##     total_deaths new_deaths total_cases_per_million new_cases_per_million
+## 1              0          0                   0.029                 0.029
+## 2              0          0                   0.044                 0.015
+## 3              0          0                   0.059                 0.015
+## 4              0          0                   0.118                 0.059
+## 5              0          0                   0.133                 0.015
+## 6              0          0                   0.191                 0.059
+## 7              0          0                   0.236                 0.044
+## 8              0          0                   0.265                 0.029
+## 9              0          0                   0.339                 0.074
+## 10             0          0                   0.530                 0.191
+## 11             0          0                   0.589                 0.059
+## 12             0          0                   0.751                 0.162
+## 13             0          0                   1.252                 0.501
+## 14             0          0                   1.694                 0.442
+## 15             1          1                   2.401                 0.707
+## 16             2          1                   3.034                 0.633
+## 17             2          0                   4.021                 0.987
+## 18             3          1                   4.729                 0.707
+## 19             7          4                   5.495                 0.766
+## 20             7          0                   6.717                 1.223
+## 21             9          2                   8.691                 1.974
+## 22            10          1                  10.415                 1.723
+## 23            28         18                  16.793                 6.378
+## 24            43         15                  20.490                 3.697
+## 25            65         22                  22.729                 2.239
+## 26            81         16                  28.725                 5.995
+## 27           115         34                  38.741                10.017
+## 28           158         43                  48.272                 9.531
+## 29           194         36                  58.672                10.400
+## 30           250         56                  73.918                15.246
+## 31           285         35                  83.714                 9.796
+## 32           359         74                  97.958                14.244
+## 33           508        149                 118.979                21.021
+## 34           694        186                 140.368                21.389
+## 35           877        183                 171.729                31.361
+## 36          1161        284                 214.227                42.498
+## 37          1455        294                 251.731                37.504
+## 38          1669        214                 287.570                35.839
+## 39          2043        374                 326.150                38.579
+## 40          2425        382                 370.474                44.324
+## 41          3095        670                 434.169                63.695
+## 42          3747        652                 496.686                62.517
+## 43          4461        714                 562.237                65.551
+## 44          5221        760                 617.255                55.019
+## 45          5865        644                 704.210                86.955
+## 46          6433        568                 760.216                56.006
+## 47          7471       1038                 813.747                53.531
+## 48          8505       1034                 894.632                80.886
+## 49          9608       1103                 958.622                63.990
+## 50         10760       1152                1035.147                76.525
+## 51         11599        839                1163.583               128.436
+## 52         12285        686                1241.478                77.895
+## 53         13029        744                1305.438                63.960
+## 54         14073       1044                1382.803                77.365
+## 55         14915        842                1450.608                67.805
+## 56         15944       1029                1518.619                68.011
+## 57         16879        935                1601.096                82.476
+## 58         17994       1115                1682.482                81.386
+## 59         18492        498                1768.656                86.174
+## 60         19051        559                1837.536                68.880
+## 61         20223       1172                1900.893                63.356
+## 62         21060        837                1966.458                65.566
+## 63         21787        727                2033.969                67.510
+## 64         22792       1005                2113.307                79.339
+## 65         23635        843                2185.679                72.371
+## 66         24055        420                2251.421                65.743
+## 67         24393        338                2314.895                63.474
+## 68         25302        909                2373.759                58.863
+## 69         26097        795                2433.801                60.042
+## 70         26771        674                2522.655                88.855
+## 71         27510        739                2614.000                91.344
+## 72         28131        621                2684.795                70.795
+## 73         28446        315                2748.711                63.916
+## 74         28734        288                2807.412                58.701
+## 75         29427        693                2872.315                64.903
+## 76         30076        649                2963.807                91.492
+## 77         30615        539                3045.031                81.224
+## 78         31241        626                3113.514                68.482
+## 79         31587        346                3170.904                57.390
+## 80         31855        268                3228.692                57.788
+## 81         32065        210                3285.802                57.110
+## 82         32692        627                3335.931                50.128
+## 83         33186        494                3383.687                47.757
+## 84         33614        428                3434.449                50.762
+## 85         33998        384                3486.890                52.441
+## 86         34466        468                3537.710                50.820
+## 87         34636        170                3589.768                52.058
+## 88         34796        160                3629.703                39.935
+## 89         35341        545                3665.233                35.530
+## 90         36042        338                3696.020                38.520
+## 91         36393        351                3744.439                48.419
+## 92         36675        282                3788.027                43.588
+## 93         36793        118                3823.454                35.427
+## 94         36914        121                3847.391                23.937
+## 95         37048        134                3906.947                59.556
+## 96         37460        412                3936.599                29.653
+## 97         37837        377                3964.396                27.797
+## 98         38161        324                3995.257                30.861
+## 99         38376        215                4018.884                23.628
+## 100        38489        113                4047.403                28.518
+## 101        39045        556                4070.530                23.127
+## 102        39369        324                4094.879                24.350
+## 103        39728        359                4122.440                27.561
+## 104        39904        176                4149.029                26.589
+## 105        40261        357                4173.334                24.305
+## 106        40465        204                4196.270                22.936
+## 107        40542         77                4215.803                19.533
+## 108        40597         55                4233.553                17.750
+## 109        40883        286                4259.199                25.646
+## 110        41128        245                4273.974                14.775
+## 111        41279        151                4292.623                18.649
+## 112        41481        202                4315.322                22.700
+## 113        41662        181                4336.314                20.991
+## 114        41698         36                4358.616                22.302
+## 115        41736         38                4372.875                14.259
+## 116        41969        233                4391.715                18.840
+## 117        42153        184                4408.140                16.425
+## 118        42288        135                4426.082                17.942
+## 119        42461        173                4445.909                19.827
+## 120        42589        128                4464.985                19.076
+## 121        42632         43                4482.971                17.986
+## 122        42647         15                4497.083                14.112
+## 123        42927        280                4510.650                13.567
+## 124        43081        154                4520.254                 9.604
+## 125        43230        149                4536.723                16.469
+## 126        43414        184                4557.051                20.328
+## 127        43514        100                4570.161                13.110
+## 128        43550         36                4583.434                13.272
+## 129        43575         25                4595.424                11.991
+## 130        43730        155                4605.574                10.149
+## 131        43906        176                4617.785                12.212
+## 132        44131        136                4187.549                 7.645
+## 133        44198         67                4196.741                 9.192
+## 134        44220         22                4204.342                 7.601
+## 135        44236         16                4209.527                 5.185
+## 136        44391        155                4218.086                 8.558
+## 137        44517        126                4227.366                 9.280
+## 138        44602         85                4236.823                 9.457
+## 139        44650         48                4244.365                 7.542
+## 140        44798        148                4256.444                12.079
+## 141        44819         21                4266.019                 9.575
+## 142        44830         11                4273.826                 7.807
+## 143        44968        138                4292.092                18.266
+## 144        45053         85                4300.017                 7.925
+## 145        45119         66                4309.460                 9.442
+## 146        45233        114                4319.580                10.120
+## 147        45273         40                4331.762                12.182
+## 148        45300         27                4342.456                10.694
+##     total_deaths_per_million new_deaths_per_million total_tests new_tests
+## 1                      0.000                  0.000          NA        NA
+## 2                      0.000                  0.000          NA        NA
+## 3                      0.000                  0.000          NA        NA
+## 4                      0.000                  0.000          NA        NA
+## 5                      0.000                  0.000          NA        NA
+## 6                      0.000                  0.000          NA        NA
+## 7                      0.000                  0.000          NA        NA
+## 8                      0.000                  0.000          NA        NA
+## 9                      0.000                  0.000          NA        NA
+## 10                     0.000                  0.000          NA        NA
+## 11                     0.000                  0.000          NA        NA
+## 12                     0.000                  0.000          NA        NA
+## 13                     0.000                  0.000          NA        NA
+## 14                     0.000                  0.000          NA        NA
+## 15                     0.015                  0.015          NA        NA
+## 16                     0.029                  0.015          NA        NA
+## 17                     0.029                  0.000          NA        NA
+## 18                     0.044                  0.015          NA        NA
+## 19                     0.103                  0.059          NA        NA
+## 20                     0.103                  0.000          NA        NA
+## 21                     0.133                  0.029          NA        NA
+## 22                     0.147                  0.015          NA        NA
+## 23                     0.412                  0.265          NA        NA
+## 24                     0.633                  0.221          NA        NA
+## 25                     0.957                  0.324          NA        NA
+## 26                     1.193                  0.236          NA        NA
+## 27                     1.694                  0.501          NA        NA
+## 28                     2.327                  0.633          NA        NA
+## 29                     2.858                  0.530          NA        NA
+## 30                     3.683                  0.825          NA        NA
+## 31                     4.198                  0.516          NA        NA
+## 32                     5.288                  1.090          NA        NA
+## 33                     7.483                  2.195          NA        NA
+## 34                    10.223                  2.740          NA        NA
+## 35                    12.919                  2.696          NA        NA
+## 36                    17.102                  4.183          NA        NA
+## 37                    21.433                  4.331          NA        NA
+## 38                    24.585                  3.152          NA        NA
+## 39                    30.095                  5.509      155174     11896
+## 40                    35.722                  5.627      167098     11924
+## 41                    45.591                  9.869      182047     13457
+## 42                    55.195                  9.604      222937     14293
+## 43                    65.713                 10.518      238836     15899
+## 44                    76.908                 11.195      251569     12733
+## 45                    86.395                  9.486      265885     13684
+## 46                    94.762                  8.367      280304     14419
+## 47                   110.052                 15.290      296747     16443
+## 48                   125.284                 15.231      315141     18843
+## 49                   141.531                 16.248      332925     17737
+## 50                   158.501                 16.970      350575     17650
+## 51                   170.860                 12.359      365081     14506
+## 52                   180.965                 10.105      379649     14567
+## 53                   191.925                 10.960      395912     15991
+## 54                   207.303                 15.379      414469     18489
+## 55                   219.707                 12.403      435389     20906
+## 56                   234.864                 15.158      456527     21081
+## 57                   248.637                 13.773      477776     21249
+## 58                   265.062                 16.425      497092     19316
+## 59                   272.398                  7.336      532229     17365
+## 60                   280.632                  8.234      554992     22763
+## 61                   297.896                 17.264      578066     23073
+## 62                   310.226                 12.329      606093     28024
+## 63                   320.935                 10.709      634319     28225
+## 64                   335.739                 14.804      663377     29058
+## 65                   348.157                 12.418      694987     31610
+## 66                   354.344                  6.187      726553     31453
+## 67                   359.323                  4.979      771817     45263
+## 68                   372.713                 13.390      839597     65643
+## 69                   384.424                 11.711      922684     83143
+## 70                   394.352                  9.928      996826     74142
+## 71                   405.238                 10.886     1060387     63559
+## 72                   414.386                  9.148     1128590     68203
+## 73                   419.026                  4.640     1202251     71764
+## 74                   423.268                  4.242     1268054     65803
+## 75                   433.477                 10.208     1343722     73277
+## 76                   443.037                  9.560     1420462     76741
+## 77                   450.977                  7.940     1495302     74836
+## 78                   460.198                  9.221     1569888     74586
+## 79                   465.295                  5.097     1643429     73541
+## 80                   469.243                  3.948     1710628     67116
+## 81                   472.336                  3.093     1782996     72368
+## 82                   481.572                  9.236     1864403     80713
+## 83                   488.849                  7.277     1946011     81595
+## 84                   495.154                  6.305     2034056     88046
+## 85                   500.810                  5.657     2122318     88262
+## 86                   507.704                  6.894     2197608     75290
+## 87                   510.208                  2.504     2260688     63028
+## 88                   512.565                  2.357     2332060     79653
+## 89                   520.593                  8.028     2413462     81403
+## 90                   530.919                  4.979     2590930     84060
+## 91                   536.090                  5.170     2670829     79902
+## 92                   540.244                  4.154     2722676     51844
+## 93                   541.982                  1.738     2859563     69381
+## 94                   543.765                  1.782     2923504     63765
+## 95                   545.738                  1.974     2993833     70329
+## 96                   551.807                  6.069     3078468     84634
+## 97                   557.361                  5.553     3174018     95550
+## 98                   562.134                  4.773     3263888     89867
+## 99                   565.301                  3.167     3339151     75263
+## 100                  566.965                  1.665     3403873     64763
+## 101                  575.155                  8.190     3490527     86267
+## 102                  579.928                  4.773     3587330     96674
+## 103                  585.216                  5.288     3682775     95445
+## 104                  587.809                  2.593     3782412     98667
+## 105                  593.068                  5.259     3873426     90562
+## 106                  596.073                  3.005     3957326     83790
+## 107                  597.207                  1.134     4059548     66769
+## 108                  598.017                  0.810     4151154     91606
+## 109                  602.230                  4.213     4249081     97852
+## 110                  605.839                  3.609     4349254     98913
+## 111                  608.063                  2.224     4445275     95216
+## 112                  611.039                  2.976     4542174     96044
+## 113                  613.705                  2.666     4609714     66688
+## 114                  614.236                  0.530     4677522     67808
+## 115                  614.795                  0.560     4756484     78962
+## 116                  618.228                  3.432     4840348     83864
+## 117                  620.938                  2.710     4930797     86579
+## 118                  622.927                  1.989     5017988     87191
+## 119                  625.475                  2.548     5098834     80564
+## 120                  627.361                  1.886     5156119     57102
+## 121                  627.994                  0.633     5219161     59942
+## 122                  628.215                  0.221     5285917     66756
+## 123                  632.339                  4.125     5373957     88040
+## 124                  634.608                  2.269     5510701     93173
+## 125                  636.803                  2.195     5604093     93392
+## 126                  639.513                  2.710     5694990     90897
+## 127                  640.986                  1.473     5760203     64453
+## 128                  641.517                  0.530     5825239     62572
+## 129                  641.885                  0.368     5922583     97367
+## 130                  644.168                  2.283     6035588    112636
+## 131                  646.761                  2.593     6147681    112130
+## 132                  650.075                  2.003     6355415     93173
+## 133                  651.062                  0.987     6433120     76984
+## 134                  651.386                  0.324     6496653     63533
+## 135                  651.622                  0.236     6597342    100689
+## 136                  653.905                  2.283     6717480    120318
+## 137                  655.761                  1.856     6849508    131848
+## 138                  657.013                  1.252     6977736    128125
+## 139                  657.720                  0.707     7101830    124094
+## 140                  659.900                  2.180     7188816     86609
+## 141                  660.210                  0.309     7262633     74760
+## 142                  660.372                  0.162     7375594    112495
+## 143                  662.405                  2.033     7508695    129616
+## 144                  663.657                  1.252     7658207    149215
+## 145                  664.629                  0.972     7815903    157256
+## 146                  666.308                  1.679     7947599    131697
+## 147                  666.897                  0.589     8050171    102572
+## 148                  667.295                  0.398          NA        NA
+##     total_tests_per_thousand new_tests_per_thousand new_tests_smoothed
+## 1                         NA                     NA                 NA
+## 2                         NA                     NA                 NA
+## 3                         NA                     NA                 NA
+## 4                         NA                     NA                 NA
+## 5                         NA                     NA                 NA
+## 6                         NA                     NA                 NA
+## 7                         NA                     NA                 NA
+## 8                         NA                     NA                 NA
+## 9                         NA                     NA                 NA
+## 10                        NA                     NA                 NA
+## 11                        NA                     NA                 NA
+## 12                        NA                     NA                 NA
+## 13                        NA                     NA                 NA
+## 14                        NA                     NA                 NA
+## 15                        NA                     NA                 NA
+## 16                        NA                     NA                 NA
+## 17                        NA                     NA                 NA
+## 18                        NA                     NA                 NA
+## 19                        NA                     NA                 NA
+## 20                        NA                     NA                 NA
+## 21                        NA                     NA                 NA
+## 22                        NA                     NA                 NA
+## 23                        NA                     NA                 NA
+## 24                        NA                     NA                 NA
+## 25                        NA                     NA                 NA
+## 26                        NA                     NA                 NA
+## 27                        NA                     NA                 NA
+## 28                        NA                     NA                 NA
+## 29                        NA                     NA                 NA
+## 30                        NA                     NA                 NA
+## 31                        NA                     NA                 NA
+## 32                        NA                     NA                 NA
+## 33                        NA                     NA                 NA
+## 34                        NA                     NA                 NA
+## 35                        NA                     NA                 NA
+## 36                        NA                     NA                 NA
+## 37                        NA                     NA                 NA
+## 38                        NA                     NA                 NA
+## 39                     2.286                  0.175                 NA
+## 40                     2.461                  0.176                 NA
+## 41                     2.682                  0.198                 NA
+## 42                     3.284                  0.211                 NA
+## 43                     3.518                  0.234                 NA
+## 44                     3.706                  0.188                 NA
+## 45                     3.917                  0.202                 NA
+## 46                     4.129                  0.212              17876
+## 47                     4.371                  0.242              18521
+## 48                     4.642                  0.278              19013
+## 49                     4.904                  0.261              15713
+## 50                     5.164                  0.260              15963
+## 51                     5.378                  0.214              16216
+## 52                     5.592                  0.215              16252
+## 53                     5.832                  0.236              16515
+## 54                     6.105                  0.272              16817
+## 55                     6.414                  0.308              17178
+## 56                     6.725                  0.311              17657
+## 57                     7.038                  0.313              18172
+## 58                     7.322                  0.285              18859
+## 59                     7.840                  0.256              21797
+## 60                     8.175                  0.335              22726
+## 61                     8.515                  0.340              23371
+## 62                     8.928                  0.413              24386
+## 63                     9.344                  0.416              25399
+## 64                     9.772                  0.428              26514
+## 65                    10.238                  0.466              28271
+## 66                    10.703                  0.463              27761
+## 67                    11.369                  0.667              30975
+## 68                    12.368                  0.967              37362
+## 69                    13.592                  1.225              45227
+## 70                    14.684                  1.092              51787
+## 71                    15.620                  0.936              56716
+## 72                    16.625                  1.005              61943
+## 73                    17.710                  1.057              67957
+## 74                    18.679                  0.969              70891
+## 75                    19.794                  1.079              72018
+## 76                    20.924                  1.130              71111
+## 77                    22.027                  1.102              71211
+## 78                    23.125                  1.099              72786
+## 79                    24.209                  1.083              73548
+## 80                    25.199                  0.989              72625
+## 81                    26.265                  1.066              73563
+## 82                    27.464                  1.189              74383
+## 83                    28.666                  1.202              75078
+## 84                    29.963                  1.297              76965
+## 85                    31.263                  1.300              78919
+## 86                    32.372                  1.109              79168
+## 87                    33.301                  0.928              78580
+## 88                    34.353                  1.173              78438
+## 89                    35.552                  1.199              78437
+## 90                    38.166                  1.238              79553
+## 91                    39.343                  1.177              78359
+## 92                    40.107                  0.764              75010
+## 93                    42.123                  1.022              85554
+## 94                    43.065                  0.939              84492
+## 95                    44.101                  1.036              82910
+## 96                    45.348                  1.247              81657
+## 97                    46.755                  1.408              83298
+## 98                    48.079                  1.324              84723
+## 99                    49.188                  1.109              88068
+## 100                   50.141                  0.954              77759
+## 101                   51.417                  1.271              81003
+## 102                   52.843                  1.424              84785
+## 103                   54.249                  1.406              86330
+## 104                   55.717                  1.453              86913
+## 105                   57.058                  1.334              87077
+## 106                   58.294                  1.234              88311
+## 107                   59.799                  0.984              93668
+## 108                   61.149                  1.349              94375
+## 109                   62.591                  1.441              94536
+## 110                   64.067                  1.457              95211
+## 111                   65.481                  1.403              94695
+## 112                   66.909                  1.415              95535
+## 113                   67.904                  0.982              93198
+## 114                   68.903                  0.999              88282
+## 115                   70.066                  1.163              86476
+## 116                   71.301                  1.235              84467
+## 117                   72.633                  1.275              83078
+## 118                   73.918                  1.284              81816
+## 119                   75.109                  1.187              79523
+## 120                   75.953                  0.841              78058
+## 121                   76.881                  0.883              77377
+## 122                   77.865                  0.983              75633
+## 123                   79.161                  1.297              76230
+## 124                   81.176                  1.372              82843
+## 125                   82.552                  1.376              83729
+## 126                   83.890                  1.339              85165
+## 127                   84.851                  0.949              86298
+## 128                   85.809                  0.922              86583
+## 129                   87.243                  1.434              90952
+## 130                   88.908                  1.659              94519
+## 131                   90.559                  1.652              90997
+## 132                   93.619                  1.372              94346
+## 133                   94.764                  1.134              96131
+## 134                   95.699                  0.936              95916
+## 135                   97.183                  1.483              96394
+## 136                   98.952                  1.772              97413
+## 137                  100.897                  1.942             100261
+## 138                  102.786                  1.887             102232
+## 139                  104.614                  1.828             106631
+## 140                  105.895                  1.276             107957
+## 141                  106.983                  1.101             109426
+## 142                  108.647                  1.657             111179
+## 143                  110.607                  1.909             113031
+## 144                  112.810                  2.198             115528
+## 145                  115.133                  2.316             119738
+## 146                  117.073                  1.940             120824
+## 147                  118.584                  1.511             123051
+## 148                       NA                     NA                 NA
+##     new_tests_smoothed_per_thousand     tests_units stringency_index population
+## 1                                NA                             0.00   67886004
+## 2                                NA                            11.11   67886004
+## 3                                NA                            11.11   67886004
+## 4                                NA                            11.11   67886004
+## 5                                NA                            11.11   67886004
+## 6                                NA                            11.11   67886004
+## 7                                NA                            11.11   67886004
+## 8                                NA                            11.11   67886004
+## 9                                NA                            11.11   67886004
+## 10                               NA                            11.11   67886004
+## 11                               NA                            11.11   67886004
+## 12                               NA                            11.11   67886004
+## 13                               NA                            11.11   67886004
+## 14                               NA                            11.11   67886004
+## 15                               NA                            11.11   67886004
+## 16                               NA                            11.11   67886004
+## 17                               NA                            11.11   67886004
+## 18                               NA                            11.11   67886004
+## 19                               NA                            11.11   67886004
+## 20                               NA                            11.11   67886004
+## 21                               NA                            11.11   67886004
+## 22                               NA                            11.11   67886004
+## 23                               NA                            11.11   67886004
+## 24                               NA                            14.81   67886004
+## 25                               NA                            20.37   67886004
+## 26                               NA                            20.37   67886004
+## 27                               NA                            20.37   67886004
+## 28                               NA                            20.37   67886004
+## 29                               NA                            29.63   67886004
+## 30                               NA                            35.19   67886004
+## 31                               NA                            70.37   67886004
+## 32                               NA                            70.37   67886004
+## 33                               NA                            70.37   67886004
+## 34                               NA                            75.93   67886004
+## 35                               NA                            75.93   67886004
+## 36                               NA                            75.93   67886004
+## 37                               NA                            75.93   67886004
+## 38                               NA                            75.93   67886004
+## 39                               NA tests performed            75.93   67886004
+## 40                               NA tests performed            75.93   67886004
+## 41                               NA tests performed            75.93   67886004
+## 42                               NA tests performed            75.93   67886004
+## 43                               NA tests performed            75.93   67886004
+## 44                               NA tests performed            75.93   67886004
+## 45                               NA tests performed            75.93   67886004
+## 46                            0.263 tests performed            75.93   67886004
+## 47                            0.273 tests performed            75.93   67886004
+## 48                            0.280 tests performed            75.93   67886004
+## 49                            0.231 tests performed            75.93   67886004
+## 50                            0.235 tests performed            75.93   67886004
+## 51                            0.239 tests performed            75.93   67886004
+## 52                            0.239 tests performed            75.93   67886004
+## 53                            0.243 tests performed            75.93   67886004
+## 54                            0.248 tests performed            75.93   67886004
+## 55                            0.253 tests performed            75.93   67886004
+## 56                            0.260 tests performed            75.93   67886004
+## 57                            0.268 tests performed            75.93   67886004
+## 58                            0.278 tests performed            75.93   67886004
+## 59                            0.321 tests performed            75.93   67886004
+## 60                            0.335 tests performed            75.93   67886004
+## 61                            0.344 tests performed            75.93   67886004
+## 62                            0.359 tests performed            75.93   67886004
+## 63                            0.374 tests performed            75.93   67886004
+## 64                            0.391 tests performed            75.93   67886004
+## 65                            0.416 tests performed            75.93   67886004
+## 66                            0.409 tests performed            75.93   67886004
+## 67                            0.456 tests performed            75.93   67886004
+## 68                            0.550 tests performed            75.93   67886004
+## 69                            0.666 tests performed            75.93   67886004
+## 70                            0.763 tests performed            75.93   67886004
+## 71                            0.835 tests performed            75.93   67886004
+## 72                            0.912 tests performed            75.93   67886004
+## 73                            1.001 tests performed            75.93   67886004
+## 74                            1.044 tests performed            75.93   67886004
+## 75                            1.061 tests performed            75.93   67886004
+## 76                            1.048 tests performed            75.93   67886004
+## 77                            1.049 tests performed            75.93   67886004
+## 78                            1.072 tests performed            75.93   67886004
+## 79                            1.083 tests performed            75.93   67886004
+## 80                            1.070 tests performed            75.93   67886004
+## 81                            1.084 tests performed            75.93   67886004
+## 82                            1.096 tests performed            69.44   67886004
+## 83                            1.106 tests performed            69.44   67886004
+## 84                            1.134 tests performed            69.44   67886004
+## 85                            1.163 tests performed            69.44   67886004
+## 86                            1.166 tests performed            69.44   67886004
+## 87                            1.158 tests performed            69.44   67886004
+## 88                            1.155 tests performed            69.44   67886004
+## 89                            1.155 tests performed            69.44   67886004
+## 90                            1.172 tests performed            69.44   67886004
+## 91                            1.154 tests performed            69.44   67886004
+## 92                            1.105 tests performed            69.44   67886004
+## 93                            1.260 tests performed            69.44   67886004
+## 94                            1.245 tests performed            69.44   67886004
+## 95                            1.221 tests performed            69.44   67886004
+## 96                            1.203 tests performed            69.44   67886004
+## 97                            1.227 tests performed            69.44   67886004
+## 98                            1.248 tests performed            69.44   67886004
+## 99                            1.297 tests performed            69.44   67886004
+## 100                           1.145 tests performed            67.59   67886004
+## 101                           1.193 tests performed            67.59   67886004
+## 102                           1.249 tests performed            67.59   67886004
+## 103                           1.272 tests performed            67.59   67886004
+## 104                           1.280 tests performed            67.59   67886004
+## 105                           1.283 tests performed            67.59   67886004
+## 106                           1.301 tests performed            67.59   67886004
+## 107                           1.380 tests performed            73.15   67886004
+## 108                           1.390 tests performed            73.15   67886004
+## 109                           1.393 tests performed            73.15   67886004
+## 110                           1.403 tests performed            73.15   67886004
+## 111                           1.395 tests performed            73.15   67886004
+## 112                           1.407 tests performed            73.15   67886004
+## 113                           1.373 tests performed            73.15   67886004
+## 114                           1.300 tests performed            71.30   67886004
+## 115                           1.274 tests performed            71.30   67886004
+## 116                           1.244 tests performed            71.30   67886004
+## 117                           1.224 tests performed            71.30   67886004
+## 118                           1.205 tests performed            71.30   67886004
+## 119                           1.171 tests performed            71.30   67886004
+## 120                           1.150 tests performed            71.30   67886004
+## 121                           1.140 tests performed            71.30   67886004
+## 122                           1.114 tests performed            71.30   67886004
+## 123                           1.123 tests performed            71.30   67886004
+## 124                           1.220 tests performed            71.30   67886004
+## 125                           1.233 tests performed            71.30   67886004
+## 126                           1.255 tests performed            71.30   67886004
+## 127                           1.271 tests performed            71.30   67886004
+## 128                           1.275 tests performed            71.30   67886004
+## 129                           1.340 tests performed            71.30   67886004
+## 130                           1.392 tests performed            71.30   67886004
+## 131                           1.340 tests performed            71.30   67886004
+## 132                           1.390 tests performed            69.91   67886004
+## 133                           1.416 tests performed            69.91   67886004
+## 134                           1.413 tests performed            69.91   67886004
+## 135                           1.420 tests performed            67.13   67886004
+## 136                           1.435 tests performed            67.13   67886004
+## 137                           1.477 tests performed            67.13   67886004
+## 138                           1.506 tests performed            67.13   67886004
+## 139                           1.571 tests performed            67.13   67886004
+## 140                           1.590 tests performed            67.13   67886004
+## 141                           1.612 tests performed            67.13   67886004
+## 142                           1.638 tests performed               NA   67886004
+## 143                           1.665 tests performed               NA   67886004
+## 144                           1.702 tests performed               NA   67886004
+## 145                           1.764 tests performed               NA   67886004
+## 146                           1.780 tests performed               NA   67886004
+## 147                           1.813 tests performed               NA   67886004
+## 148                              NA                               NA   67886004
+##     population_density median_age aged_65_older aged_70_older gdp_per_capita
+## 1              272.898       40.8        18.517        12.527       39753.24
+## 2              272.898       40.8        18.517        12.527       39753.24
+## 3              272.898       40.8        18.517        12.527       39753.24
+## 4              272.898       40.8        18.517        12.527       39753.24
+## 5              272.898       40.8        18.517        12.527       39753.24
+## 6              272.898       40.8        18.517        12.527       39753.24
+## 7              272.898       40.8        18.517        12.527       39753.24
+## 8              272.898       40.8        18.517        12.527       39753.24
+## 9              272.898       40.8        18.517        12.527       39753.24
+## 10             272.898       40.8        18.517        12.527       39753.24
+## 11             272.898       40.8        18.517        12.527       39753.24
+## 12             272.898       40.8        18.517        12.527       39753.24
+## 13             272.898       40.8        18.517        12.527       39753.24
+## 14             272.898       40.8        18.517        12.527       39753.24
+## 15             272.898       40.8        18.517        12.527       39753.24
+## 16             272.898       40.8        18.517        12.527       39753.24
+## 17             272.898       40.8        18.517        12.527       39753.24
+## 18             272.898       40.8        18.517        12.527       39753.24
+## 19             272.898       40.8        18.517        12.527       39753.24
+## 20             272.898       40.8        18.517        12.527       39753.24
+## 21             272.898       40.8        18.517        12.527       39753.24
+## 22             272.898       40.8        18.517        12.527       39753.24
+## 23             272.898       40.8        18.517        12.527       39753.24
+## 24             272.898       40.8        18.517        12.527       39753.24
+## 25             272.898       40.8        18.517        12.527       39753.24
+## 26             272.898       40.8        18.517        12.527       39753.24
+## 27             272.898       40.8        18.517        12.527       39753.24
+## 28             272.898       40.8        18.517        12.527       39753.24
+## 29             272.898       40.8        18.517        12.527       39753.24
+## 30             272.898       40.8        18.517        12.527       39753.24
+## 31             272.898       40.8        18.517        12.527       39753.24
+## 32             272.898       40.8        18.517        12.527       39753.24
+## 33             272.898       40.8        18.517        12.527       39753.24
+## 34             272.898       40.8        18.517        12.527       39753.24
+## 35             272.898       40.8        18.517        12.527       39753.24
+## 36             272.898       40.8        18.517        12.527       39753.24
+## 37             272.898       40.8        18.517        12.527       39753.24
+## 38             272.898       40.8        18.517        12.527       39753.24
+## 39             272.898       40.8        18.517        12.527       39753.24
+## 40             272.898       40.8        18.517        12.527       39753.24
+## 41             272.898       40.8        18.517        12.527       39753.24
+## 42             272.898       40.8        18.517        12.527       39753.24
+## 43             272.898       40.8        18.517        12.527       39753.24
+## 44             272.898       40.8        18.517        12.527       39753.24
+## 45             272.898       40.8        18.517        12.527       39753.24
+## 46             272.898       40.8        18.517        12.527       39753.24
+## 47             272.898       40.8        18.517        12.527       39753.24
+## 48             272.898       40.8        18.517        12.527       39753.24
+## 49             272.898       40.8        18.517        12.527       39753.24
+## 50             272.898       40.8        18.517        12.527       39753.24
+## 51             272.898       40.8        18.517        12.527       39753.24
+## 52             272.898       40.8        18.517        12.527       39753.24
+## 53             272.898       40.8        18.517        12.527       39753.24
+## 54             272.898       40.8        18.517        12.527       39753.24
+## 55             272.898       40.8        18.517        12.527       39753.24
+## 56             272.898       40.8        18.517        12.527       39753.24
+## 57             272.898       40.8        18.517        12.527       39753.24
+## 58             272.898       40.8        18.517        12.527       39753.24
+## 59             272.898       40.8        18.517        12.527       39753.24
+## 60             272.898       40.8        18.517        12.527       39753.24
+## 61             272.898       40.8        18.517        12.527       39753.24
+## 62             272.898       40.8        18.517        12.527       39753.24
+## 63             272.898       40.8        18.517        12.527       39753.24
+## 64             272.898       40.8        18.517        12.527       39753.24
+## 65             272.898       40.8        18.517        12.527       39753.24
+## 66             272.898       40.8        18.517        12.527       39753.24
+## 67             272.898       40.8        18.517        12.527       39753.24
+## 68             272.898       40.8        18.517        12.527       39753.24
+## 69             272.898       40.8        18.517        12.527       39753.24
+## 70             272.898       40.8        18.517        12.527       39753.24
+## 71             272.898       40.8        18.517        12.527       39753.24
+## 72             272.898       40.8        18.517        12.527       39753.24
+## 73             272.898       40.8        18.517        12.527       39753.24
+## 74             272.898       40.8        18.517        12.527       39753.24
+## 75             272.898       40.8        18.517        12.527       39753.24
+## 76             272.898       40.8        18.517        12.527       39753.24
+## 77             272.898       40.8        18.517        12.527       39753.24
+## 78             272.898       40.8        18.517        12.527       39753.24
+## 79             272.898       40.8        18.517        12.527       39753.24
+## 80             272.898       40.8        18.517        12.527       39753.24
+## 81             272.898       40.8        18.517        12.527       39753.24
+## 82             272.898       40.8        18.517        12.527       39753.24
+## 83             272.898       40.8        18.517        12.527       39753.24
+## 84             272.898       40.8        18.517        12.527       39753.24
+## 85             272.898       40.8        18.517        12.527       39753.24
+## 86             272.898       40.8        18.517        12.527       39753.24
+## 87             272.898       40.8        18.517        12.527       39753.24
+## 88             272.898       40.8        18.517        12.527       39753.24
+## 89             272.898       40.8        18.517        12.527       39753.24
+## 90             272.898       40.8        18.517        12.527       39753.24
+## 91             272.898       40.8        18.517        12.527       39753.24
+## 92             272.898       40.8        18.517        12.527       39753.24
+## 93             272.898       40.8        18.517        12.527       39753.24
+## 94             272.898       40.8        18.517        12.527       39753.24
+## 95             272.898       40.8        18.517        12.527       39753.24
+## 96             272.898       40.8        18.517        12.527       39753.24
+## 97             272.898       40.8        18.517        12.527       39753.24
+## 98             272.898       40.8        18.517        12.527       39753.24
+## 99             272.898       40.8        18.517        12.527       39753.24
+## 100            272.898       40.8        18.517        12.527       39753.24
+## 101            272.898       40.8        18.517        12.527       39753.24
+## 102            272.898       40.8        18.517        12.527       39753.24
+## 103            272.898       40.8        18.517        12.527       39753.24
+## 104            272.898       40.8        18.517        12.527       39753.24
+## 105            272.898       40.8        18.517        12.527       39753.24
+## 106            272.898       40.8        18.517        12.527       39753.24
+## 107            272.898       40.8        18.517        12.527       39753.24
+## 108            272.898       40.8        18.517        12.527       39753.24
+## 109            272.898       40.8        18.517        12.527       39753.24
+## 110            272.898       40.8        18.517        12.527       39753.24
+## 111            272.898       40.8        18.517        12.527       39753.24
+## 112            272.898       40.8        18.517        12.527       39753.24
+## 113            272.898       40.8        18.517        12.527       39753.24
+## 114            272.898       40.8        18.517        12.527       39753.24
+## 115            272.898       40.8        18.517        12.527       39753.24
+## 116            272.898       40.8        18.517        12.527       39753.24
+## 117            272.898       40.8        18.517        12.527       39753.24
+## 118            272.898       40.8        18.517        12.527       39753.24
+## 119            272.898       40.8        18.517        12.527       39753.24
+## 120            272.898       40.8        18.517        12.527       39753.24
+## 121            272.898       40.8        18.517        12.527       39753.24
+## 122            272.898       40.8        18.517        12.527       39753.24
+## 123            272.898       40.8        18.517        12.527       39753.24
+## 124            272.898       40.8        18.517        12.527       39753.24
+## 125            272.898       40.8        18.517        12.527       39753.24
+## 126            272.898       40.8        18.517        12.527       39753.24
+## 127            272.898       40.8        18.517        12.527       39753.24
+## 128            272.898       40.8        18.517        12.527       39753.24
+## 129            272.898       40.8        18.517        12.527       39753.24
+## 130            272.898       40.8        18.517        12.527       39753.24
+## 131            272.898       40.8        18.517        12.527       39753.24
+## 132            272.898       40.8        18.517        12.527       39753.24
+## 133            272.898       40.8        18.517        12.527       39753.24
+## 134            272.898       40.8        18.517        12.527       39753.24
+## 135            272.898       40.8        18.517        12.527       39753.24
+## 136            272.898       40.8        18.517        12.527       39753.24
+## 137            272.898       40.8        18.517        12.527       39753.24
+## 138            272.898       40.8        18.517        12.527       39753.24
+## 139            272.898       40.8        18.517        12.527       39753.24
+## 140            272.898       40.8        18.517        12.527       39753.24
+## 141            272.898       40.8        18.517        12.527       39753.24
+## 142            272.898       40.8        18.517        12.527       39753.24
+## 143            272.898       40.8        18.517        12.527       39753.24
+## 144            272.898       40.8        18.517        12.527       39753.24
+## 145            272.898       40.8        18.517        12.527       39753.24
+## 146            272.898       40.8        18.517        12.527       39753.24
+## 147            272.898       40.8        18.517        12.527       39753.24
+## 148            272.898       40.8        18.517        12.527       39753.24
+##     extreme_poverty cardiovasc_death_rate diabetes_prevalence female_smokers
+## 1               0.2               122.137                4.28             20
+## 2               0.2               122.137                4.28             20
+## 3               0.2               122.137                4.28             20
+## 4               0.2               122.137                4.28             20
+## 5               0.2               122.137                4.28             20
+## 6               0.2               122.137                4.28             20
+## 7               0.2               122.137                4.28             20
+## 8               0.2               122.137                4.28             20
+## 9               0.2               122.137                4.28             20
+## 10              0.2               122.137                4.28             20
+## 11              0.2               122.137                4.28             20
+## 12              0.2               122.137                4.28             20
+## 13              0.2               122.137                4.28             20
+## 14              0.2               122.137                4.28             20
+## 15              0.2               122.137                4.28             20
+## 16              0.2               122.137                4.28             20
+## 17              0.2               122.137                4.28             20
+## 18              0.2               122.137                4.28             20
+## 19              0.2               122.137                4.28             20
+## 20              0.2               122.137                4.28             20
+## 21              0.2               122.137                4.28             20
+## 22              0.2               122.137                4.28             20
+## 23              0.2               122.137                4.28             20
+## 24              0.2               122.137                4.28             20
+## 25              0.2               122.137                4.28             20
+## 26              0.2               122.137                4.28             20
+## 27              0.2               122.137                4.28             20
+## 28              0.2               122.137                4.28             20
+## 29              0.2               122.137                4.28             20
+## 30              0.2               122.137                4.28             20
+## 31              0.2               122.137                4.28             20
+## 32              0.2               122.137                4.28             20
+## 33              0.2               122.137                4.28             20
+## 34              0.2               122.137                4.28             20
+## 35              0.2               122.137                4.28             20
+## 36              0.2               122.137                4.28             20
+## 37              0.2               122.137                4.28             20
+## 38              0.2               122.137                4.28             20
+## 39              0.2               122.137                4.28             20
+## 40              0.2               122.137                4.28             20
+## 41              0.2               122.137                4.28             20
+## 42              0.2               122.137                4.28             20
+## 43              0.2               122.137                4.28             20
+## 44              0.2               122.137                4.28             20
+## 45              0.2               122.137                4.28             20
+## 46              0.2               122.137                4.28             20
+## 47              0.2               122.137                4.28             20
+## 48              0.2               122.137                4.28             20
+## 49              0.2               122.137                4.28             20
+## 50              0.2               122.137                4.28             20
+## 51              0.2               122.137                4.28             20
+## 52              0.2               122.137                4.28             20
+## 53              0.2               122.137                4.28             20
+## 54              0.2               122.137                4.28             20
+## 55              0.2               122.137                4.28             20
+## 56              0.2               122.137                4.28             20
+## 57              0.2               122.137                4.28             20
+## 58              0.2               122.137                4.28             20
+## 59              0.2               122.137                4.28             20
+## 60              0.2               122.137                4.28             20
+## 61              0.2               122.137                4.28             20
+## 62              0.2               122.137                4.28             20
+## 63              0.2               122.137                4.28             20
+## 64              0.2               122.137                4.28             20
+## 65              0.2               122.137                4.28             20
+## 66              0.2               122.137                4.28             20
+## 67              0.2               122.137                4.28             20
+## 68              0.2               122.137                4.28             20
+## 69              0.2               122.137                4.28             20
+## 70              0.2               122.137                4.28             20
+## 71              0.2               122.137                4.28             20
+## 72              0.2               122.137                4.28             20
+## 73              0.2               122.137                4.28             20
+## 74              0.2               122.137                4.28             20
+## 75              0.2               122.137                4.28             20
+## 76              0.2               122.137                4.28             20
+## 77              0.2               122.137                4.28             20
+## 78              0.2               122.137                4.28             20
+## 79              0.2               122.137                4.28             20
+## 80              0.2               122.137                4.28             20
+## 81              0.2               122.137                4.28             20
+## 82              0.2               122.137                4.28             20
+## 83              0.2               122.137                4.28             20
+## 84              0.2               122.137                4.28             20
+## 85              0.2               122.137                4.28             20
+## 86              0.2               122.137                4.28             20
+## 87              0.2               122.137                4.28             20
+## 88              0.2               122.137                4.28             20
+## 89              0.2               122.137                4.28             20
+## 90              0.2               122.137                4.28             20
+## 91              0.2               122.137                4.28             20
+## 92              0.2               122.137                4.28             20
+## 93              0.2               122.137                4.28             20
+## 94              0.2               122.137                4.28             20
+## 95              0.2               122.137                4.28             20
+## 96              0.2               122.137                4.28             20
+## 97              0.2               122.137                4.28             20
+## 98              0.2               122.137                4.28             20
+## 99              0.2               122.137                4.28             20
+## 100             0.2               122.137                4.28             20
+## 101             0.2               122.137                4.28             20
+## 102             0.2               122.137                4.28             20
+## 103             0.2               122.137                4.28             20
+## 104             0.2               122.137                4.28             20
+## 105             0.2               122.137                4.28             20
+## 106             0.2               122.137                4.28             20
+## 107             0.2               122.137                4.28             20
+## 108             0.2               122.137                4.28             20
+## 109             0.2               122.137                4.28             20
+## 110             0.2               122.137                4.28             20
+## 111             0.2               122.137                4.28             20
+## 112             0.2               122.137                4.28             20
+## 113             0.2               122.137                4.28             20
+## 114             0.2               122.137                4.28             20
+## 115             0.2               122.137                4.28             20
+## 116             0.2               122.137                4.28             20
+## 117             0.2               122.137                4.28             20
+## 118             0.2               122.137                4.28             20
+## 119             0.2               122.137                4.28             20
+## 120             0.2               122.137                4.28             20
+## 121             0.2               122.137                4.28             20
+## 122             0.2               122.137                4.28             20
+## 123             0.2               122.137                4.28             20
+## 124             0.2               122.137                4.28             20
+## 125             0.2               122.137                4.28             20
+## 126             0.2               122.137                4.28             20
+## 127             0.2               122.137                4.28             20
+## 128             0.2               122.137                4.28             20
+## 129             0.2               122.137                4.28             20
+## 130             0.2               122.137                4.28             20
+## 131             0.2               122.137                4.28             20
+## 132             0.2               122.137                4.28             20
+## 133             0.2               122.137                4.28             20
+## 134             0.2               122.137                4.28             20
+## 135             0.2               122.137                4.28             20
+## 136             0.2               122.137                4.28             20
+## 137             0.2               122.137                4.28             20
+## 138             0.2               122.137                4.28             20
+## 139             0.2               122.137                4.28             20
+## 140             0.2               122.137                4.28             20
+## 141             0.2               122.137                4.28             20
+## 142             0.2               122.137                4.28             20
+## 143             0.2               122.137                4.28             20
+## 144             0.2               122.137                4.28             20
+## 145             0.2               122.137                4.28             20
+## 146             0.2               122.137                4.28             20
+## 147             0.2               122.137                4.28             20
+## 148             0.2               122.137                4.28             20
+##     male_smokers handwashing_facilities hospital_beds_per_thousand
+## 1           24.7                     NA                       2.54
+## 2           24.7                     NA                       2.54
+## 3           24.7                     NA                       2.54
+## 4           24.7                     NA                       2.54
+## 5           24.7                     NA                       2.54
+## 6           24.7                     NA                       2.54
+## 7           24.7                     NA                       2.54
+## 8           24.7                     NA                       2.54
+## 9           24.7                     NA                       2.54
+## 10          24.7                     NA                       2.54
+## 11          24.7                     NA                       2.54
+## 12          24.7                     NA                       2.54
+## 13          24.7                     NA                       2.54
+## 14          24.7                     NA                       2.54
+## 15          24.7                     NA                       2.54
+## 16          24.7                     NA                       2.54
+## 17          24.7                     NA                       2.54
+## 18          24.7                     NA                       2.54
+## 19          24.7                     NA                       2.54
+## 20          24.7                     NA                       2.54
+## 21          24.7                     NA                       2.54
+## 22          24.7                     NA                       2.54
+## 23          24.7                     NA                       2.54
+## 24          24.7                     NA                       2.54
+## 25          24.7                     NA                       2.54
+## 26          24.7                     NA                       2.54
+## 27          24.7                     NA                       2.54
+## 28          24.7                     NA                       2.54
+## 29          24.7                     NA                       2.54
+## 30          24.7                     NA                       2.54
+## 31          24.7                     NA                       2.54
+## 32          24.7                     NA                       2.54
+## 33          24.7                     NA                       2.54
+## 34          24.7                     NA                       2.54
+## 35          24.7                     NA                       2.54
+## 36          24.7                     NA                       2.54
+## 37          24.7                     NA                       2.54
+## 38          24.7                     NA                       2.54
+## 39          24.7                     NA                       2.54
+## 40          24.7                     NA                       2.54
+## 41          24.7                     NA                       2.54
+## 42          24.7                     NA                       2.54
+## 43          24.7                     NA                       2.54
+## 44          24.7                     NA                       2.54
+## 45          24.7                     NA                       2.54
+## 46          24.7                     NA                       2.54
+## 47          24.7                     NA                       2.54
+## 48          24.7                     NA                       2.54
+## 49          24.7                     NA                       2.54
+## 50          24.7                     NA                       2.54
+## 51          24.7                     NA                       2.54
+## 52          24.7                     NA                       2.54
+## 53          24.7                     NA                       2.54
+## 54          24.7                     NA                       2.54
+## 55          24.7                     NA                       2.54
+## 56          24.7                     NA                       2.54
+## 57          24.7                     NA                       2.54
+## 58          24.7                     NA                       2.54
+## 59          24.7                     NA                       2.54
+## 60          24.7                     NA                       2.54
+## 61          24.7                     NA                       2.54
+## 62          24.7                     NA                       2.54
+## 63          24.7                     NA                       2.54
+## 64          24.7                     NA                       2.54
+## 65          24.7                     NA                       2.54
+## 66          24.7                     NA                       2.54
+## 67          24.7                     NA                       2.54
+## 68          24.7                     NA                       2.54
+## 69          24.7                     NA                       2.54
+## 70          24.7                     NA                       2.54
+## 71          24.7                     NA                       2.54
+## 72          24.7                     NA                       2.54
+## 73          24.7                     NA                       2.54
+## 74          24.7                     NA                       2.54
+## 75          24.7                     NA                       2.54
+## 76          24.7                     NA                       2.54
+## 77          24.7                     NA                       2.54
+## 78          24.7                     NA                       2.54
+## 79          24.7                     NA                       2.54
+## 80          24.7                     NA                       2.54
+## 81          24.7                     NA                       2.54
+## 82          24.7                     NA                       2.54
+## 83          24.7                     NA                       2.54
+## 84          24.7                     NA                       2.54
+## 85          24.7                     NA                       2.54
+## 86          24.7                     NA                       2.54
+## 87          24.7                     NA                       2.54
+## 88          24.7                     NA                       2.54
+## 89          24.7                     NA                       2.54
+## 90          24.7                     NA                       2.54
+## 91          24.7                     NA                       2.54
+## 92          24.7                     NA                       2.54
+## 93          24.7                     NA                       2.54
+## 94          24.7                     NA                       2.54
+## 95          24.7                     NA                       2.54
+## 96          24.7                     NA                       2.54
+## 97          24.7                     NA                       2.54
+## 98          24.7                     NA                       2.54
+## 99          24.7                     NA                       2.54
+## 100         24.7                     NA                       2.54
+## 101         24.7                     NA                       2.54
+## 102         24.7                     NA                       2.54
+## 103         24.7                     NA                       2.54
+## 104         24.7                     NA                       2.54
+## 105         24.7                     NA                       2.54
+## 106         24.7                     NA                       2.54
+## 107         24.7                     NA                       2.54
+## 108         24.7                     NA                       2.54
+## 109         24.7                     NA                       2.54
+## 110         24.7                     NA                       2.54
+## 111         24.7                     NA                       2.54
+## 112         24.7                     NA                       2.54
+## 113         24.7                     NA                       2.54
+## 114         24.7                     NA                       2.54
+## 115         24.7                     NA                       2.54
+## 116         24.7                     NA                       2.54
+## 117         24.7                     NA                       2.54
+## 118         24.7                     NA                       2.54
+## 119         24.7                     NA                       2.54
+## 120         24.7                     NA                       2.54
+## 121         24.7                     NA                       2.54
+## 122         24.7                     NA                       2.54
+## 123         24.7                     NA                       2.54
+## 124         24.7                     NA                       2.54
+## 125         24.7                     NA                       2.54
+## 126         24.7                     NA                       2.54
+## 127         24.7                     NA                       2.54
+## 128         24.7                     NA                       2.54
+## 129         24.7                     NA                       2.54
+## 130         24.7                     NA                       2.54
+## 131         24.7                     NA                       2.54
+## 132         24.7                     NA                       2.54
+## 133         24.7                     NA                       2.54
+## 134         24.7                     NA                       2.54
+## 135         24.7                     NA                       2.54
+## 136         24.7                     NA                       2.54
+## 137         24.7                     NA                       2.54
+## 138         24.7                     NA                       2.54
+## 139         24.7                     NA                       2.54
+## 140         24.7                     NA                       2.54
+## 141         24.7                     NA                       2.54
+## 142         24.7                     NA                       2.54
+## 143         24.7                     NA                       2.54
+## 144         24.7                     NA                       2.54
+## 145         24.7                     NA                       2.54
+## 146         24.7                     NA                       2.54
+## 147         24.7                     NA                       2.54
+## 148         24.7                     NA                       2.54
+##     life_expectancy   critical_date  cases_7day
+## 1             81.32            &lt;NA&gt;          NA
+## 2             81.32            &lt;NA&gt;          NA
+## 3             81.32            &lt;NA&gt;          NA
+## 4             81.32            &lt;NA&gt;    2.285714
+## 5             81.32            &lt;NA&gt;    2.285714
+## 6             81.32            &lt;NA&gt;    2.857143
+## 7             81.32            &lt;NA&gt;    4.571429
+## 8             81.32            &lt;NA&gt;    4.571429
+## 9             81.32            &lt;NA&gt;    6.000000
+## 10            81.32            &lt;NA&gt;   10.285714
+## 11            81.32            &lt;NA&gt;   14.142857
+## 12            81.32            &lt;NA&gt;   20.714286
+## 13            81.32            &lt;NA&gt;   26.142857
+## 14            81.32            &lt;NA&gt;   33.857143
+## 15            81.32            &lt;NA&gt;   40.142857
+## 16            81.32            &lt;NA&gt;   46.000000
+## 17            81.32            &lt;NA&gt;   53.000000
+## 18            81.32            &lt;NA&gt;   67.857143
+## 19            81.32            &lt;NA&gt;   77.714286
+## 20            81.32            &lt;NA&gt;  133.428571
+## 21            81.32            &lt;NA&gt;  159.714286
+## 22            81.32            &lt;NA&gt;  174.571429
+## 23            81.32            &lt;NA&gt;  225.285714
+## 24            81.32            &lt;NA&gt;  310.571429
+## 25            81.32            &lt;NA&gt;  383.857143
+## 26            81.32            &lt;NA&gt;  468.000000
+## 27            81.32            &lt;NA&gt;  554.000000
+## 28            81.32            &lt;NA&gt;  613.142857
+## 29            81.32            &lt;NA&gt;  729.571429
+## 30            81.32            &lt;NA&gt;  875.285714
+## 31            81.32        Lockdown  985.571429
+## 32            81.32            &lt;NA&gt; 1197.285714
+## 33            81.32            &lt;NA&gt; 1508.571429
+## 34            81.32            &lt;NA&gt; 1724.428571
+## 35            81.32            &lt;NA&gt; 1977.000000
+## 36            81.32            &lt;NA&gt; 2213.000000
+## 37            81.32            &lt;NA&gt; 2439.000000
+## 38            81.32            &lt;NA&gt; 2849.285714
+## 39            81.32            &lt;NA&gt; 3151.428571
+## 40            81.32            &lt;NA&gt; 3375.000000
+## 41            81.32            &lt;NA&gt; 3544.857143
+## 42            81.32            &lt;NA&gt; 4040.571429
+## 43            81.32            &lt;NA&gt; 4209.571429
+## 44            81.32            &lt;NA&gt; 4298.857143
+## 45            81.32            &lt;NA&gt; 4465.571429
+## 46            81.32            &lt;NA&gt; 4479.857143
+## 47            81.32            &lt;NA&gt; 4586.285714
+## 48            81.32            &lt;NA&gt; 5298.285714
+## 49            81.32            &lt;NA&gt; 5210.428571
+## 50            81.32            &lt;NA&gt; 5287.571429
+## 51            81.32            &lt;NA&gt; 5518.714286
+## 52            81.32            &lt;NA&gt; 5391.857143
+## 53            81.32            &lt;NA&gt; 5430.857143
+## 54            81.32            &lt;NA&gt; 5488.571429
+## 55            81.32            &lt;NA&gt; 5032.285714
+## 56            81.32            &lt;NA&gt; 5112.571429
+## 57            81.32            &lt;NA&gt; 5160.285714
+## 58            81.32            &lt;NA&gt; 5024.428571
+## 59            81.32            &lt;NA&gt; 5002.714286
+## 60            81.32            &lt;NA&gt; 4997.857143
+## 61            81.32            &lt;NA&gt; 4967.428571
+## 62            81.32            &lt;NA&gt; 4880.000000
+## 63            81.32            &lt;NA&gt; 4681.857143
+## 64            81.32            &lt;NA&gt; 4629.428571
+## 65            81.32            &lt;NA&gt; 4585.857143
+## 66            81.32            &lt;NA&gt; 4532.285714
+## 67            81.32            &lt;NA&gt; 4739.285714
+## 68            81.32            &lt;NA&gt; 4855.714286
+## 69            81.32            &lt;NA&gt; 4840.428571
+## 70            81.32            &lt;NA&gt; 4822.714286
+## 71            81.32            &lt;NA&gt; 4776.428571
+## 72            81.32            &lt;NA&gt; 4835.000000
+## 73            81.32            &lt;NA&gt; 5140.000000
+## 74            81.32            &lt;NA&gt; 5066.000000
+## 75            81.32            &lt;NA&gt; 4844.285714
+## 76            81.32            &lt;NA&gt; 4714.285714
+## 77            81.32            &lt;NA&gt; 4654.857143
+## 78            81.32            &lt;NA&gt; 4639.428571
+## 79            81.32            &lt;NA&gt; 4496.142857
+## 80            81.32            &lt;NA&gt; 4072.000000
+## 81            81.32            &lt;NA&gt; 3776.571429
+## 82            81.32            &lt;NA&gt; 3621.000000
+## 83            81.32            &lt;NA&gt; 3557.285714
+## 84            81.32            &lt;NA&gt; 3501.714286
+## 85            81.32            &lt;NA&gt; 3335.142857
+## 86            81.32            &lt;NA&gt; 3193.571429
+## 87            81.32            &lt;NA&gt; 3104.000000
+## 88            81.32            &lt;NA&gt; 3081.285714
+## 89            81.32            &lt;NA&gt; 2995.428571
+## 90            81.32            &lt;NA&gt; 2846.142857
+## 91            81.32            &lt;NA&gt; 2573.428571
+## 92            81.32            &lt;NA&gt; 2763.714286
+## 93            81.32            &lt;NA&gt; 2706.714286
+## 94            81.32            &lt;NA&gt; 2602.714286
+## 95            81.32            &lt;NA&gt; 2432.428571
+## 96            81.32            &lt;NA&gt; 2238.857143
+## 97            81.32            &lt;NA&gt; 2171.857143
+## 98            81.32            &lt;NA&gt; 2164.000000
+## 99            81.32            &lt;NA&gt; 1822.571429
+## 100           81.32            &lt;NA&gt; 1802.285714
+## 101           81.32            &lt;NA&gt; 1790.571429
+## 102           81.32            &lt;NA&gt; 1727.000000
+## 103           81.32            &lt;NA&gt; 1720.285714
+## 104           81.32            &lt;NA&gt; 1633.142857
+## 105           81.32            &lt;NA&gt; 1581.000000
+## 106           81.32            &lt;NA&gt; 1593.571429
+## 107           81.32            &lt;NA&gt; 1469.571429
+## 108           81.32            &lt;NA&gt; 1392.571429
+## 109           81.32            &lt;NA&gt; 1377.000000
+## 110           81.32            &lt;NA&gt; 1358.142857
+## 111           81.32            &lt;NA&gt; 1385.000000
+## 112           81.32            &lt;NA&gt; 1351.142857
+## 113           81.32            &lt;NA&gt; 1285.142857
+## 114           81.32            &lt;NA&gt; 1301.142857
+## 115           81.32            &lt;NA&gt; 1294.285714
+## 116           81.32            &lt;NA&gt; 1266.428571
+## 117           81.32            &lt;NA&gt; 1247.857143
+## 118           81.32            &lt;NA&gt; 1206.000000
+## 119           81.32            &lt;NA&gt; 1204.571429
+## 120           81.32            &lt;NA&gt; 1153.428571
+## 121           81.32            &lt;NA&gt; 1087.285714
+## 122           81.32 Lockdown lifted 1073.000000
+## 123           81.32            &lt;NA&gt; 1077.857143
+## 124           81.32            &lt;NA&gt; 1020.000000
+## 125           81.32            &lt;NA&gt;  974.285714
+## 126           81.32            &lt;NA&gt;  953.714286
+## 127           81.32            &lt;NA&gt;  920.571429
+## 128           81.32            &lt;NA&gt;  945.857143
+## 129           81.32            &lt;NA&gt;  860.285714
+## 130           81.32            &lt;NA&gt;  752.285714
+## 131           81.32            &lt;NA&gt;  698.857143
+## 132           81.32            &lt;NA&gt;  620.428571
+## 133           81.32            &lt;NA&gt;  587.142857
+## 134           81.32            &lt;NA&gt;  578.714286
+## 135           81.32            &lt;NA&gt;  552.000000
+## 136           81.32            &lt;NA&gt;  551.000000
+## 137           81.32            &lt;NA&gt;  579.000000
+## 138           81.32            &lt;NA&gt;  598.142857
+## 139           81.32            &lt;NA&gt;  623.571429
+## 140           81.32            &lt;NA&gt;  717.714286
+## 141           81.32            &lt;NA&gt;  704.571429
+## 142           81.32            &lt;NA&gt;  704.428571
+## 143           81.32            &lt;NA&gt;  729.428571
+## 144           81.32            &lt;NA&gt;  730.428571
+## 145           81.32            &lt;NA&gt;  741.285714
+## 146           81.32            &lt;NA&gt;          NA
+## 147           81.32            &lt;NA&gt;          NA
+## 148           81.32            &lt;NA&gt;          NA</code></pre>
+<pre class="r"><code>covid_uk %&gt;% 
+  ggplot(aes(date, cases_7day))+
+  geom_col()+
+  geom_smooth(method = &quot;loess&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 6 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>## Warning: Removed 6 rows containing missing values (position_stack).</code></pre>
+<p><img src="/post/2020-07-17-coronavirus_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
 
     </div>
   </article>

@@ -369,7 +369,7 @@ data %>%
   scale_y_continuous(labels=scales::percent_format())+
   labs(colour = "Ticker",
        title="Industry share prices changes of global car companies (1year)",
-  y="Percentage change")+
+  y="",x="")+
     annotate("text",label="Covid-19",colour="white",x=ymd("20200216"),y=-0.4,angle=90)+
     geom_vline(xintercept = ymd("20200224"),lty=2,colour="grey")+
   theme(axis.text = element_text(),
@@ -408,7 +408,7 @@ tsla %>%
        title="Tesla share prices changes (1year)")+
   annotate("text",label="Covid-19",colour="white",x=ymd(20200216),y=-0.4,angle=90)+
   geom_vline(xintercept = ymd("20200224"),lty=2)+
-  labs(y="Percentage change",
+  labs(y="",
        x="")+
   theme(axis.text = element_text(),
         legend.position = "none")+
