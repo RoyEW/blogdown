@@ -6,3 +6,39 @@ slug: coronavirus
 categories: []
 tags: []
 ---
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(httr)
+
+
+```
+
+```{r}
+covid_raw <- read.csv("covid_data.csv")
+
+critical_dates <- c("20120323")
+  
+covid <- covid_raw %>% 
+  mutate(date=ymd(date))
+
+head(covid)
+
+covid %>% 
+  filter(iso_code=="GBR",
+         new_cases_per_million>0) %>% 
+  ggplot(aes(date,new_cases,colour=location))+
+  geom_col()+
+  theme_bw()+
+  theme(legend.position = "none")+
+  labs(title="UK New cases")
+  
+#ale_color_manual(values=c("dodgerblue","red"),aesthetics = c("colour"))+  
+#scale_y_log10(labels=scales::number_format())
+
+
+```
+
+

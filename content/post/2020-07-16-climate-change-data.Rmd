@@ -13,46 +13,46 @@ tags: []
 data sourced from the World Bank using WDI R package api.
 
 ```{r}
-library(Quandl)
-library(wbstats)
-library(rWBclimate)
-library(WDI)
-library(tidyverse)
+#library(Quandl)
+#library(wbstats)
+#library(rWBclimate)
+#library(WDI)
+#library(tidyverse)
 
-WDIsearch("gdp")
+#WDIsearch("gdp")
 
-"EN.ATM.GHGT.KT.CE"
-dat = WDI(indicator="EN.ATM.GHGT.KT.CE", country=c('CN','US','IN','RU','JP','GB','FR','DE'), start=1970)
+#"EN.ATM.GHGT.KT.CE"
+#dat = WDI(indicator="EN.ATM.GHGT.KT.CE", #country=c('CN','US','IN','RU','JP','GB','FR','DE'), start=1970)
 
-gdp <- WDI(indicator = c("gdp_per_capita" = "NY.GDP.PCAP.KD",
-                         "population" = "SP.POP.TOTL"))
+#gdp <- WDI(indicator = c("gdp_per_capita" = "NY.GDP.PCAP.KD",
+#                         "population" = "SP.POP.TOTL"))
 
-dat %>% 
-  ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
-  geom_line()+
-  scale_y_log10(labels=scales::number_format())+
-  theme_void()+
-  theme(axis.text.x  = element_text(),axis.text.y  = element_text(),legend.position = "bottom")
+#dat %>% 
+#  ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
+#  geom_line()+
+#  scale_y_log10(labels=scales::number_format())+
+#  theme_void()+
+#  theme(axis.text.x  = element_text(),axis.text.y  = element_text(),legend.position = #"bottom")
 
-data <- dat %>% 
-  group_by(year) %>% 
-  summarise(total_emissions = sum(EN.ATM.GHGT.KT.CE)) %>% 
-  mutate(cumulative=cumsum(total_emissions))
+#data <- dat %>% 
+#  group_by(year) %>% 
+#  summarise(total_emissions = sum(EN.ATM.GHGT.KT.CE)) %>% 
+#  mutate(cumulative=cumsum(total_emissions))
 
-data %>% 
-  mutate(perc_emissions = (total_emissions/lag(total_emissions)-1),
-         state=ifelse(perc_emissions>0,"increasing","decreasing")) %>%
-  ggplot(aes(year, perc_emissions))+
-  geom_rect(aes(ymin=ifelse(state=="red",perc_emissions,0),xmin=year-0.5,xmax=year+0.5,fill=state,ymax=ifelse(state=="red",0,perc_emissions)),alpha=0.8)+
-  scale_color_manual(values=c("green","red"),aesthetics = c("fill"))+
-  geom_errorbar(aes(ymax=perc_emissions,ymin=0),lty=1,size=1,width=2)+
-  geom_hline(yintercept = 0)+
-  theme_void()+
-  labs(title="Top 10 combined most polluting nations",
-       subtitle="Percentage change year on year of global Co2 and equivalent emissions")+
-  theme(axis.text.x = element_text(),axis.text.y = element_text(),
-        legend.position="none")+
-  scale_y_continuous(labels=scales::percent_format())
+#data %>% 
+#  mutate(perc_emissions = (total_emissions/lag(total_emissions)-1),
+#         state=ifelse(perc_emissions>0,"increasing","decreasing")) %>%
+#  ggplot(aes(year, perc_emissions))+
+#  geom_rect(aes(ymin=ifelse(state=="red",perc_emissions,0),xmin=year-0.5,xmax=year+0.#5,fill=state,ymax=ifelse(state=="red",0,perc_emissions)),alpha=0.8)+
+#  scale_color_manual(values=c("green","red"),aesthetics = c("fill"))+
+#  geom_errorbar(aes(ymax=perc_emissions,ymin=0),lty=1,size=1,width=2)+
+#  geom_hline(yintercept = 0)+
+#  theme_void()+
+#  labs(title="Top 10 combined most polluting nations",
+#       subtitle="Percentage change year on year of global Co2 and equivalent #emissions")+
+#  theme(axis.text.x = element_text(),axis.text.y = element_text(),
+#        legend.position="none")+
+#  scale_y_continuous(labels=scales::percent_format())
 
 ```
 

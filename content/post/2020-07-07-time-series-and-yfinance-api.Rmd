@@ -316,24 +316,18 @@ tsla %>%
   lims(x=c(today()-28,today()))
 
 
-additional <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 30) %>% 
-  filter(!is.na(price),
-         price>1) %>%
-  group_by(ticker) %>% 
-  mutate(percentage_price = ((price/lag(price,1)) - 1)) %>%
-  ungroup() %>% 
-  mutate(market_state=case_when(percentage_price>0.02 ~ "+",
-                                 percentage_price<(-0.02)~ "-",
-                                 TRUE ~ ""))
 
 ```
 
 
 ```{r}
-(data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
+share_prices <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","HMC","GM","VOW.DE","TM", period = "max",length = 1825) %>% 
   filter(!is.na(price),
          price>1) %>%
-  mutate(price=price) %>% 
+  mutate(price=price)
+
+ 
+ share_prices %>% 
   ggplot()+
   geom_line(aes(date, price, colour = ticker))+
   geom_smooth(aes(date, price, colour = ticker),se = F)+
@@ -342,7 +336,7 @@ additional <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.
   labs(colour = "Ticker",
        title="Share prices of global car companies (5year)")+
   theme(axis.text = element_text(),
-        legend.position = "bottom"))
+        legend.position = "bottom")
 
 ```
 
@@ -367,7 +361,7 @@ data <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","H
 
 data %>% 
    ggplot()+
-   geom_rect(aes(fill=market_state,xmin=date-5,xmax=date+5,ymin=ifelse(market_state=="+",0,data$percentage_price),ymax=ifelse(market_state=="+",data$percentage_price,0)),alpha=0.03)+
+   geom_rect(aes(fill=market_state,xmin=date-5,xmax=date+5,ymin=ifelse(market_state=="+",0,percentage_price),ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.03)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
   geom_hline(yintercept = 0)+
@@ -376,7 +370,7 @@ data %>%
   labs(colour = "Ticker",
        title="Industry share prices changes of global car companies (1year)",
   y="Percentage change")+
-    annotate("text",label="Covid-19",colour="white",x=ymd(20200216),y=-0.4,angle=90)+
+    annotate("text",label="Covid-19",colour="white",x=ymd("20200216"),y=-0.4,angle=90)+
     geom_vline(xintercept = ymd("20200224"),lty=2,colour="grey")+
   theme(axis.text = element_text(),
         legend.position = "none")+
@@ -394,17 +388,17 @@ tsla <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BMW.DE","H
   filter(!is.na(price),
          price>1) %>%
   group_by(ticker) %>% 
-  mutate(percentage_price = ((price/lag(price,14)) - 1)) %>%
+  mutate(percentage_price = ((price/lag(price,7)) - 1)) %>%
   ungroup() %>% 
-  mutate(market_state=case_when(percentage_price>0.02 ~ "+",
-                                 percentage_price<(-0.02)~ "-",
+  mutate(market_state=case_when(percentage_price>0.00 ~ "+",
+                                 percentage_price<(-0.00)~ "-",
                                  TRUE ~ ""))
 tsla_states <- tsla %>%
   filter(ticker=="TSLA")
 
 tsla %>% 
    ggplot()+
-   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-14,ymin=ifelse(market_state=="+",0,percentage_price),xmax=date+7,ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.05)+
+   geom_rect(data=tsla_states,aes(fill=market_state,xmin=date-5,ymin=ifelse(market_state=="+",0,percentage_price),xmax=date+5,ymax=ifelse(market_state=="+",percentage_price,0)),alpha=0.05)+
   scale_color_manual(values = c("white","red", "green"),aesthetics = c("fill"))+
   geom_step(aes(date, percentage_price, colour = ticker))+
   ggdark::dark_theme_minimal()+
@@ -445,12 +439,7 @@ eps <- extract_eps("Decompositions\\Raw income statements\\Ferrari.xls", name="F
   union_all(extract_eps("Decompositions\\Raw income statements\\BMW.xls", name="BMW")) %>% 
   union_all(extract_eps("Decompositions\\Raw income statements\\Daimler.xls", name="Daimler"))
 
-eps <- eps %>% 
-  mutate(net_earnings=as.numeric(net_earnings))
-eps %>% 
-  ggplot(aes(id,net_earnings, colour=name))+
-  geom_point()+
-  scale_y_log10(labels=scales::number_format())
+
 
 
 ```
