@@ -56,10 +56,11 @@ covid <- covid_raw %>%
            country == "United_States_of_America" ~ "USA",
            TRUE ~ country
          )) %>% 
+  mutate(country = sub("_"," ",country)) %>% 
   filter(cases_rate>0)
 ```
 
-Creating datasets specific to G8 and G20 nations.
+Creating dataframes specific to G8 and G20 nations.
 
 ```{r}
 covid_g8 <- covid %>% 
@@ -86,14 +87,24 @@ covid_g20 %>%
   ggplot(aes(date, cases_rate, colour = country))+
   geom_line()+
   theme(legend.position = "bottom")+
+  geom_vline(xintercept=ymd(20200525), lty=2)+
+  #annotate("text", label = "George Floyd death", angle = 90, x = ymd(20200525)-1,y=150)+
   labs(colour = "Country Code",
        x="",
        y="No. cases per 100,000 people",
-       title = "Active covid-19 cases per 100,000 people in the G8")
+       title = "Active covid-19 cases per 100,000 people in the G20")
 
 
-  #geom_hline(inherit.aes = F, data = covid_rates,aes(yintercept = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000))+
-  #geom_text_repel(inherit.aes = F, data = covid_rates, aes(label = countriesAndTerritories, y=Cumulative_number_for_14_days_of_COVID.19_cases_per_100000, x=today()))
+ggplotly(covid_g20 %>% 
+  ggplot(aes(date, cases_rate, colour = country))+
+  geom_line()+
+  theme(legend.position = "bottom")+
+  geom_vline(xintercept=ymd(20200525))+
+  labs(colour = "Country Code",
+       x="",
+       y="No. cases per 100,000 people",
+       title = "Active covid-19 cases per 100,000 people in the G20")
+)
 
 
 
