@@ -7,56 +7,95 @@ categories: []
 tags: []
 ---
 
+https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+```
+
+Libraries, reading in of the data and light tidying.
 
 ```{r}
 library(tidyverse)
 library(lubridate)
 library(httr)
 library(zoo)
+library(plotly)
+library(ggrepel)
 
-theme_set(theme_bw())
+theme_set(theme_minimal())
+
+covid_raw <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv", na.strings = "", fileEncoding = "UTF-8-BOM") %>% 
+  rename("date" = dateRep,
+         "country" = countriesAndTerritories,
+         "code" = countryterritoryCode,
+         "population2019" = popData2019,
+         "continent" = continentExp,
+         "cases_rate" = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000)
+```
+
+Defining of the G8 and G20 nations
+
+```{r}
+covid_data <- read.csv("covid_data.csv")
+
+G8 <- c("FRA","DEU","ITA","JPN","GBR","USA","RUS","CDN")
+
+G20 <- c("ARG","BRA","AUS","CAN","CHN","FRA","DEU","IND","IDN","ITA","JPN","KOR","MEX","RUS","SAU","ZAF","TUR","GBR","USA")
+
 
 ```
 
+Getting the data ready for use.
+
 ```{r}
-covid_raw <- read.csv("covid_data.csv")
+covid <- covid_raw %>%
+  mutate(date=dmy(date),
+         country= case_when(
+           country == "United_Kingdom" ~ "UK",
+           country == "United_States_of_America" ~ "USA",
+           TRUE ~ country
+         )) %>% 
+  filter(cases_rate>0)
+```
+
+Creating datasets specific to G8 and G20 nations.
+
+```{r}
+covid_g8 <- covid %>% 
+  filter(code %in% c(G8))
+
+covid_g20 <- covid %>% 
+  filter(code %in% c(G20))
+```
 
 
-  
-covid <- covid_raw %>% 
-  mutate(date=ymd(date))
+Plotting our graphs.
 
-covid_uk <- covid %>% 
-   filter(iso_code=="GBR",
-         new_cases_per_million>0,
-         new_cases>0)
+```{r}
+covid_g8 %>% 
+  ggplot(aes(date, cases_rate, colour = country))+
+  geom_line()+
+  theme(legend.position = "bottom")+
+  labs(colour = "Country Code",
+       x="",
+       y="No. cases per 100,000 people",
+       title = "Active covid-19 cases per 100,000 people in the G8")
 
-critical_dates_uk <- covid_uk %>% 
-  mutate(critical_date = case_when(
-    date == ymd(20200323) ~ "Lockdown",
-    date == ymd(20200623) ~ "Lockdown lifted"
-  )) %>% 
-  select(date,critical_date)
-
-covid_uk <- covid_uk %>% 
-  left_join(critical_dates_uk, by = "date",keepall=F) %>% 
-  mutate(cases_7day=rollmean(new_cases, k=7, fill=NA))
+covid_g20 %>% 
+  ggplot(aes(date, cases_rate, colour = country))+
+  geom_line()+
+  theme(legend.position = "bottom")+
+  labs(colour = "Country Code",
+       x="",
+       y="No. cases per 100,000 people",
+       title = "Active covid-19 cases per 100,000 people in the G8")
 
 
-covid_uk %>%
-  ggplot(aes(date,new_cases,colour=location))+
-  geom_col()+
-  theme_bw()+
-  theme(legend.position = "none")+
-  labs(title="UK New cases")
-  
-covid_uk
+  #geom_hline(inherit.aes = F, data = covid_rates,aes(yintercept = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000))+
+  #geom_text_repel(inherit.aes = F, data = covid_rates, aes(label = countriesAndTerritories, y=Cumulative_number_for_14_days_of_COVID.19_cases_per_100000, x=today()))
 
-covid_uk %>% 
-  ggplot(aes(date, cases_7day))+
-  geom_col()+
-  geom_smooth(method = "loess")
-  
+
 
 ```
 
