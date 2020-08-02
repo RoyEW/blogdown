@@ -10,7 +10,7 @@ tags: []
 https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 
 ```{r setup, include=FALSE, message=FALSE,warning=FALSE}
-knitr::opts_chunk$set(echo = FALSE,warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 ```
 
 Libraries, reading in of the data and light tidying.
@@ -27,6 +27,7 @@ library(gganimate)
 library(gifski)
 library(transformr)
 library(tidyr)
+library(ggthemes)
 
 
 theme_set(theme_minimal())
@@ -82,34 +83,12 @@ add_critical_date <- function(date,country,label){
   
 }
 
-
-
-#add_uk_critical_date(date=20200323,country="United Kingdom",label = "Initial lockdown")
-#add_uk_critical_date(20200717,country="United Kingdom",label = "Non-essential travel")
-
-#add_uk_critical_date(20200717,country="United Kingdom",label = "Leisure centres open")
-#add_uk_critical_date(20200525,country="United States",label = "Protests")
-#add_uk_critical_date(20200322,country="United States",label = "State lockdowns")
-#add_uk_critical_date(20200422,country="United States",label = "Partial lifting of lockdowns")
-
-
-#uk_critical_dates <- uk_critical_dates %>% 
- # filter(!is.na(date)) %>% 
- # select(-date.1)
-
-#for (each in seq(1:3)){
-  
-#  plot_country(toString(critical_dates[[1]][each]))
-
-#}
-
-
-
-
 ```
 
 Lockdown date data from wikipedia
 https://en.wikipedia.org/wiki/National_responses_to_the_COVID-19_pandemic#Lockdowns
+
+This lockdown changes data is incomplete.
 
 ```{r}
 dates <- readxl::read_excel("date_data.xlsx", col_names = FALSE)
@@ -145,10 +124,6 @@ critical_dates <- critical_dates %>%
 Plotting our graphs.
 
 ```{r}
-
-
-
-
 plot_country <- function(c){
   covid %>% 
   filter(country == toString(c)) %>%
@@ -159,7 +134,7 @@ plot_country <- function(c){
     subtitle = paste("Current rate is ", round(
       covid %>% filter(country == toString(c)) %>% select(cases_rate) %>% head(1),
       2
-    )," / ", "Points show significant lockdown changes"),
+    ),"", ""),
     x = "",
     y = "No. cases per 100,000 people",
     caption = "Source: https://opendata.ecdc.europa.eu/covid19/",
@@ -169,18 +144,22 @@ plot_country <- function(c){
   #geom_text_repel(data = critical_dates %>% filter(country==toString(c)),aes(x=date, y=cases_rate, label=label),size=3, angle = 90, nudge_y = 20)+
   scale_x_date(date_breaks = "1 month", date_minor_breaks = "1 week",
              date_labels = "%B")+
-  scale_y_continuous(breaks = seq(0,max(max(covid %>% filter(country == toString(c)) %>% select(cases_rate))), floor(max(covid %>% filter(country == toString(c)) %>% select(cases_rate))/10)))+
+    scale_colour_manual(values = c("red","green"),aesthetics = c("colour"))+
+  #scale_y_continuous(breaks = seq(0,max(max(covid %>% filter(country == toString(c)) %>% select(cases_rate))), floor(max(covid %>% filter(country == toString(c)) %>% select(cases_rate))/10)))+
+    ggthemes::theme_fivethirtyeight()+
   theme(panel.grid.major = element_blank(),
         panel.grid.minor.x = element_blank(),
-        legend.position = "bottom")+
-    bbplot::bbc_style()
+        legend.position = "bottom")
 }
 
 
 
+plot_country("United States")
+```
 
 
-covid_g8 %>% ### Keep
+```{r}
+covid_g8 %>% 
   ggplot(aes(date, cases_rate, colour = country))+
   geom_line()+
   theme(legend.position = "bottom")+
@@ -232,6 +211,45 @@ plot_country("Brazil")
 plot_country("Algeria")
 plot_country("Albania")
 
+
+```
+
+```{r}
+covid %>% 
+  mutate(country = fct_reorder(country, -deaths),
+         country = fct_lump(country, 30)) %>% 
+  ggplot(aes(country, deaths, fill = country))+
+  geom_col()+
+  coord_flip()+
+  theme(legend.position = "none")
+
+covid %>% 
+  mutate(country = fct_reorder(country, -deaths),
+         country = fct_lump(country, 20)) %>% 
+  group_by(country) %>% 
+  mutate(deaths = max(deaths)) %>% 
+  summarise(country,deaths) %>% 
+  distinct_all() %>% 
+  ggplot(aes(reorder(country,deaths), deaths, fill = country))+
+  geom_col()+
+  coord_flip()+
+  theme(legend.position = "none")
+
+ggplotly(covid %>% 
+  group_by(continent) %>% 
+  mutate(continent = fct_reorder(continent, -deaths),
+         continent = fct_lump(continent, 20)) %>% 
+  mutate(deaths = max(deaths)) %>% 
+  #summarise(continent,deaths) %>% 
+  distinct_all() %>% 
+  ggplot(aes(reorder(continent,deaths), deaths, fill = country))+
+  geom_col()+
+  coord_flip()+
+  theme(legend.position = "none")+
+    scale_y_continuous(labels = scales::number_format()))
+```
+
+```{r}
 
 ```
 
