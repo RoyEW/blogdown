@@ -50,7 +50,8 @@ G8 <- c("FRA","DEU","ITA","JPN","GBR","USA","RUS","CDN")
 
 G20 <- c("ARG","BRA","AUS","CAN","CHN","FRA","DEU","IND","IDN","ITA","JPN","KOR","MEX","RUS","SAU","ZAF","TUR","GBR","USA")
 
-
+graph_colours <- c("cases_rate" = "orange","deaths" = "red", "Lockdown" = "dodgerblue", "Restrictions lifted" = "green")
+graph_colours
 ```
 
 Getting the data ready for use.
@@ -64,7 +65,8 @@ covid <- covid_raw %>%
            TRUE ~ country
          )) %>% 
   mutate(country = sub("_"," ",country)) %>% 
-  filter(cases_rate>0)
+  filter(cases_rate>-1,
+         deaths > -1)
 ```
 
 Creating dataframes specific to G8 and G20 nations.
@@ -152,9 +154,36 @@ plot_country <- function(c){
         legend.position = "bottom")
 }
 
+plot_deaths <- function(c){
+  covid %>% 
+  filter(country == toString(c)) %>%
+  ggplot(aes(date, deaths)) +
+  geom_line() +
+  labs(
+    title = paste(c, "deaths"),
+    subtitle = paste("Current daily deaths: ", round(
+      covid %>% filter(country == toString(c)) %>% select(deaths) %>% head(1),
+      2
+    ),"", ""),
+    x = "",
+    y = "Daily mumber of deaths",
+    caption = "Source: https://opendata.ecdc.europa.eu/covid19/",
+    colour = "Critical dates"
+  ) +
+    geom_smooth(method = "gam",lty = 2, colour = "red",se=F)+
+    geom_point(data = critical_dates %>% filter(country==toString(c)), aes(date,deaths, colour = label),shape=18,size=4)+
+  scale_x_date(date_breaks = "1 month", date_minor_breaks = "1 week",
+             date_labels = "%B")+
+    scale_colour_manual(values = c("dodgerblue","yellow"),aesthetics = c("colour"))+
+    ggthemes::theme_fivethirtyeight()+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "bottom")
+}
 
 
-plot_country("United States")
+
+
 ```
 
 
@@ -214,15 +243,11 @@ plot_country("Albania")
 
 ```
 
-```{r}
-covid %>% 
-  mutate(country = fct_reorder(country, -deaths),
-         country = fct_lump(country, 30)) %>% 
-  ggplot(aes(country, deaths, fill = country))+
-  geom_col()+
-  coord_flip()+
-  theme(legend.position = "none")
 
+
+# Plotting country deaths
+
+```{r}
 covid %>% 
   mutate(country = fct_reorder(country, -deaths),
          country = fct_lump(country, 20)) %>% 
@@ -242,14 +267,89 @@ ggplotly(covid %>%
   mutate(deaths = max(deaths)) %>% 
   #summarise(continent,deaths) %>% 
   distinct_all() %>% 
-  ggplot(aes(reorder(continent,deaths), deaths, fill = country))+
+  ggplot(aes(reorder(continent,deaths), deaths, fill = reorder(country,deaths)))+
   geom_col()+
   coord_flip()+
   theme(legend.position = "none")+
     scale_y_continuous(labels = scales::number_format()))
+
+plot_deaths("United Kingdom")
+plot_deaths("United States")
+plot_deaths("Brazil")
+plot_deaths("Iraq")
+plot_deaths("Iran")
+plot_deaths("India")
+plot_deaths("Pakistan")
+plot_deaths("Afghanistan")
+plot_deaths("Switzerland")
+plot_deaths("France")
+plot_deaths("Germany")
+plot_deaths("South Korea")
+plot_deaths("North Korea")
+plot_deaths("Holy See")
+plot_deaths("Russia")
+plot_deaths("Japan")
+plot_deaths("Italy")
+plot_deaths("Turkey")
+plot_deaths("South Africa")
+plot_deaths("Spain")
+
+covid %>% 
+  arrange(-population2019) %>%
+  distinct(country) %>% 
+  view
+
+
+df <- covid %>% 
+  count(country, sort = TRUE)
+
+countries <- df[[1]]
+
 ```
+
 
 ```{r}
+plot_cases_deaths <- function(c){
+  covid %>% 
+  filter(country == toString(c)) %>%
+  ggplot(aes(date, deaths)) +
+  geom_line() +
+  labs(
+    title = paste(c, "deaths"),
+    subtitle = paste("Current daily deaths: ", round(
+      covid %>% filter(country == toString(c)) %>% select(deaths) %>% head(1),
+      2
+    ),"", ""),
+    x = "",
+    y = "Daily mumber of deaths",
+    caption = "Source: https://opendata.ecdc.europa.eu/covid19/",
+    colour = "Critical dates"
+  ) +
+    geom_smooth(method = "gam",lty = 2, colour = "red",se=F)+
+    geom_point(data = critical_dates %>% filter(country==toString(c)), aes(date,deaths, colour = label),shape=18,size=4)+
+  scale_x_date(date_breaks = "1 month", date_minor_breaks = "1 week",
+             date_labels = "%B")+
+    scale_colour_manual(values = c("dodgerblue","yellow"),aesthetics = c("colour"))+
+    ggthemes::theme_solarized_2()+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "bottom")
+}
 
+values=c("red","orange","blue","green","purple")
+plot_cases_deaths("United States")
+
+
+
+covid %>% 
+  filter(country == toString("United States")) %>%
+    rename("Deaths" = "deaths","Active cases rate" = "cases_rate") %>% 
+  full_join(critical_dates,by="date") %>% 
+  pivot_longer(cols = c("Active cases rate",Deaths),names_to = "name01", values_to = "value")
+
+covid %>% 
+  count(country)
 ```
+
+
 
