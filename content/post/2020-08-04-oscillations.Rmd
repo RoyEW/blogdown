@@ -1,0 +1,31 @@
+---
+title: oscillations
+author: ~
+date: '2020-08-04'
+slug: oscillations
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(readxl)
+library(tidyverse)
+oscillations_raw <- read_excel("oscillations.xlsx", sheet = 3)
+
+
+osc <- oscillations_raw
+
+
+osc %>% 
+  pivot_longer(cols =colnames(osc)[2:5], names_to = "variable", values_to = "value") %>% 
+  mutate(group = case_when(str_detect(variable,"PMASS1500") ~ "PMASS1500",
+                             TRUE ~ "PMASS500")) %>% 
+  ggplot(aes(step, value, colour = variable))+
+  facet_grid(~ group) +
+  geom_line()
+```
+

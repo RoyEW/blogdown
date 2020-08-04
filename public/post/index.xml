@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 17 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 04 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>oscillations</title>
+      <link>/2020/08/04/oscillations/</link>
+      <pubDate>Tue, 04 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/08/04/oscillations/</guid>
+      <description>library(readxl)library(tidyverse)oscillations_raw &amp;lt;- read_excel(&amp;quot;oscillations.xlsx&amp;quot;, sheet = 3)osc &amp;lt;- oscillations_rawosc %&amp;gt;% pivot_longer(cols =colnames(osc)[2:5], names_to = &amp;quot;variable&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% mutate(group = case_when(str_detect(variable,&amp;quot;PMASS1500&amp;quot;) ~ &amp;quot;PMASS1500&amp;quot;,TRUE ~ &amp;quot;PMASS500&amp;quot;)) %&amp;gt;% ggplot(aes(step, value, colour = variable))+facet_grid(~ group) +geom_line()</description>
+    </item>
     
     <item>
       <title>Coronavirus</title>
@@ -20,7 +29,7 @@
       <description>https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
 Libraries, reading in of the data and light tidying.
 library(tidyverse)library(lubridate)library(httr)library(zoo)library(plotly)library(dplyr)library(ggrepel)library(gganimate)library(gifski)library(transformr)library(tidyr)library(ggthemes)theme_set(theme_minimal())covid_raw &amp;lt;- read.csv(&amp;quot;https://opendata.ecdc.europa.eu/covid19/casedistribution/csv&amp;quot;, na.strings = &amp;quot;&amp;quot;, fileEncoding = &amp;quot;UTF-8-BOM&amp;quot;) %&amp;gt;% rename(&amp;quot;date&amp;quot; = dateRep,&amp;quot;country&amp;quot; = countriesAndTerritories,&amp;quot;code&amp;quot; = countryterritoryCode,&amp;quot;population2019&amp;quot; = popData2019,&amp;quot;continent&amp;quot; = continentExp,&amp;quot;cases_rate&amp;quot; = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000)Defining of the G8 and G20 nations
-#covid_data &amp;lt;- read.csv(&amp;quot;covid_data.csv&amp;quot;)G8 &amp;lt;- c(&amp;quot;FRA&amp;quot;,&amp;quot;DEU&amp;quot;,&amp;quot;ITA&amp;quot;,&amp;quot;JPN&amp;quot;,&amp;quot;GBR&amp;quot;,&amp;quot;USA&amp;quot;,&amp;quot;RUS&amp;quot;,&amp;quot;CDN&amp;quot;)G20 &amp;lt;- c(&amp;quot;ARG&amp;quot;,&amp;quot;BRA&amp;quot;,&amp;quot;AUS&amp;quot;,&amp;quot;CAN&amp;quot;,&amp;quot;CHN&amp;quot;,&amp;quot;FRA&amp;quot;,&amp;quot;DEU&amp;quot;,&amp;quot;IND&amp;quot;,&amp;quot;IDN&amp;quot;,&amp;quot;ITA&amp;quot;,&amp;quot;JPN&amp;quot;,&amp;quot;KOR&amp;quot;,&amp;quot;MEX&amp;quot;,&amp;quot;RUS&amp;quot;,&amp;quot;SAU&amp;quot;,&amp;quot;ZAF&amp;quot;,&amp;quot;TUR&amp;quot;,&amp;quot;GBR&amp;quot;,&amp;quot;USA&amp;quot;)graph_colours &amp;lt;- c(&amp;quot;cases_rate&amp;quot; = &amp;quot;orange&amp;quot;,&amp;quot;deaths&amp;quot; = &amp;quot;red&amp;quot;, &amp;quot;Lockdown&amp;quot; = &amp;quot;dodgerblue&amp;quot;, &amp;quot;Restrictions lifted&amp;quot; = &amp;quot;green&amp;quot;)graph_colours## cases_rate deaths Lockdown Restrictions lifted ## &amp;quot;orange&amp;quot; &amp;quot;red&amp;quot; &amp;quot;dodgerblue&amp;quot; &amp;quot;green&amp;quot;Getting the data ready for use.</description>
+#covid_data &amp;lt;- read.csv(&amp;quot;covid_data.csv&amp;quot;)G8 &amp;lt;- c(&amp;quot;FRA&amp;quot;,&amp;quot;DEU&amp;quot;,&amp;quot;ITA&amp;quot;,&amp;quot;JPN&amp;quot;,&amp;quot;GBR&amp;quot;,&amp;quot;USA&amp;quot;,&amp;quot;RUS&amp;quot;,&amp;quot;CAN&amp;quot;)G20 &amp;lt;- c(&amp;quot;ARG&amp;quot;,&amp;quot;BRA&amp;quot;,&amp;quot;AUS&amp;quot;,&amp;quot;CAN&amp;quot;,&amp;quot;CHN&amp;quot;,&amp;quot;FRA&amp;quot;,&amp;quot;DEU&amp;quot;,&amp;quot;IND&amp;quot;,&amp;quot;IDN&amp;quot;,&amp;quot;ITA&amp;quot;,&amp;quot;JPN&amp;quot;,&amp;quot;KOR&amp;quot;,&amp;quot;MEX&amp;quot;,&amp;quot;RUS&amp;quot;,&amp;quot;SAU&amp;quot;,&amp;quot;ZAF&amp;quot;,&amp;quot;TUR&amp;quot;,&amp;quot;GBR&amp;quot;,&amp;quot;USA&amp;quot;)graph_colours &amp;lt;- c(&amp;quot;cases_rate&amp;quot; = &amp;quot;orange&amp;quot;,&amp;quot;deaths&amp;quot; = &amp;quot;red&amp;quot;, &amp;quot;Lockdown&amp;quot; = &amp;quot;dodgerblue&amp;quot;, &amp;quot;Restrictions lifted&amp;quot; = &amp;quot;green&amp;quot;)Getting the data ready for use.</description>
     </item>
     
     <item>

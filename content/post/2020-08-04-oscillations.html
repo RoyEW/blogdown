@@ -1,0 +1,27 @@
+---
+title: oscillations
+author: ~
+date: '2020-08-04'
+slug: oscillations
+categories: []
+tags: []
+---
+
+
+
+<pre class="r"><code>library(readxl)
+library(tidyverse)
+oscillations_raw &lt;- read_excel(&quot;oscillations.xlsx&quot;, sheet = 3)
+
+
+osc &lt;- oscillations_raw
+
+
+osc %&gt;% 
+  pivot_longer(cols =colnames(osc)[2:5], names_to = &quot;variable&quot;, values_to = &quot;value&quot;) %&gt;% 
+  mutate(group = case_when(str_detect(variable,&quot;PMASS1500&quot;) ~ &quot;PMASS1500&quot;,
+                             TRUE ~ &quot;PMASS500&quot;)) %&gt;% 
+  ggplot(aes(step, value, colour = variable))+
+  facet_grid(~ group) +
+  geom_line()</code></pre>
+<p><img src="/post/2020-08-04-oscillations_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
