@@ -17,7 +17,7 @@
       <pubDate>Tue, 04 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/08/04/oscillations/</guid>
-      <description>library(readxl)library(tidyverse)oscillations_raw &amp;lt;- read_excel(&amp;quot;oscillations.xlsx&amp;quot;, sheet = 3)osc &amp;lt;- oscillations_rawosc %&amp;gt;% pivot_longer(cols =colnames(osc)[2:5], names_to = &amp;quot;variable&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% mutate(group = case_when(str_detect(variable,&amp;quot;PMASS1500&amp;quot;) ~ &amp;quot;PMASS1500&amp;quot;,TRUE ~ &amp;quot;PMASS500&amp;quot;)) %&amp;gt;% ggplot(aes(step, value, colour = variable))+facet_grid(~ group) +geom_line()</description>
+      <description>library(readxl)library(tidyverse)oscillations_raw &amp;lt;- read_excel(&amp;quot;oscillations.xlsx&amp;quot;, sheet = 3)osc &amp;lt;- oscillations_rawosc %&amp;gt;% pivot_longer(cols =colnames(osc)[2:5], names_to = &amp;quot;variable&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% mutate(group = case_when(str_detect(variable,&amp;quot;PMASS1500&amp;quot;) ~ &amp;quot;PMASS1500&amp;quot;,TRUE ~ &amp;quot;PMASS500&amp;quot;)) %&amp;gt;% ggplot(aes(step, value, colour = variable))+labs(colour = &amp;quot;&amp;quot;)+facet_grid(~ group) +theme(legend.position = &amp;quot;bottom&amp;quot;)+geom_line()</description>
     </item>
     
     <item>
@@ -50,9 +50,7 @@ library(tidyverse)library(lubridate)library(httr)library(zoo)library(plotly)
       <guid>/2020/07/07/time-series-and-yfinance-api/</guid>
       <description>Python integration using the reticulate package.
 yFinance api from https://pypi.org/project/yfinance/
-“Global stocks have worst day in two years as coronavirus fears spread” - FT 24th Feb 2020https://www.ft.com/content/5ec9aeae-56a1-11ea-a528-dd0f971febbc
-Car industry financial analysisA profitability decomposition analysis with a focus on Tesla (TSLA)
-Investigating industry ROCEFerrari has a wildy changing ROCE value over the investigation period so will removed for this analysis.</description>
+library(reticulate)library(tidyverse)library(bbplot)library(lubridate)library(broom)library(plotly)library(readxl)use_miniconda()import yfinance as yfimport requestsdef yfinance01(ticker,period):g = yf.Ticker(ticker)data=g.history(period=period)return datafixcol01 &amp;lt;- function(g){g &amp;lt;- cbind(date = rownames(g), g)rownames(g) &amp;lt;- 1:nrow(g)return(g)}retrieve01 &amp;lt;- function(ticker,period=&amp;quot;max&amp;quot;){g &amp;lt;- py$yfinance01(ticker,period)g &amp;lt;- fixcol01(g)g &amp;lt;- g %&amp;gt;% select(date, Close)%&amp;gt;% mutate(date=as_date(ymd(date)))colnames(g) &amp;lt;- c(&amp;quot;date&amp;quot;, ticker)return(g)}plotting01 &amp;lt;- function(ticker, period=&amp;quot;max&amp;quot;){g &amp;lt;- retrieve01(ticker, period)plot &amp;lt;- g %&amp;gt;% ggplot(aes(date, get(ticker), group=1))+geom_point(shape=&amp;quot;.</description>
     </item>
     
     <item>

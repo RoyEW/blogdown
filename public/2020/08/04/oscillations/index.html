@@ -90,7 +90,9 @@ osc %&gt;%
   mutate(group = case_when(str_detect(variable,&quot;PMASS1500&quot;) ~ &quot;PMASS1500&quot;,
                              TRUE ~ &quot;PMASS500&quot;)) %&gt;% 
   ggplot(aes(step, value, colour = variable))+
+  labs(colour = &quot;&quot;)+
   facet_grid(~ group) +
+  theme(legend.position = &quot;bottom&quot;)+
   geom_line()</code></pre>
 <p><img src="/post/2020-08-04-oscillations_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 

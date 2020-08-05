@@ -25,7 +25,9 @@ osc %>%
   mutate(group = case_when(str_detect(variable,"PMASS1500") ~ "PMASS1500",
                              TRUE ~ "PMASS500")) %>% 
   ggplot(aes(step, value, colour = variable))+
+  labs(colour = "")+
   facet_grid(~ group) +
+  theme(legend.position = "bottom")+
   geom_line()
 ```
 
