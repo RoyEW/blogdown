@@ -22,16 +22,46 @@ year2016 &lt;- read_csv(&quot;2015-2016.csv&quot;)</code></pre>
   union_all(year2018) %&gt;% 
   union_all(year2017) %&gt;% 
   union_all(year2016)
-
-colnames(data) &lt;- c(&quot;date&quot;,&quot;type&quot;,&quot;code&quot;,&quot;number&quot;,&quot;description&quot;,&quot;dr&quot;,&quot;cr&quot;,&quot;balance&quot;)
+year2020</code></pre>
+<pre><code>## # A tibble: 610 x 8
+##    `Transaction Da~ `Transaction Ty~ `Sort Code` `Account Number`
+##    &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;                  &lt;dbl&gt;
+##  1 23/09/2020       DEB              &#39;77-85-26           42051368
+##  2 23/09/2020       DEB              &#39;77-85-26           42051368
+##  3 22/09/2020       DEB              &#39;77-85-26           42051368
+##  4 22/09/2020       DEB              &#39;77-85-26           42051368
+##  5 22/09/2020       DEB              &#39;77-85-26           42051368
+##  6 21/09/2020       DEB              &#39;77-85-26           42051368
+##  7 21/09/2020       DEB              &#39;77-85-26           42051368
+##  8 21/09/2020       DEB              &#39;77-85-26           42051368
+##  9 21/09/2020       DEB              &#39;77-85-26           42051368
+## 10 21/09/2020       DEB              &#39;77-85-26           42051368
+## # ... with 600 more rows, and 4 more variables: `Transaction
+## #   Description` &lt;chr&gt;, `Debit Amount` &lt;dbl&gt;, `Credit Amount` &lt;dbl&gt;,
+## #   Balance &lt;dbl&gt;</code></pre>
+<pre class="r"><code>colnames(data) &lt;- c(&quot;date&quot;,&quot;type&quot;,&quot;code&quot;,&quot;number&quot;,&quot;description&quot;,&quot;dr&quot;,&quot;cr&quot;,&quot;balance&quot;)
 
 data &lt;- data %&gt;%
   mutate(date = dmy(date),
          year_month = as.numeric(paste(year(date), month(date), sep = &quot;&quot;))) %&gt;% 
   arrange(date)
 
-
-data_asda_wages &lt;- data %&gt;% 
+data</code></pre>
+<pre><code>## # A tibble: 2,438 x 9
+##    date       type  code     number description      dr    cr balance year_month
+##    &lt;date&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1 2015-09-28 DEB   &#39;77-85~  4.21e7 BANGOR UNIVE~  3      NA    2548.      20159
+##  2 2015-09-28 DEB   &#39;77-85~  4.21e7 CURRYS SUPER~ 23.0    NA    2551.      20159
+##  3 2015-09-28 DEB   &#39;77-85~  4.21e7 VODAFONE LTD  10      NA    2574.      20159
+##  4 2015-09-28 BGC   &#39;77-85~  4.21e7 STUDENT LOAN~ NA    1336.   2584.      20159
+##  5 2015-09-28 BGC   &#39;77-85~  4.21e7 STUDENT LOAN~ NA    1129    1248.      20159
+##  6 2015-09-29 DEB   &#39;77-85~  4.21e7 ASDA STORES ~  6.05   NA    2542.      20159
+##  7 2015-09-30 DEB   &#39;77-85~  4.21e7 W M MORRISON~  7.19   NA    2535.      20159
+##  8 2015-10-02 DEB   &#39;77-85~  4.21e7 W M MORRISON~ 13.0    NA    2522.     201510
+##  9 2015-10-05 DEB   &#39;77-85~  4.21e7 BANGOR UNIVE~  3.93   NA    2493.     201510
+## 10 2015-10-05 DEB   &#39;77-85~  4.21e7 VODAFONE LTD  20      NA    2497.     201510
+## # ... with 2,428 more rows</code></pre>
+<pre class="r"><code>data_asda_wages &lt;- data %&gt;% 
   filter(!cr==is.na(cr),
          description==&quot;ASDA STORES PLC&quot;) %&gt;% 
   mutate(cumsum_asda_wage=cumsum(cr))
@@ -93,4 +123,25 @@ data_asda_costs &lt;- data %&gt;%
   annotate(&quot;text&quot;, x = dmy(&quot;01032020&quot;), y = 12000, size=6,label = &quot;wages&quot;,colour=&quot;white&quot;)+ 
   annotate(&quot;text&quot;, x = dmy(&quot;01032020&quot;), y = 2100, size=6, label = &quot;costs&quot;,colour=&quot;white&quot;)</code></pre>
 <p><img src="/post/2020-07-02-bank-transactions-and-asda_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>data</code></pre>
+<pre><code>## # A tibble: 2,438 x 9
+##    date       type  code     number description      dr    cr balance year_month
+##    &lt;date&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+##  1 2015-09-28 DEB   &#39;77-85~  4.21e7 BANGOR UNIVE~  3      NA    2548.      20159
+##  2 2015-09-28 DEB   &#39;77-85~  4.21e7 CURRYS SUPER~ 23.0    NA    2551.      20159
+##  3 2015-09-28 DEB   &#39;77-85~  4.21e7 VODAFONE LTD  10      NA    2574.      20159
+##  4 2015-09-28 BGC   &#39;77-85~  4.21e7 STUDENT LOAN~ NA    1336.   2584.      20159
+##  5 2015-09-28 BGC   &#39;77-85~  4.21e7 STUDENT LOAN~ NA    1129    1248.      20159
+##  6 2015-09-29 DEB   &#39;77-85~  4.21e7 ASDA STORES ~  6.05   NA    2542.      20159
+##  7 2015-09-30 DEB   &#39;77-85~  4.21e7 W M MORRISON~  7.19   NA    2535.      20159
+##  8 2015-10-02 DEB   &#39;77-85~  4.21e7 W M MORRISON~ 13.0    NA    2522.     201510
+##  9 2015-10-05 DEB   &#39;77-85~  4.21e7 BANGOR UNIVE~  3.93   NA    2493.     201510
+## 10 2015-10-05 DEB   &#39;77-85~  4.21e7 VODAFONE LTD  20      NA    2497.     201510
+## # ... with 2,428 more rows</code></pre>
+<pre class="r"><code>data %&gt;% 
+  filter(str_detect(description, &quot;^ZIZZA&quot;)) %&gt;% 
+  mutate(cumsum=cumsum(dr)) %&gt;% 
+  ggplot(aes(date,cumsum)) + 
+  geom_line()</code></pre>
+<p><img src="/post/2020-07-02-bank-transactions-and-asda_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
 </div>

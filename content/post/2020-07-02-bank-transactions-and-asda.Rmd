@@ -37,7 +37,7 @@ data <- year2020 %>%
   union_all(year2018) %>% 
   union_all(year2017) %>% 
   union_all(year2016)
-
+year2020
 colnames(data) <- c("date","type","code","number","description","dr","cr","balance")
 
 data <- data %>%
@@ -45,7 +45,7 @@ data <- data %>%
          year_month = as.numeric(paste(year(date), month(date), sep = ""))) %>% 
   arrange(date)
 
-
+data
 data_asda_wages <- data %>% 
   filter(!cr==is.na(cr),
          description=="ASDA STORES PLC") %>% 
@@ -117,5 +117,11 @@ data_asda_costs %>%
   )+ 
   annotate("text", x = dmy("01032020"), y = 12000, size=6,label = "wages",colour="white")+ 
   annotate("text", x = dmy("01032020"), y = 2100, size=6, label = "costs",colour="white")
+data
+data %>% 
+  filter(str_detect(description, "^ZIZZA")) %>% 
+  mutate(cumsum=cumsum(dr)) %>% 
+  ggplot(aes(date,cumsum)) + 
+  geom_line()
 ```
 
