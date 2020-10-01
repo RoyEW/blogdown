@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 04 Aug 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 01 Oct 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>EnergyHHI</title>
+      <link>/2020/10/01/energyhhi/</link>
+      <pubDate>Thu, 01 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/10/01/energyhhi/</guid>
+      <description>library(tidyverse)UK energy market competitivenessRegulators use the HHI Index using the 50 largest companies in a particular industry to determine if that industry should be considered competitive or as close to being a monopoly.
+A market with an HHI of less than 1,500 is considered to be a competitive marketplace, an HHI of 1,500 to 2,500 to be a moderately concentrated marketplace, and an HHI of 2,500 or greater to be a highly concentrated marketplace.</description>
+    </item>
     
     <item>
       <title>Oscillations</title>

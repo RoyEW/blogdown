@@ -1,0 +1,67 @@
+---
+title: EnergyHHI
+author: ~
+date: '2020-10-01'
+slug: energyhhi
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+# UK energy market competitiveness
+
+Regulators use the HHI Index using the 50 largest companies in a particular industry to determine if that industry should be considered competitive or as close to being a monopoly.
+
+A market with an HHI of less than 1,500 is considered to be a competitive marketplace, an HHI of 1,500 to 2,500 to be a moderately concentrated marketplace, and an HHI of 2,500 or greater to be a highly concentrated marketplace.
+
+
+
+$$HHI = 10,000 [s^2_1+s^2_2+s^2_3+...+s^2_n]$$
+
+```{r}
+data <- readxl::read_excel(file.path("data", "energymarket.xlsx")) %>%
+  filter(!is.na(share)) %>%
+  mutate(no_customers = as.numeric(no_customers))
+
+data_HHI <- data %>%
+  mutate(prop = (no_customers / sum(no_customers)) ^ 2) %>%
+  mutate(HHI = 10000 * sum(prop))
+
+HHI <- mean(data_HHI$HHI)
+
+```
+
+The UK energy market has a HHI of <a><span style="color: red;">`r round(HHI,2)`</span></a> showing a relatively competitive marketplace. 
+
+# UK energy market biggest suppliers
+
+```{r}
+data %>% 
+  mutate(if_edf = case_when(name == "EDF Energy" ~ "EDF",
+                            TRUE ~ "Other"),
+         name = fct_reorder(name, no_customers),
+         row = row_number()) %>% 
+  arrange(desc(no_customers)) %>% 
+  ggplot(aes(name, no_customers))+
+    geom_segment(aes(xend = name, yend = 0, colour = if_edf), size = 1.5) +
+    geom_point(shape = 21, colour = "black", aes(fill = if_edf), size = 12) +
+    geom_text(size = 3, aes(label = paste(round(no_customers / 1000000, 1), "m", sep = "")))+
+  scale_color_manual(values = c("orange","dodgerblue"), aesthetics = c("fill"))+
+  scale_color_manual(values = c("orange","black"), aesthetics = c("colour"))+
+  scale_y_continuous(labels = scales::comma_format())+
+  labs(title = "No. Customers of UK Energy Suppliers",
+       x = "",
+       y = "No. Customers")+
+  theme_void()+
+  theme(legend.position = "none",axis.text.y = element_text(hjust = 0.95))+
+  coord_flip()
+
+```
+
