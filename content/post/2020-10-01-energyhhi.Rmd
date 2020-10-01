@@ -1,5 +1,5 @@
 ---
-title: EnergyHHI
+title: Energy sector
 author: ~
 date: '2020-10-01'
 slug: energyhhi
@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 
 
 # UK energy market competitiveness
+
+### Herfindahl-Hirschman Index
 
 Regulators use the HHI Index using the 50 largest companies in a particular industry to determine if that industry should be considered competitive or as close to being a monopoly.
 
