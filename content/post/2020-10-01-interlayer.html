@@ -1,0 +1,48 @@
+---
+title: Interlayer
+author: ~
+date: '2020-10-01'
+slug: interlayer
+categories: []
+tags: []
+---
+
+
+
+<pre class="r"><code>library(tidyverse)
+library(gganimate)
+library(readxl)
+
+interlayer_ &lt;- read_excel(file.path(&quot;data&quot;,&quot;interlayer.xlsx&quot;))
+interlayer &lt;- interlayer_ %&gt;% 
+  pivot_longer(cols = c(colnames(interlayer_)[2],colnames(interlayer_)[9:15]),names_to = c(&quot;composition&quot;),values_to=c(&quot;CTE&quot;))
+
+new &lt;- interlayer %&gt;% filter(composition %in% c(&quot;Zr&quot;,&quot;Cr&quot;)) %&gt;%
+  rename(&quot;comp&quot;=&quot;composition&quot;)
+
+
+p &lt;- interlayer %&gt;% 
+  filter(!composition %in% c(&quot;Zr&quot;,&quot;Cr&quot;)) %&gt;% 
+  ggplot(aes(Temp,CTE,colour = composition))+
+  geom_text(aes(label = ifelse(Temp == 1600,composition,&quot;&quot;)),hjust = 0, nudge_y = 0.2,nudge_x = 20)+
+  geom_text(data = new,aes(colour = comp,label = ifelse(Temp == 1600,comp,&quot;&quot;)),hjust = 0, nudge_y = 0.2,nudge_x = 20)+
+  theme_minimal()+
+  labs(title=&quot;HEA CTE&quot;,
+       x=&quot;Temperature (K)&quot;,
+       y=expression(paste(alpha, &quot; ppm &quot;, &quot;(&quot;,K^-1,&quot;)&quot;)))+
+  geom_line(size = 2)+
+  geom_line(size = 2,data = new,aes(Temp, CTE, colour = comp))+
+  theme(legend.position = &quot;none&quot;)+
+  lims(x=c(0,2100),y=c(0,18))
+
+  
+p</code></pre>
+<p><img src="/post/2020-10-01-interlayer_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>anim &lt;- p + transition_states(composition,
+                    transition_length = 10,
+                    state_length = 1)+
+  ggtitle(&#39;HEA Linear Coefficients of Thermal Expansion&#39;,
+          subtitle = &#39;Showing {closest_state}&#39;)+
+   ease_aes(&#39;cubic-in-out&#39;)
+animate(anim)</code></pre>
+<p><img src="/post/2020-10-01-interlayer_files/figure-html/unnamed-chunk-1-1.gif" /><!-- --></p>

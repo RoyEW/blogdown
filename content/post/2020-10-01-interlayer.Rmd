@@ -1,0 +1,51 @@
+---
+title: Interlayer
+author: ~
+date: '2020-10-01'
+slug: interlayer
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(gganimate)
+library(readxl)
+
+interlayer_ <- read_excel(file.path("data","interlayer.xlsx"))
+interlayer <- interlayer_ %>% 
+  pivot_longer(cols = c(colnames(interlayer_)[2],colnames(interlayer_)[9:15]),names_to = c("composition"),values_to=c("CTE"))
+
+new <- interlayer %>% filter(composition %in% c("Zr","Cr")) %>%
+  rename("comp"="composition")
+
+
+p <- interlayer %>% 
+  filter(!composition %in% c("Zr","Cr")) %>% 
+  ggplot(aes(Temp,CTE,colour = composition))+
+  geom_text(aes(label = ifelse(Temp == 1600,composition,"")),hjust = 0, nudge_y = 0.2,nudge_x = 20)+
+  geom_text(data = new,aes(colour = comp,label = ifelse(Temp == 1600,comp,"")),hjust = 0, nudge_y = 0.2,nudge_x = 20)+
+  theme_minimal()+
+  labs(title="HEA CTE",
+       x="Temperature (K)",
+       y=expression(paste(alpha, " ppm ", "(",K^-1,")")))+
+  geom_line(size = 2)+
+  geom_line(size = 2,data = new,aes(Temp, CTE, colour = comp))+
+  theme(legend.position = "none")+
+  lims(x=c(0,2100),y=c(0,18))
+
+  
+p
+anim <- p + transition_states(composition,
+                    transition_length = 10,
+                    state_length = 1)+
+  ggtitle('HEA Linear Coefficients of Thermal Expansion',
+          subtitle = 'Showing {closest_state}')+
+   ease_aes('cubic-in-out')
+animate(anim)
+```
+
