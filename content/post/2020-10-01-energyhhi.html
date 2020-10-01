@@ -9,12 +9,12 @@ tags: []
 
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
 <div id="uk-energy-market-competitiveness" class="section level1">
 <h1>UK energy market competitiveness</h1>
 <p>Regulators use the HHI Index using the 50 largest companies in a particular industry to determine if that industry should be considered competitive or as close to being a monopoly.</p>
 <p>A market with an HHI of less than 1,500 is considered to be a competitive marketplace, an HHI of 1,500 to 2,500 to be a moderately concentrated marketplace, and an HHI of 2,500 or greater to be a highly concentrated marketplace.</p>
 <p><span class="math display">\[HHI = 10,000 [s^2_1+s^2_2+s^2_3+...+s^2_n]\]</span></p>
+<pre class="r"><code>library(tidyverse)</code></pre>
 <pre class="r"><code>data &lt;- readxl::read_excel(file.path(&quot;data&quot;, &quot;energymarket.xlsx&quot;)) %&gt;%
   filter(!is.na(share)) %&gt;%
   mutate(no_customers = as.numeric(no_customers))

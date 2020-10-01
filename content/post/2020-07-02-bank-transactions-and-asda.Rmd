@@ -1,5 +1,5 @@
 ---
-title: Bank transactions and ASDA
+title: ASDA
 author: ~
 date: '2020-07-02'
 slug: bank-transactions-and-asda
@@ -19,7 +19,6 @@ library(lubridate)
 library(bbplot)
 ```
 
-# BBC News ggplot style example
 
 This is an example article using the BBC News ggplot style package. Data is sourced from bank statements.
 
@@ -37,7 +36,7 @@ data <- year2020 %>%
   union_all(year2018) %>% 
   union_all(year2017) %>% 
   union_all(year2016)
-year2020
+
 colnames(data) <- c("date","type","code","number","description","dr","cr","balance")
 
 data <- data %>%
@@ -45,7 +44,6 @@ data <- data %>%
          year_month = as.numeric(paste(year(date), month(date), sep = ""))) %>% 
   arrange(date)
 
-data
 data_asda_wages <- data %>% 
   filter(!cr==is.na(cr),
          description=="ASDA STORES PLC") %>% 
@@ -62,46 +60,30 @@ data %>%
   ggplot(aes(date,balance))+
   geom_line()+
   geom_smooth()+
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£"))+
   bbc_style()+
   labs(title = "Bank Balance 2015-2020",
        subtitle="Bank balance summary for university years")
 ```
 
-# Another headline
 
-And some text to separate the graphs. 
 
 ```{r}
   
   data %>%
-  filter(year_month > "2020-1-1") %>% 
-  ggplot(aes(date,balance))+
-  geom_line()+
-  geom_smooth()+
-  bbc_style()+
-  labs(title = "Bank Balance 2020",
-       subtitle="Bank balance summary")
+    filter(year_month > "2020-1-1") %>% 
+    ggplot(aes(date,balance))+
+      geom_line()+
+      geom_smooth()+
+    scale_y_continuous(labels = scales::dollar_format(prefix = "£"))+
+    bbc_style()+
+    labs(title = "Bank Balance 2020",
+         subtitle="Bank balance summary")
 ```
 
 # ASDA
 
-Cumulative wages and costs specific to ASDA. The graph clearly shows that I spend too much money during my lunch breaks.
-
-```{r}
-data_asda_costs %>% 
-  union_all(data_asda_wages) %>% 
-  arrange(date) %>% 
-  filter(date>dmy("30092016")) %>% 
-  ggplot(aes(date))+
-  geom_ribbon(aes(ymax=cumsum_asda_wage,ymin=0),na.rm = T,alpha=0.7,colour="black",fill="darkgreen",size=1)+
-  geom_ribbon(aes(ymax=cumsum_asda,ymin=0),na.rm=T,alpha=0.9,colour="black",fill="red",size=1)+
-  theme_bw()+
-  labs(title="ASDA (theme_bw)",
-    subtitle="ASDA cumulative wages and costs in store"
-  )+ 
-  annotate("text", x = dmy("01032020"), y = 12000, size=6,label = "wages",colour="white")+ 
-  annotate("text", x = dmy("01032020"), y = 2100, size=6, label = "costs",colour="white")
-```
+Cumulative wages and costs specific to ASDA.
 
 ```{r}
 data_asda_costs %>% 
@@ -117,11 +99,29 @@ data_asda_costs %>%
   )+ 
   annotate("text", x = dmy("01032020"), y = 12000, size=6,label = "wages",colour="white")+ 
   annotate("text", x = dmy("01032020"), y = 2100, size=6, label = "costs",colour="white")
-data
+```
+
+# Zizza Pizza
+
+```{r}
 data %>% 
-  filter(str_detect(description, "^ZIZZA")) %>% 
+  arrange(date) %>%   
+  filter(str_detect(description, "(Zizza)|(PIZZA)|(SUBWAY)|(BAR)|(MCDONALDS)|(TAKEAWAY)|(GREGGS)"))  %>% 
   mutate(cumsum=cumsum(dr)) %>% 
   ggplot(aes(date,cumsum)) + 
-  geom_line()
+  geom_line() +
+  ggtitle("Money spent in Takeaways") +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£"))+
+  bbc_style()
+view(data)
+data %>% 
+  arrange(date) %>%   
+  filter(str_detect(description, "(ZIZZA)|(TAKEAWAY)"))  %>% 
+  mutate(cumsum=cumsum(dr)) %>% 
+  ggplot(aes(date,cumsum)) + 
+  geom_line() +
+  ggtitle("Money spent in Zizza Pizza") +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£"))+
+  bbc_style()
 ```
 
