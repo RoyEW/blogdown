@@ -1,0 +1,73 @@
+---
+title: Market Basket Analysis
+author: ~
+date: '2020-10-07'
+slug: market-basket-analysis
+categories: []
+tags: []
+---
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(arulesViz)
+library(lubridate)
+library(arules)
+library(RColorBrewer)
+```
+
+Data sourced from Kaggle ``````https://www.kaggle.com/heeraldedhia/groceries-dataset?select=Groceries_dataset.csv``````
+
+APRIORI Algorithm
+
+```{r}
+transactions <- read.csv(file.path("data","basket.csv"))
+
+transactions %>% 
+  count(itemDescription, sort = TRUE) %>% 
+  head(5)
+
+transactions %>% 
+  count(itemDescription, sort = TRUE) %>% 
+  tail(5)
+```
+
+
+# Utidying the dataset for use with the APRIORI algorithm in the "arules" package.
+
+```{r}
+basket <- transactions %>%
+  group_by(Member_number, Date) %>%
+  summarise(items = str_c(itemDescription, collapse = ",")) %>%
+  ungroup() %>%
+  select(items)
+colnames(basket) <- NULL
+basket
+
+
+
+
+write.csv(basket,file = file.path("data","basketitems.csv"))
+
+transaction_object <- read.transactions(file.path("data","basketitems.csv"),sep = ",")
+
+
+summary(transaction_object)
+
+
+itemFrequencyPlot(transaction_object,topN=30,type="absolute",col=brewer.pal(8,'Pastel1'), main="Absolute Item Frequency Plot")
+
+itemFrequencyPlot(transaction_object,topN=30,type="relative",col=brewer.pal(8,'Pastel1'), main="Absolute Item Frequency Plot")
+
+
+rules <- apriori(transaction_object, parameter = list(supp=0, conf=0.01,minlen=2))
+transaction_object
+summary(rules)
+inspect(rules[1:10])
+
+```
+
+

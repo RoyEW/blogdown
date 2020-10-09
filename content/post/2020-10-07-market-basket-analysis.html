@@ -1,0 +1,185 @@
+---
+title: Market Basket Analysis
+author: ~
+date: '2020-10-07'
+slug: market-basket-analysis
+categories: []
+tags: []
+---
+
+
+
+<pre class="r"><code>library(tidyverse)
+library(arulesViz)
+library(lubridate)
+library(arules)
+library(RColorBrewer)</code></pre>
+<p>Data sourced from Kaggle <code>https://www.kaggle.com/heeraldedhia/groceries-dataset?select=Groceries_dataset.csv</code></p>
+<p>APRIORI Algorithm</p>
+<pre class="r"><code>transactions &lt;- read.csv(file.path(&quot;data&quot;,&quot;basket.csv&quot;))
+
+transactions %&gt;% 
+  count(itemDescription, sort = TRUE) %&gt;% 
+  head(5)</code></pre>
+<pre><code>##    itemDescription    n
+## 1       whole milk 2502
+## 2 other vegetables 1898
+## 3       rolls/buns 1716
+## 4             soda 1514
+## 5           yogurt 1334</code></pre>
+<pre class="r"><code>transactions %&gt;% 
+  count(itemDescription, sort = TRUE) %&gt;% 
+  tail(5)</code></pre>
+<pre><code>##           itemDescription n
+## 163        toilet cleaner 5
+## 164                  bags 4
+## 165        baby cosmetics 3
+## 166       kitchen utensil 1
+## 167 preservation products 1</code></pre>
+<div id="utidying-the-dataset-for-use-with-the-apriori-algorithm-in-the-arules-package." class="section level1">
+<h1>Utidying the dataset for use with the APRIORI algorithm in the “arules” package.</h1>
+<pre class="r"><code>basket &lt;- transactions %&gt;%
+  group_by(Member_number, Date) %&gt;%
+  summarise(items = str_c(itemDescription, collapse = &quot;,&quot;)) %&gt;%
+  ungroup() %&gt;%
+  select(items)
+colnames(basket) &lt;- NULL
+basket</code></pre>
+<pre><code>## # A tibble: 14,963 x 1
+##    &lt;chr&gt;                                        
+##  1 sausage,whole milk,semi-finished bread,yogurt
+##  2 whole milk,pastry,salty snack                
+##  3 canned beer,misc. beverages                  
+##  4 sausage,hygiene articles                     
+##  5 soda,pickled vegetables                      
+##  6 frankfurter,curd                             
+##  7 sausage,whole milk,rolls/buns                
+##  8 whole milk,soda                              
+##  9 beef,white bread                             
+## 10 frankfurter,soda,whipped/sour cream          
+## # ... with 14,953 more rows</code></pre>
+<pre class="r"><code>write.csv(basket,file = file.path(&quot;data&quot;,&quot;basketitems.csv&quot;))
+
+transaction_object &lt;- read.transactions(file.path(&quot;data&quot;,&quot;basketitems.csv&quot;),sep = &quot;,&quot;)
+
+
+summary(transaction_object)</code></pre>
+<pre><code>## transactions as itemMatrix in sparse format with
+##  14964 rows (elements/itemsets/transactions) and
+##  24074 columns (items) and a density of 8.307163e-05 
+## 
+## most frequent items:
+## other vegetables,whole milk       whole milk,whole milk 
+##                          48                          40 
+##       whole milk,rolls/buns          sausage,whole milk 
+##                          38                          37 
+## whole milk,other vegetables                     (Other) 
+##                          37                       29726 
+## 
+## element (itemset/transaction) length distribution:
+## sizes
+##     0     2 
+##     1 14963 
+## 
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       0       2       2       2       2       2 
+## 
+## includes extended item information - examples:
+##   labels
+## 1      1
+## 2     10
+## 3    100</code></pre>
+<pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;absolute&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
+<p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;relative&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
+<p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>rules &lt;- apriori(transaction_object, parameter = list(supp=0, conf=0.01,minlen=2))</code></pre>
+<pre><code>## Apriori
+## 
+## Parameter specification:
+##  confidence minval smax arem  aval originalSupport maxtime support minlen
+##        0.01    0.1    1 none FALSE            TRUE       5       0      2
+##  maxlen target  ext
+##      10  rules TRUE
+## 
+## Algorithmic control:
+##  filter tree heap memopt load sort verbose
+##     0.1 TRUE TRUE  FALSE TRUE    2    TRUE
+## 
+## Absolute minimum support count: 0 
+## 
+## set item appearances ...[0 item(s)] done [0.00s].
+## set transactions ...[24074 item(s), 14964 transaction(s)] done [0.01s].
+## sorting and recoding items ... [24074 item(s)] done [0.00s].
+## creating transaction tree ... done [0.00s].
+## checking subsets of size 1 2 done [0.99s].
+## writing ... [29926 rule(s)] done [2.43s].
+## creating S4 object  ... done [0.08s].</code></pre>
+<pre class="r"><code>transaction_object</code></pre>
+<pre><code>## transactions in sparse format with
+##  14964 transactions (rows) and
+##  24074 items (columns)</code></pre>
+<pre class="r"><code>summary(rules)</code></pre>
+<pre><code>## set of 29926 rules
+## 
+## rule length distribution (lhs + rhs):sizes
+##     2 
+## 29926 
+## 
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       2       2       2       2       2       2 
+## 
+## summary of quality measures:
+##     support            confidence         coverage              lift        
+##  Min.   :6.683e-05   Min.   :0.02083   Min.   :6.683e-05   Min.   :  311.8  
+##  1st Qu.:6.683e-05   1st Qu.:0.50000   1st Qu.:6.683e-05   1st Qu.: 2992.8  
+##  Median :6.683e-05   Median :1.00000   Median :6.683e-05   Median : 7482.0  
+##  Mean   :6.683e-05   Mean   :0.80445   Mean   :1.938e-04   Mean   : 9111.6  
+##  3rd Qu.:6.683e-05   3rd Qu.:1.00000   3rd Qu.:1.337e-04   3rd Qu.:14964.0  
+##  Max.   :6.683e-05   Max.   :1.00000   Max.   :3.208e-03   Max.   :14964.0  
+##      count  
+##  Min.   :1  
+##  1st Qu.:1  
+##  Median :1  
+##  Mean   :1  
+##  3rd Qu.:1  
+##  Max.   :1  
+## 
+## mining info:
+##                data ntransactions support confidence
+##  transaction_object         14964       0       0.01</code></pre>
+<pre class="r"><code>inspect(rules[1:10])</code></pre>
+<pre><code>##      lhs                                               
+## [1]  {1}                                             =&gt;
+## [2]  {sausage,whole milk,semi-finished bread,yogurt} =&gt;
+## [3]  {9644}                                          =&gt;
+## [4]  {frozen fish,pastry}                            =&gt;
+## [5]  {sausage,tropical fruit,curd}                   =&gt;
+## [6]  {9643}                                          =&gt;
+## [7]  {9642}                                          =&gt;
+## [8]  {whole milk,yogurt}                             =&gt;
+## [9]  {9641}                                          =&gt;
+## [10] {other vegetables,margarine}                    =&gt;
+##      rhs                                             support      confidence
+## [1]  {sausage,whole milk,semi-finished bread,yogurt} 6.682705e-05 1.00000000
+## [2]  {1}                                             6.682705e-05 1.00000000
+## [3]  {frozen fish,pastry}                            6.682705e-05 1.00000000
+## [4]  {9644}                                          6.682705e-05 0.50000000
+## [5]  {9643}                                          6.682705e-05 1.00000000
+## [6]  {sausage,tropical fruit,curd}                   6.682705e-05 1.00000000
+## [7]  {whole milk,yogurt}                             6.682705e-05 1.00000000
+## [8]  {9642}                                          6.682705e-05 0.04545455
+## [9]  {other vegetables,margarine}                    6.682705e-05 1.00000000
+## [10] {9641}                                          6.682705e-05 0.08333333
+##      coverage     lift       count
+## [1]  6.682705e-05 14964.0000 1    
+## [2]  6.682705e-05 14964.0000 1    
+## [3]  6.682705e-05  7482.0000 1    
+## [4]  1.336541e-04  7482.0000 1    
+## [5]  6.682705e-05 14964.0000 1    
+## [6]  6.682705e-05 14964.0000 1    
+## [7]  6.682705e-05   680.1818 1    
+## [8]  1.470195e-03   680.1818 1    
+## [9]  6.682705e-05  1247.0000 1    
+## [10] 8.019246e-04  1247.0000 1</code></pre>
+</div>
