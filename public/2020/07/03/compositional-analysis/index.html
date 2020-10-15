@@ -146,23 +146,21 @@ dd %&gt;%
 <p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>dd %&gt;%
   count(crystal_structure)</code></pre>
-<pre><code>## # A tibble: 14 x 2
-##    crystal_structure              n
-##    &lt;chr&gt;                      &lt;int&gt;
-##  1 Base-centered Monoclinic       3
-##  2 Base Orthorhombic              5
-##  3 Body-centered Cubic           15
-##  4 Centered Tetragonal            3
-##  5 Face-centered Cubic           20
-##  6 Face-centered Orthorhombic     1
-##  7 Simple Cubic                   1
-##  8 Simple Hexagonal              33
-##  9 Simple Monoclinic              2
-## 10 Simple Orthorhombic            1
-## 11 Simple Triclinic               1
-## 12 Simple Trigonal                6
-## 13 Tetrahedral Packing            1
-## 14 &lt;NA&gt;                          26</code></pre>
+<pre><code>##             crystal_structure  n
+## 1    Base-centered Monoclinic  3
+## 2           Base Orthorhombic  5
+## 3         Body-centered Cubic 15
+## 4         Centered Tetragonal  3
+## 5         Face-centered Cubic 20
+## 6  Face-centered Orthorhombic  1
+## 7                Simple Cubic  1
+## 8            Simple Hexagonal 33
+## 9           Simple Monoclinic  2
+## 10        Simple Orthorhombic  1
+## 11           Simple Triclinic  1
+## 12            Simple Trigonal  6
+## 13        Tetrahedral Packing  1
+## 14                       &lt;NA&gt; 26</code></pre>
 <pre class="r"><code>(p&lt;-dd %&gt;%
   filter(!is.na(symbol)) %&gt;%
   #filter(!crystal_structure %in% c(&quot;Base-centered Monoclinic&quot;,&quot;Centered Tetragonal&quot;)) %&gt;%

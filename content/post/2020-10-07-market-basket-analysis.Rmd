@@ -33,6 +33,7 @@ transactions %>%
 transactions %>% 
   count(itemDescription, sort = TRUE) %>% 
   tail(5)
+
 ```
 
 
@@ -44,16 +45,17 @@ basket <- transactions %>%
   summarise(items = str_c(itemDescription, collapse = ",")) %>%
   ungroup() %>%
   select(items)
-colnames(basket) <- NULL
-basket
 
 
+head(basket)
+basket %>% 
+  count(items)
 
+#write.csv(basket,file = file.path("data","basketitems.csv"))
 
-write.csv(basket,file = file.path("data","basketitems.csv"))
+#transaction_object <- read.transactions(file.path("data","basketitems.csv"),sep = ",")
 
-transaction_object <- read.transactions(file.path("data","basketitems.csv"),sep = ",")
-
+transaction_object <- as(basket, "transactions")
 
 summary(transaction_object)
 
@@ -66,7 +68,7 @@ itemFrequencyPlot(transaction_object,topN=30,type="relative",col=brewer.pal(8,'P
 rules <- apriori(transaction_object, parameter = list(supp=0, conf=0.01,minlen=2))
 transaction_object
 summary(rules)
-inspect(rules[1:10])
+
 
 ```
 
