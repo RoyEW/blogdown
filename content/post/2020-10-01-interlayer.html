@@ -9,6 +9,7 @@ tags: []
 
 
 
+<p>GitHub script test line</p>
 <pre class="r"><code>library(tidyverse)
 library(gganimate)
 library(readxl)
@@ -34,7 +35,10 @@ p &lt;- interlayer %&gt;%
   geom_line(size = 2)+
   geom_line(size = 2,data = new,aes(Temp, CTE, colour = comp))+
   theme(legend.position = &quot;none&quot;)+
-  lims(x=c(0,2100),y=c(0,18))
+  lims(x=c(0,2100),y=c(0,18))+
+  annotate(&quot;text&quot;,x=300+273.15,y=1,angle=90,label=&quot;PWR Operation Range&quot;,size=3,hjust=0.15)+
+  geom_vline(aes(xintercept=273.15+290),lty=2)+
+   geom_vline(aes(xintercept=273.15+325),lty=2)
 
   
 p</code></pre>

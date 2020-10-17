@@ -11,6 +11,9 @@ tags: []
 knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 ```
 
+
+GitHub script test line
+
 ```{r}
 library(tidyverse)
 library(gganimate)
@@ -37,7 +40,10 @@ p <- interlayer %>%
   geom_line(size = 2)+
   geom_line(size = 2,data = new,aes(Temp, CTE, colour = comp))+
   theme(legend.position = "none")+
-  lims(x=c(0,2100),y=c(0,18))
+  lims(x=c(0,2100),y=c(0,18))+
+  annotate("text",x=300+273.15,y=1,angle=90,label="PWR Operation Range",size=3,hjust=0.15)+
+  geom_vline(aes(xintercept=273.15+290),lty=2)+
+   geom_vline(aes(xintercept=273.15+325),lty=2)
 
   
 p
