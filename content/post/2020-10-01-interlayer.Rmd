@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 ```
 
 
-GitHub script test line 2
+GitHub script test line 3
 
 ```{r}
 library(tidyverse)
