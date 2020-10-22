@@ -13,12 +13,26 @@ tags: []
 library(arulesViz)
 library(lubridate)
 library(arules)
-library(RColorBrewer)</code></pre>
+library(RColorBrewer)
+library(stringr)
+library(tidyr)</code></pre>
 <p>Data sourced from Kaggle <code>https://www.kaggle.com/heeraldedhia/groceries-dataset?select=Groceries_dataset.csv</code></p>
+<p>Association rules</p>
+<p><span class="math inline">\(Rule: X \implies Y\)</span></p>
+<p><span class="math display">\[Support = \frac{freq(X, Y)}{N}\]</span></p>
+<p><span class="math display">\[Confidence = \frac{freq(X, Y)}{freq(X)}\]</span></p>
+<p><span class="math display">\[Lift = \frac{Support}{Supp(X)\times Supp(Y)}\]</span></p>
 <p>APRIORI Algorithm</p>
 <pre class="r"><code>transactions &lt;- read.csv(file.path(&quot;data&quot;,&quot;basket.csv&quot;))
 
-transactions %&gt;% 
+df &lt;- transactions %&gt;%
+  group_by(Member_number, Date) %&gt;%
+  summarise(items = str_c(itemDescription, collapse = &quot;,&quot;)) %&gt;% 
+  mutate(n=str_count(items,&quot;,&quot;)+1)
+
+max(df$n)</code></pre>
+<pre><code>## [1] 11</code></pre>
+<pre class="r"><code>transactions %&gt;% 
   count(itemDescription, sort = TRUE) %&gt;% 
   head(5)</code></pre>
 <pre><code>##    itemDescription    n
@@ -45,32 +59,27 @@ transactions %&gt;%
   select(items)
 
 
-head(basket)</code></pre>
-<pre><code>## # A tibble: 6 x 1
-##   items                                        
-##   &lt;chr&gt;                                        
-## 1 sausage,whole milk,semi-finished bread,yogurt
-## 2 whole milk,pastry,salty snack                
-## 3 canned beer,misc. beverages                  
-## 4 sausage,hygiene articles                     
-## 5 soda,pickled vegetables                      
-## 6 frankfurter,curd</code></pre>
-<pre class="r"><code>basket %&gt;% 
-  count(items)</code></pre>
-<pre><code>## # A tibble: 9,111 x 2
-##    items                                                                 n
-##    &lt;chr&gt;                                                             &lt;int&gt;
-##  1 abrasive cleaner,citrus fruit,whole milk,long life bakery product     1
-##  2 abrasive cleaner,yogurt,frozen meals                                  1
-##  3 artif. sweetener,bottled water,butter milk,butter,soda                1
-##  4 artif. sweetener,curd                                                 1
-##  5 artif. sweetener,herbs                                                1
-##  6 artif. sweetener,salty snack                                          1
-##  7 artif. sweetener,sugar                                                1
-##  8 artif. sweetener,whole milk                                           1
-##  9 baby cosmetics,bottled water                                          1
-## 10 bags,other vegetables                                                 1
-## # ... with 9,101 more rows</code></pre>
+dim(basket)</code></pre>
+<pre><code>## [1] 14963     1</code></pre>
+<pre class="r"><code>basket &lt;- basket %&gt;% 
+  separate(col = items, sep=&quot;,&quot;,into = c(paste(seq(1:11))))
+
+#colnames(basket) &lt;- NULL
+basket</code></pre>
+<pre><code>## # A tibble: 14,963 x 11
+##    `1`      `2`        `3`       `4`   `5`   `6`   `7`   `8`   `9`   `10`  `11` 
+##    &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+##  1 sausage  whole milk semi-fin~ yogu~ &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  2 whole m~ pastry     salty sn~ &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  3 canned ~ misc. bev~ &lt;NA&gt;      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  4 sausage  hygiene a~ &lt;NA&gt;      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  5 soda     pickled v~ &lt;NA&gt;      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  6 frankfu~ curd       &lt;NA&gt;      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  7 sausage  whole milk rolls/bu~ &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  8 whole m~ soda       &lt;NA&gt;      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+##  9 beef     white bre~ &lt;NA&gt;      &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+## 10 frankfu~ soda       whipped/~ &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt; 
+## # ... with 14,953 more rows</code></pre>
 <pre class="r"><code>#write.csv(basket,file = file.path(&quot;data&quot;,&quot;basketitems.csv&quot;))
 
 #transaction_object &lt;- read.transactions(file.path(&quot;data&quot;,&quot;basketitems.csv&quot;),sep = &quot;,&quot;)
@@ -80,49 +89,577 @@ transaction_object &lt;- as(basket, &quot;transactions&quot;)
 summary(transaction_object)</code></pre>
 <pre><code>## transactions as itemMatrix in sparse format with
 ##  14963 rows (elements/itemsets/transactions) and
-##  9111 columns (items) and a density of 0.0001097574 
+##  1054 columns (items) and a density of 0.002457992 
 ## 
 ## most frequent items:
-## items=other vegetables,whole milk       items=whole milk,whole milk 
-##                                48                                40 
-##       items=whole milk,rolls/buns          items=sausage,whole milk 
-##                                38                                37 
-## items=whole milk,other vegetables                           (Other) 
-##                                37                             14763 
+##       1=whole milk       2=whole milk 1=other vegetables          1=sausage 
+##               1083                983                840                751 
+## 2=other vegetables            (Other) 
+##                750              34358 
 ## 
 ## element (itemset/transaction) length distribution:
 ## sizes
-##     1 
-## 14963 
+##     2     3     4     5     6     7     8     9    11 
+## 10080  2698  1390   344   175    80   145    50     1 
 ## 
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##       1       1       1       1       1       1 
+##   2.000   2.000   2.000   2.591   3.000  11.000 
 ## 
 ## includes extended item information - examples:
-##                                                                    labels
-## 1 items=abrasive cleaner,citrus fruit,whole milk,long life bakery product
-## 2                              items=abrasive cleaner,yogurt,frozen meals
-## 3            items=artif. sweetener,bottled water,butter milk,butter,soda
-##   variables                                                            levels
-## 1     items abrasive cleaner,citrus fruit,whole milk,long life bakery product
-## 2     items                              abrasive cleaner,yogurt,frozen meals
-## 3     items            artif. sweetener,bottled water,butter milk,butter,soda
+##               labels variables           levels
+## 1 1=abrasive cleaner         1 abrasive cleaner
+## 2 1=artif. sweetener         1 artif. sweetener
+## 3   1=baby cosmetics         1   baby cosmetics
 ## 
 ## includes extended transaction information - examples:
 ##   transactionID
 ## 1             1
 ## 2             2
 ## 3             3</code></pre>
-<pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;absolute&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
+<pre class="r"><code># WIP
+#colnames(transaction_object) &lt;- colnames(transaction_object) %&gt;% 
+#  str_remove(pattern = &quot;[123456789][=]&quot;)
+
+colnames(transaction_object)</code></pre>
+<pre><code>##    [1] &quot;1=abrasive cleaner&quot;          &quot;1=artif. sweetener&quot;         
+##    [3] &quot;1=baby cosmetics&quot;            &quot;1=bags&quot;                     
+##    [5] &quot;1=baking powder&quot;             &quot;1=bathroom cleaner&quot;         
+##    [7] &quot;1=beef&quot;                      &quot;1=berries&quot;                  
+##    [9] &quot;1=beverages&quot;                 &quot;1=bottled beer&quot;             
+##   [11] &quot;1=bottled water&quot;             &quot;1=brandy&quot;                   
+##   [13] &quot;1=brown bread&quot;               &quot;1=butter&quot;                   
+##   [15] &quot;1=butter milk&quot;               &quot;1=cake bar&quot;                 
+##   [17] &quot;1=candles&quot;                   &quot;1=candy&quot;                    
+##   [19] &quot;1=canned beer&quot;               &quot;1=canned fish&quot;              
+##   [21] &quot;1=canned fruit&quot;              &quot;1=canned vegetables&quot;        
+##   [23] &quot;1=cat food&quot;                  &quot;1=cereals&quot;                  
+##   [25] &quot;1=chewing gum&quot;               &quot;1=chicken&quot;                  
+##   [27] &quot;1=chocolate&quot;                 &quot;1=chocolate marshmallow&quot;    
+##   [29] &quot;1=citrus fruit&quot;              &quot;1=cleaner&quot;                  
+##   [31] &quot;1=cling film/bags&quot;           &quot;1=cocoa drinks&quot;             
+##   [33] &quot;1=coffee&quot;                    &quot;1=condensed milk&quot;           
+##   [35] &quot;1=cooking chocolate&quot;         &quot;1=cookware&quot;                 
+##   [37] &quot;1=cream&quot;                     &quot;1=cream cheese &quot;            
+##   [39] &quot;1=curd&quot;                      &quot;1=curd cheese&quot;              
+##   [41] &quot;1=decalcifier&quot;               &quot;1=dental care&quot;              
+##   [43] &quot;1=dessert&quot;                   &quot;1=detergent&quot;                
+##   [45] &quot;1=dish cleaner&quot;              &quot;1=dishes&quot;                   
+##   [47] &quot;1=dog food&quot;                  &quot;1=domestic eggs&quot;            
+##   [49] &quot;1=female sanitary products&quot;  &quot;1=finished products&quot;        
+##   [51] &quot;1=fish&quot;                      &quot;1=flour&quot;                    
+##   [53] &quot;1=flower (seeds)&quot;            &quot;1=flower soil/fertilizer&quot;   
+##   [55] &quot;1=frankfurter&quot;               &quot;1=frozen chicken&quot;           
+##   [57] &quot;1=frozen dessert&quot;            &quot;1=frozen fish&quot;              
+##   [59] &quot;1=frozen fruits&quot;             &quot;1=frozen meals&quot;             
+##   [61] &quot;1=frozen potato products&quot;    &quot;1=frozen vegetables&quot;        
+##   [63] &quot;1=fruit/vegetable juice&quot;     &quot;1=grapes&quot;                   
+##   [65] &quot;1=hair spray&quot;                &quot;1=ham&quot;                      
+##   [67] &quot;1=hamburger meat&quot;            &quot;1=hard cheese&quot;              
+##   [69] &quot;1=herbs&quot;                     &quot;1=honey&quot;                    
+##   [71] &quot;1=house keeping products&quot;    &quot;1=hygiene articles&quot;         
+##   [73] &quot;1=ice cream&quot;                 &quot;1=instant coffee&quot;           
+##   [75] &quot;1=Instant food products&quot;     &quot;1=jam&quot;                      
+##   [77] &quot;1=ketchup&quot;                   &quot;1=kitchen towels&quot;           
+##   [79] &quot;1=kitchen utensil&quot;           &quot;1=light bulbs&quot;              
+##   [81] &quot;1=liqueur&quot;                   &quot;1=liquor&quot;                   
+##   [83] &quot;1=liquor (appetizer)&quot;        &quot;1=liver loaf&quot;               
+##   [85] &quot;1=long life bakery product&quot;  &quot;1=make up remover&quot;          
+##   [87] &quot;1=male cosmetics&quot;            &quot;1=margarine&quot;                
+##   [89] &quot;1=mayonnaise&quot;                &quot;1=meat&quot;                     
+##   [91] &quot;1=meat spreads&quot;              &quot;1=misc. beverages&quot;          
+##   [93] &quot;1=mustard&quot;                   &quot;1=napkins&quot;                  
+##   [95] &quot;1=newspapers&quot;                &quot;1=nut snack&quot;                
+##   [97] &quot;1=nuts/prunes&quot;               &quot;1=oil&quot;                      
+##   [99] &quot;1=onions&quot;                    &quot;1=organic products&quot;         
+##  [101] &quot;1=organic sausage&quot;           &quot;1=other vegetables&quot;         
+##  [103] &quot;1=packaged fruit/vegetables&quot; &quot;1=pasta&quot;                    
+##  [105] &quot;1=pastry&quot;                    &quot;1=pet care&quot;                 
+##  [107] &quot;1=photo/film&quot;                &quot;1=pickled vegetables&quot;       
+##  [109] &quot;1=pip fruit&quot;                 &quot;1=popcorn&quot;                  
+##  [111] &quot;1=pork&quot;                      &quot;1=pot plants&quot;               
+##  [113] &quot;1=potato products&quot;           &quot;1=preservation products&quot;    
+##  [115] &quot;1=processed cheese&quot;          &quot;1=prosecco&quot;                 
+##  [117] &quot;1=pudding powder&quot;            &quot;1=ready soups&quot;              
+##  [119] &quot;1=red/blush wine&quot;            &quot;1=rice&quot;                     
+##  [121] &quot;1=roll products &quot;            &quot;1=rolls/buns&quot;               
+##  [123] &quot;1=root vegetables&quot;           &quot;1=rum&quot;                      
+##  [125] &quot;1=salad dressing&quot;            &quot;1=salt&quot;                     
+##  [127] &quot;1=salty snack&quot;               &quot;1=sauces&quot;                   
+##  [129] &quot;1=sausage&quot;                   &quot;1=seasonal products&quot;        
+##  [131] &quot;1=semi-finished bread&quot;       &quot;1=shopping bags&quot;            
+##  [133] &quot;1=skin care&quot;                 &quot;1=sliced cheese&quot;            
+##  [135] &quot;1=snack products&quot;            &quot;1=soap&quot;                     
+##  [137] &quot;1=soda&quot;                      &quot;1=soft cheese&quot;              
+##  [139] &quot;1=softener&quot;                  &quot;1=soups&quot;                    
+##  [141] &quot;1=sparkling wine&quot;            &quot;1=specialty bar&quot;            
+##  [143] &quot;1=specialty cheese&quot;          &quot;1=specialty chocolate&quot;      
+##  [145] &quot;1=specialty fat&quot;             &quot;1=specialty vegetables&quot;     
+##  [147] &quot;1=spices&quot;                    &quot;1=spread cheese&quot;            
+##  [149] &quot;1=sugar&quot;                     &quot;1=sweet spreads&quot;            
+##  [151] &quot;1=syrup&quot;                     &quot;1=tea&quot;                      
+##  [153] &quot;1=tidbits&quot;                   &quot;1=tropical fruit&quot;           
+##  [155] &quot;1=turkey&quot;                    &quot;1=UHT-milk&quot;                 
+##  [157] &quot;1=vinegar&quot;                   &quot;1=waffles&quot;                  
+##  [159] &quot;1=whipped/sour cream&quot;        &quot;1=whisky&quot;                   
+##  [161] &quot;1=white bread&quot;               &quot;1=white wine&quot;               
+##  [163] &quot;1=whole milk&quot;                &quot;1=yogurt&quot;                   
+##  [165] &quot;1=zwieback&quot;                  &quot;2=abrasive cleaner&quot;         
+##  [167] &quot;2=artif. sweetener&quot;          &quot;2=baby cosmetics&quot;           
+##  [169] &quot;2=bags&quot;                      &quot;2=baking powder&quot;            
+##  [171] &quot;2=bathroom cleaner&quot;          &quot;2=beef&quot;                     
+##  [173] &quot;2=berries&quot;                   &quot;2=beverages&quot;                
+##  [175] &quot;2=bottled beer&quot;              &quot;2=bottled water&quot;            
+##  [177] &quot;2=brandy&quot;                    &quot;2=brown bread&quot;              
+##  [179] &quot;2=butter&quot;                    &quot;2=butter milk&quot;              
+##  [181] &quot;2=cake bar&quot;                  &quot;2=candles&quot;                  
+##  [183] &quot;2=candy&quot;                     &quot;2=canned beer&quot;              
+##  [185] &quot;2=canned fish&quot;               &quot;2=canned fruit&quot;             
+##  [187] &quot;2=canned vegetables&quot;         &quot;2=cat food&quot;                 
+##  [189] &quot;2=cereals&quot;                   &quot;2=chewing gum&quot;              
+##  [191] &quot;2=chicken&quot;                   &quot;2=chocolate&quot;                
+##  [193] &quot;2=chocolate marshmallow&quot;     &quot;2=citrus fruit&quot;             
+##  [195] &quot;2=cleaner&quot;                   &quot;2=cling film/bags&quot;          
+##  [197] &quot;2=cocoa drinks&quot;              &quot;2=coffee&quot;                   
+##  [199] &quot;2=condensed milk&quot;            &quot;2=cooking chocolate&quot;        
+##  [201] &quot;2=cookware&quot;                  &quot;2=cream&quot;                    
+##  [203] &quot;2=cream cheese &quot;             &quot;2=curd&quot;                     
+##  [205] &quot;2=curd cheese&quot;               &quot;2=decalcifier&quot;              
+##  [207] &quot;2=dental care&quot;               &quot;2=dessert&quot;                  
+##  [209] &quot;2=detergent&quot;                 &quot;2=dish cleaner&quot;             
+##  [211] &quot;2=dishes&quot;                    &quot;2=dog food&quot;                 
+##  [213] &quot;2=domestic eggs&quot;             &quot;2=female sanitary products&quot; 
+##  [215] &quot;2=finished products&quot;         &quot;2=fish&quot;                     
+##  [217] &quot;2=flour&quot;                     &quot;2=flower (seeds)&quot;           
+##  [219] &quot;2=flower soil/fertilizer&quot;    &quot;2=frankfurter&quot;              
+##  [221] &quot;2=frozen chicken&quot;            &quot;2=frozen dessert&quot;           
+##  [223] &quot;2=frozen fish&quot;               &quot;2=frozen fruits&quot;            
+##  [225] &quot;2=frozen meals&quot;              &quot;2=frozen potato products&quot;   
+##  [227] &quot;2=frozen vegetables&quot;         &quot;2=fruit/vegetable juice&quot;    
+##  [229] &quot;2=grapes&quot;                    &quot;2=hair spray&quot;               
+##  [231] &quot;2=ham&quot;                       &quot;2=hamburger meat&quot;           
+##  [233] &quot;2=hard cheese&quot;               &quot;2=herbs&quot;                    
+##  [235] &quot;2=honey&quot;                     &quot;2=house keeping products&quot;   
+##  [237] &quot;2=hygiene articles&quot;          &quot;2=ice cream&quot;                
+##  [239] &quot;2=instant coffee&quot;            &quot;2=Instant food products&quot;    
+##  [241] &quot;2=jam&quot;                       &quot;2=ketchup&quot;                  
+##  [243] &quot;2=kitchen towels&quot;            &quot;2=light bulbs&quot;              
+##  [245] &quot;2=liqueur&quot;                   &quot;2=liquor&quot;                   
+##  [247] &quot;2=liquor (appetizer)&quot;        &quot;2=liver loaf&quot;               
+##  [249] &quot;2=long life bakery product&quot;  &quot;2=make up remover&quot;          
+##  [251] &quot;2=male cosmetics&quot;            &quot;2=margarine&quot;                
+##  [253] &quot;2=mayonnaise&quot;                &quot;2=meat&quot;                     
+##  [255] &quot;2=meat spreads&quot;              &quot;2=misc. beverages&quot;          
+##  [257] &quot;2=mustard&quot;                   &quot;2=napkins&quot;                  
+##  [259] &quot;2=newspapers&quot;                &quot;2=nut snack&quot;                
+##  [261] &quot;2=nuts/prunes&quot;               &quot;2=oil&quot;                      
+##  [263] &quot;2=onions&quot;                    &quot;2=organic products&quot;         
+##  [265] &quot;2=organic sausage&quot;           &quot;2=other vegetables&quot;         
+##  [267] &quot;2=packaged fruit/vegetables&quot; &quot;2=pasta&quot;                    
+##  [269] &quot;2=pastry&quot;                    &quot;2=pet care&quot;                 
+##  [271] &quot;2=photo/film&quot;                &quot;2=pickled vegetables&quot;       
+##  [273] &quot;2=pip fruit&quot;                 &quot;2=popcorn&quot;                  
+##  [275] &quot;2=pork&quot;                      &quot;2=pot plants&quot;               
+##  [277] &quot;2=potato products&quot;           &quot;2=processed cheese&quot;         
+##  [279] &quot;2=prosecco&quot;                  &quot;2=pudding powder&quot;           
+##  [281] &quot;2=ready soups&quot;               &quot;2=red/blush wine&quot;           
+##  [283] &quot;2=rice&quot;                      &quot;2=roll products &quot;           
+##  [285] &quot;2=rolls/buns&quot;                &quot;2=root vegetables&quot;          
+##  [287] &quot;2=rubbing alcohol&quot;           &quot;2=rum&quot;                      
+##  [289] &quot;2=salad dressing&quot;            &quot;2=salt&quot;                     
+##  [291] &quot;2=salty snack&quot;               &quot;2=sauces&quot;                   
+##  [293] &quot;2=sausage&quot;                   &quot;2=seasonal products&quot;        
+##  [295] &quot;2=semi-finished bread&quot;       &quot;2=shopping bags&quot;            
+##  [297] &quot;2=skin care&quot;                 &quot;2=sliced cheese&quot;            
+##  [299] &quot;2=snack products&quot;            &quot;2=soap&quot;                     
+##  [301] &quot;2=soda&quot;                      &quot;2=soft cheese&quot;              
+##  [303] &quot;2=softener&quot;                  &quot;2=soups&quot;                    
+##  [305] &quot;2=sparkling wine&quot;            &quot;2=specialty bar&quot;            
+##  [307] &quot;2=specialty cheese&quot;          &quot;2=specialty chocolate&quot;      
+##  [309] &quot;2=specialty fat&quot;             &quot;2=specialty vegetables&quot;     
+##  [311] &quot;2=spices&quot;                    &quot;2=spread cheese&quot;            
+##  [313] &quot;2=sugar&quot;                     &quot;2=sweet spreads&quot;            
+##  [315] &quot;2=syrup&quot;                     &quot;2=tea&quot;                      
+##  [317] &quot;2=tidbits&quot;                   &quot;2=toilet cleaner&quot;           
+##  [319] &quot;2=tropical fruit&quot;            &quot;2=turkey&quot;                   
+##  [321] &quot;2=UHT-milk&quot;                  &quot;2=vinegar&quot;                  
+##  [323] &quot;2=waffles&quot;                   &quot;2=whipped/sour cream&quot;       
+##  [325] &quot;2=whisky&quot;                    &quot;2=white bread&quot;              
+##  [327] &quot;2=white wine&quot;                &quot;2=whole milk&quot;               
+##  [329] &quot;2=yogurt&quot;                    &quot;2=zwieback&quot;                 
+##  [331] &quot;3=abrasive cleaner&quot;          &quot;3=artif. sweetener&quot;         
+##  [333] &quot;3=bags&quot;                      &quot;3=baking powder&quot;            
+##  [335] &quot;3=bathroom cleaner&quot;          &quot;3=beef&quot;                     
+##  [337] &quot;3=berries&quot;                   &quot;3=beverages&quot;                
+##  [339] &quot;3=bottled beer&quot;              &quot;3=bottled water&quot;            
+##  [341] &quot;3=brandy&quot;                    &quot;3=brown bread&quot;              
+##  [343] &quot;3=butter&quot;                    &quot;3=butter milk&quot;              
+##  [345] &quot;3=cake bar&quot;                  &quot;3=candles&quot;                  
+##  [347] &quot;3=candy&quot;                     &quot;3=canned beer&quot;              
+##  [349] &quot;3=canned fish&quot;               &quot;3=canned fruit&quot;             
+##  [351] &quot;3=canned vegetables&quot;         &quot;3=cat food&quot;                 
+##  [353] &quot;3=cereals&quot;                   &quot;3=chewing gum&quot;              
+##  [355] &quot;3=chicken&quot;                   &quot;3=chocolate&quot;                
+##  [357] &quot;3=chocolate marshmallow&quot;     &quot;3=citrus fruit&quot;             
+##  [359] &quot;3=cleaner&quot;                   &quot;3=cling film/bags&quot;          
+##  [361] &quot;3=cocoa drinks&quot;              &quot;3=coffee&quot;                   
+##  [363] &quot;3=condensed milk&quot;            &quot;3=cooking chocolate&quot;        
+##  [365] &quot;3=cream&quot;                     &quot;3=cream cheese &quot;            
+##  [367] &quot;3=curd&quot;                      &quot;3=curd cheese&quot;              
+##  [369] &quot;3=decalcifier&quot;               &quot;3=dental care&quot;              
+##  [371] &quot;3=dessert&quot;                   &quot;3=detergent&quot;                
+##  [373] &quot;3=dish cleaner&quot;              &quot;3=dishes&quot;                   
+##  [375] &quot;3=dog food&quot;                  &quot;3=domestic eggs&quot;            
+##  [377] &quot;3=female sanitary products&quot;  &quot;3=flour&quot;                    
+##  [379] &quot;3=flower (seeds)&quot;            &quot;3=frankfurter&quot;              
+##  [381] &quot;3=frozen dessert&quot;            &quot;3=frozen fish&quot;              
+##  [383] &quot;3=frozen fruits&quot;             &quot;3=frozen meals&quot;             
+##  [385] &quot;3=frozen potato products&quot;    &quot;3=frozen vegetables&quot;        
+##  [387] &quot;3=fruit/vegetable juice&quot;     &quot;3=grapes&quot;                   
+##  [389] &quot;3=ham&quot;                       &quot;3=hamburger meat&quot;           
+##  [391] &quot;3=hard cheese&quot;               &quot;3=herbs&quot;                    
+##  [393] &quot;3=honey&quot;                     &quot;3=house keeping products&quot;   
+##  [395] &quot;3=hygiene articles&quot;          &quot;3=ice cream&quot;                
+##  [397] &quot;3=instant coffee&quot;            &quot;3=Instant food products&quot;    
+##  [399] &quot;3=jam&quot;                       &quot;3=ketchup&quot;                  
+##  [401] &quot;3=kitchen towels&quot;            &quot;3=light bulbs&quot;              
+##  [403] &quot;3=liqueur&quot;                   &quot;3=liquor&quot;                   
+##  [405] &quot;3=liquor (appetizer)&quot;        &quot;3=liver loaf&quot;               
+##  [407] &quot;3=long life bakery product&quot;  &quot;3=male cosmetics&quot;           
+##  [409] &quot;3=margarine&quot;                 &quot;3=mayonnaise&quot;               
+##  [411] &quot;3=meat&quot;                      &quot;3=meat spreads&quot;             
+##  [413] &quot;3=misc. beverages&quot;           &quot;3=mustard&quot;                  
+##  [415] &quot;3=napkins&quot;                   &quot;3=newspapers&quot;               
+##  [417] &quot;3=nut snack&quot;                 &quot;3=nuts/prunes&quot;              
+##  [419] &quot;3=oil&quot;                       &quot;3=onions&quot;                   
+##  [421] &quot;3=organic products&quot;          &quot;3=organic sausage&quot;          
+##  [423] &quot;3=other vegetables&quot;          &quot;3=packaged fruit/vegetables&quot;
+##  [425] &quot;3=pasta&quot;                     &quot;3=pastry&quot;                   
+##  [427] &quot;3=pet care&quot;                  &quot;3=photo/film&quot;               
+##  [429] &quot;3=pickled vegetables&quot;        &quot;3=pip fruit&quot;                
+##  [431] &quot;3=popcorn&quot;                   &quot;3=pork&quot;                     
+##  [433] &quot;3=pot plants&quot;                &quot;3=potato products&quot;          
+##  [435] &quot;3=processed cheese&quot;          &quot;3=prosecco&quot;                 
+##  [437] &quot;3=pudding powder&quot;            &quot;3=ready soups&quot;              
+##  [439] &quot;3=red/blush wine&quot;            &quot;3=rice&quot;                     
+##  [441] &quot;3=roll products &quot;            &quot;3=rolls/buns&quot;               
+##  [443] &quot;3=root vegetables&quot;           &quot;3=rubbing alcohol&quot;          
+##  [445] &quot;3=rum&quot;                       &quot;3=salt&quot;                     
+##  [447] &quot;3=salty snack&quot;               &quot;3=sauces&quot;                   
+##  [449] &quot;3=sausage&quot;                   &quot;3=seasonal products&quot;        
+##  [451] &quot;3=semi-finished bread&quot;       &quot;3=shopping bags&quot;            
+##  [453] &quot;3=sliced cheese&quot;             &quot;3=snack products&quot;           
+##  [455] &quot;3=soap&quot;                      &quot;3=soda&quot;                     
+##  [457] &quot;3=soft cheese&quot;               &quot;3=softener&quot;                 
+##  [459] &quot;3=soups&quot;                     &quot;3=sparkling wine&quot;           
+##  [461] &quot;3=specialty bar&quot;             &quot;3=specialty cheese&quot;         
+##  [463] &quot;3=specialty chocolate&quot;       &quot;3=specialty fat&quot;            
+##  [465] &quot;3=specialty vegetables&quot;      &quot;3=spices&quot;                   
+##  [467] &quot;3=spread cheese&quot;             &quot;3=sugar&quot;                    
+##  [469] &quot;3=sweet spreads&quot;             &quot;3=syrup&quot;                    
+##  [471] &quot;3=tea&quot;                       &quot;3=tidbits&quot;                  
+##  [473] &quot;3=tropical fruit&quot;            &quot;3=turkey&quot;                   
+##  [475] &quot;3=UHT-milk&quot;                  &quot;3=vinegar&quot;                  
+##  [477] &quot;3=waffles&quot;                   &quot;3=whipped/sour cream&quot;       
+##  [479] &quot;3=whisky&quot;                    &quot;3=white bread&quot;              
+##  [481] &quot;3=white wine&quot;                &quot;3=whole milk&quot;               
+##  [483] &quot;3=yogurt&quot;                    &quot;3=zwieback&quot;                 
+##  [485] &quot;4=abrasive cleaner&quot;          &quot;4=artif. sweetener&quot;         
+##  [487] &quot;4=baking powder&quot;             &quot;4=beef&quot;                     
+##  [489] &quot;4=berries&quot;                   &quot;4=beverages&quot;                
+##  [491] &quot;4=bottled beer&quot;              &quot;4=bottled water&quot;            
+##  [493] &quot;4=brandy&quot;                    &quot;4=brown bread&quot;              
+##  [495] &quot;4=butter&quot;                    &quot;4=butter milk&quot;              
+##  [497] &quot;4=cake bar&quot;                  &quot;4=candles&quot;                  
+##  [499] &quot;4=candy&quot;                     &quot;4=canned beer&quot;              
+##  [501] &quot;4=canned fish&quot;               &quot;4=canned fruit&quot;             
+##  [503] &quot;4=canned vegetables&quot;         &quot;4=cat food&quot;                 
+##  [505] &quot;4=cereals&quot;                   &quot;4=chewing gum&quot;              
+##  [507] &quot;4=chicken&quot;                   &quot;4=chocolate&quot;                
+##  [509] &quot;4=chocolate marshmallow&quot;     &quot;4=citrus fruit&quot;             
+##  [511] &quot;4=cleaner&quot;                   &quot;4=cling film/bags&quot;          
+##  [513] &quot;4=cocoa drinks&quot;              &quot;4=coffee&quot;                   
+##  [515] &quot;4=condensed milk&quot;            &quot;4=cookware&quot;                 
+##  [517] &quot;4=cream cheese &quot;             &quot;4=curd&quot;                     
+##  [519] &quot;4=curd cheese&quot;               &quot;4=decalcifier&quot;              
+##  [521] &quot;4=dental care&quot;               &quot;4=dessert&quot;                  
+##  [523] &quot;4=detergent&quot;                 &quot;4=dish cleaner&quot;             
+##  [525] &quot;4=dishes&quot;                    &quot;4=dog food&quot;                 
+##  [527] &quot;4=domestic eggs&quot;             &quot;4=female sanitary products&quot; 
+##  [529] &quot;4=finished products&quot;         &quot;4=flour&quot;                    
+##  [531] &quot;4=flower (seeds)&quot;            &quot;4=flower soil/fertilizer&quot;   
+##  [533] &quot;4=frankfurter&quot;               &quot;4=frozen dessert&quot;           
+##  [535] &quot;4=frozen fish&quot;               &quot;4=frozen meals&quot;             
+##  [537] &quot;4=frozen potato products&quot;    &quot;4=frozen vegetables&quot;        
+##  [539] &quot;4=fruit/vegetable juice&quot;     &quot;4=grapes&quot;                   
+##  [541] &quot;4=ham&quot;                       &quot;4=hamburger meat&quot;           
+##  [543] &quot;4=hard cheese&quot;               &quot;4=herbs&quot;                    
+##  [545] &quot;4=honey&quot;                     &quot;4=house keeping products&quot;   
+##  [547] &quot;4=hygiene articles&quot;          &quot;4=ice cream&quot;                
+##  [549] &quot;4=instant coffee&quot;            &quot;4=Instant food products&quot;    
+##  [551] &quot;4=jam&quot;                       &quot;4=ketchup&quot;                  
+##  [553] &quot;4=light bulbs&quot;               &quot;4=liquor&quot;                   
+##  [555] &quot;4=liquor (appetizer)&quot;        &quot;4=long life bakery product&quot; 
+##  [557] &quot;4=margarine&quot;                 &quot;4=mayonnaise&quot;               
+##  [559] &quot;4=meat&quot;                      &quot;4=meat spreads&quot;             
+##  [561] &quot;4=misc. beverages&quot;           &quot;4=mustard&quot;                  
+##  [563] &quot;4=napkins&quot;                   &quot;4=newspapers&quot;               
+##  [565] &quot;4=nut snack&quot;                 &quot;4=nuts/prunes&quot;              
+##  [567] &quot;4=oil&quot;                       &quot;4=onions&quot;                   
+##  [569] &quot;4=organic products&quot;          &quot;4=organic sausage&quot;          
+##  [571] &quot;4=other vegetables&quot;          &quot;4=packaged fruit/vegetables&quot;
+##  [573] &quot;4=pasta&quot;                     &quot;4=pastry&quot;                   
+##  [575] &quot;4=pet care&quot;                  &quot;4=photo/film&quot;               
+##  [577] &quot;4=pickled vegetables&quot;        &quot;4=pip fruit&quot;                
+##  [579] &quot;4=popcorn&quot;                   &quot;4=pork&quot;                     
+##  [581] &quot;4=pot plants&quot;                &quot;4=potato products&quot;          
+##  [583] &quot;4=processed cheese&quot;          &quot;4=prosecco&quot;                 
+##  [585] &quot;4=pudding powder&quot;            &quot;4=ready soups&quot;              
+##  [587] &quot;4=red/blush wine&quot;            &quot;4=rice&quot;                     
+##  [589] &quot;4=roll products &quot;            &quot;4=rolls/buns&quot;               
+##  [591] &quot;4=root vegetables&quot;           &quot;4=rum&quot;                      
+##  [593] &quot;4=salad dressing&quot;            &quot;4=salt&quot;                     
+##  [595] &quot;4=salty snack&quot;               &quot;4=sauces&quot;                   
+##  [597] &quot;4=sausage&quot;                   &quot;4=seasonal products&quot;        
+##  [599] &quot;4=semi-finished bread&quot;       &quot;4=shopping bags&quot;            
+##  [601] &quot;4=sliced cheese&quot;             &quot;4=snack products&quot;           
+##  [603] &quot;4=soap&quot;                      &quot;4=soda&quot;                     
+##  [605] &quot;4=soft cheese&quot;               &quot;4=softener&quot;                 
+##  [607] &quot;4=soups&quot;                     &quot;4=sparkling wine&quot;           
+##  [609] &quot;4=specialty bar&quot;             &quot;4=specialty cheese&quot;         
+##  [611] &quot;4=specialty chocolate&quot;       &quot;4=specialty fat&quot;            
+##  [613] &quot;4=specialty vegetables&quot;      &quot;4=spices&quot;                   
+##  [615] &quot;4=spread cheese&quot;             &quot;4=sugar&quot;                    
+##  [617] &quot;4=sweet spreads&quot;             &quot;4=syrup&quot;                    
+##  [619] &quot;4=tidbits&quot;                   &quot;4=tropical fruit&quot;           
+##  [621] &quot;4=turkey&quot;                    &quot;4=UHT-milk&quot;                 
+##  [623] &quot;4=vinegar&quot;                   &quot;4=waffles&quot;                  
+##  [625] &quot;4=whipped/sour cream&quot;        &quot;4=white bread&quot;              
+##  [627] &quot;4=white wine&quot;                &quot;4=whole milk&quot;               
+##  [629] &quot;4=yogurt&quot;                    &quot;4=zwieback&quot;                 
+##  [631] &quot;5=abrasive cleaner&quot;          &quot;5=artif. sweetener&quot;         
+##  [633] &quot;5=baby cosmetics&quot;            &quot;5=baking powder&quot;            
+##  [635] &quot;5=beef&quot;                      &quot;5=berries&quot;                  
+##  [637] &quot;5=beverages&quot;                 &quot;5=bottled beer&quot;             
+##  [639] &quot;5=bottled water&quot;             &quot;5=brandy&quot;                   
+##  [641] &quot;5=brown bread&quot;               &quot;5=butter&quot;                   
+##  [643] &quot;5=butter milk&quot;               &quot;5=cake bar&quot;                 
+##  [645] &quot;5=candles&quot;                   &quot;5=candy&quot;                    
+##  [647] &quot;5=canned beer&quot;               &quot;5=canned fish&quot;              
+##  [649] &quot;5=canned fruit&quot;              &quot;5=canned vegetables&quot;        
+##  [651] &quot;5=cat food&quot;                  &quot;5=cereals&quot;                  
+##  [653] &quot;5=chewing gum&quot;               &quot;5=chicken&quot;                  
+##  [655] &quot;5=chocolate&quot;                 &quot;5=chocolate marshmallow&quot;    
+##  [657] &quot;5=citrus fruit&quot;              &quot;5=cling film/bags&quot;          
+##  [659] &quot;5=coffee&quot;                    &quot;5=condensed milk&quot;           
+##  [661] &quot;5=cream&quot;                     &quot;5=cream cheese &quot;            
+##  [663] &quot;5=curd&quot;                      &quot;5=curd cheese&quot;              
+##  [665] &quot;5=dental care&quot;               &quot;5=dessert&quot;                  
+##  [667] &quot;5=detergent&quot;                 &quot;5=dish cleaner&quot;             
+##  [669] &quot;5=dishes&quot;                    &quot;5=dog food&quot;                 
+##  [671] &quot;5=domestic eggs&quot;             &quot;5=female sanitary products&quot; 
+##  [673] &quot;5=flour&quot;                     &quot;5=flower (seeds)&quot;           
+##  [675] &quot;5=frozen dessert&quot;            &quot;5=frozen fish&quot;              
+##  [677] &quot;5=frozen meals&quot;              &quot;5=frozen vegetables&quot;        
+##  [679] &quot;5=fruit/vegetable juice&quot;     &quot;5=grapes&quot;                   
+##  [681] &quot;5=hamburger meat&quot;            &quot;5=hard cheese&quot;              
+##  [683] &quot;5=herbs&quot;                     &quot;5=house keeping products&quot;   
+##  [685] &quot;5=hygiene articles&quot;          &quot;5=ice cream&quot;                
+##  [687] &quot;5=instant coffee&quot;            &quot;5=kitchen towels&quot;           
+##  [689] &quot;5=liquor&quot;                    &quot;5=liquor (appetizer)&quot;       
+##  [691] &quot;5=liver loaf&quot;                &quot;5=long life bakery product&quot; 
+##  [693] &quot;5=make up remover&quot;           &quot;5=male cosmetics&quot;           
+##  [695] &quot;5=margarine&quot;                 &quot;5=mayonnaise&quot;               
+##  [697] &quot;5=meat&quot;                      &quot;5=meat spreads&quot;             
+##  [699] &quot;5=misc. beverages&quot;           &quot;5=mustard&quot;                  
+##  [701] &quot;5=napkins&quot;                   &quot;5=newspapers&quot;               
+##  [703] &quot;5=nut snack&quot;                 &quot;5=oil&quot;                      
+##  [705] &quot;5=onions&quot;                    &quot;5=other vegetables&quot;         
+##  [707] &quot;5=packaged fruit/vegetables&quot; &quot;5=pasta&quot;                    
+##  [709] &quot;5=pastry&quot;                    &quot;5=pet care&quot;                 
+##  [711] &quot;5=pickled vegetables&quot;        &quot;5=pip fruit&quot;                
+##  [713] &quot;5=popcorn&quot;                   &quot;5=pork&quot;                     
+##  [715] &quot;5=pot plants&quot;                &quot;5=processed cheese&quot;         
+##  [717] &quot;5=prosecco&quot;                  &quot;5=ready soups&quot;              
+##  [719] &quot;5=red/blush wine&quot;            &quot;5=rice&quot;                     
+##  [721] &quot;5=roll products &quot;            &quot;5=rolls/buns&quot;               
+##  [723] &quot;5=root vegetables&quot;           &quot;5=rum&quot;                      
+##  [725] &quot;5=salt&quot;                      &quot;5=salty snack&quot;              
+##  [727] &quot;5=sausage&quot;                   &quot;5=seasonal products&quot;        
+##  [729] &quot;5=semi-finished bread&quot;       &quot;5=shopping bags&quot;            
+##  [731] &quot;5=skin care&quot;                 &quot;5=sliced cheese&quot;            
+##  [733] &quot;5=snack products&quot;            &quot;5=soda&quot;                     
+##  [735] &quot;5=soft cheese&quot;               &quot;5=softener&quot;                 
+##  [737] &quot;5=specialty bar&quot;             &quot;5=specialty cheese&quot;         
+##  [739] &quot;5=specialty chocolate&quot;       &quot;5=specialty fat&quot;            
+##  [741] &quot;5=spices&quot;                    &quot;5=spread cheese&quot;            
+##  [743] &quot;5=sugar&quot;                     &quot;5=sweet spreads&quot;            
+##  [745] &quot;5=tea&quot;                       &quot;5=tropical fruit&quot;           
+##  [747] &quot;5=turkey&quot;                    &quot;5=UHT-milk&quot;                 
+##  [749] &quot;5=vinegar&quot;                   &quot;5=waffles&quot;                  
+##  [751] &quot;5=whipped/sour cream&quot;        &quot;5=white bread&quot;              
+##  [753] &quot;5=white wine&quot;                &quot;5=whole milk&quot;               
+##  [755] &quot;5=yogurt&quot;                    &quot;5=zwieback&quot;                 
+##  [757] &quot;6=artif. sweetener&quot;          &quot;6=baking powder&quot;            
+##  [759] &quot;6=bathroom cleaner&quot;          &quot;6=berries&quot;                  
+##  [761] &quot;6=beverages&quot;                 &quot;6=bottled beer&quot;             
+##  [763] &quot;6=bottled water&quot;             &quot;6=brown bread&quot;              
+##  [765] &quot;6=butter&quot;                    &quot;6=butter milk&quot;              
+##  [767] &quot;6=cake bar&quot;                  &quot;6=candy&quot;                    
+##  [769] &quot;6=canned beer&quot;               &quot;6=canned fish&quot;              
+##  [771] &quot;6=canned vegetables&quot;         &quot;6=chewing gum&quot;              
+##  [773] &quot;6=chocolate&quot;                 &quot;6=chocolate marshmallow&quot;    
+##  [775] &quot;6=cleaner&quot;                   &quot;6=cling film/bags&quot;          
+##  [777] &quot;6=coffee&quot;                    &quot;6=cream cheese &quot;            
+##  [779] &quot;6=curd&quot;                      &quot;6=dessert&quot;                  
+##  [781] &quot;6=detergent&quot;                 &quot;6=dishes&quot;                   
+##  [783] &quot;6=dog food&quot;                  &quot;6=domestic eggs&quot;            
+##  [785] &quot;6=female sanitary products&quot;  &quot;6=flour&quot;                    
+##  [787] &quot;6=flower (seeds)&quot;            &quot;6=frozen dessert&quot;           
+##  [789] &quot;6=frozen fish&quot;               &quot;6=frozen meals&quot;             
+##  [791] &quot;6=frozen potato products&quot;    &quot;6=frozen vegetables&quot;        
+##  [793] &quot;6=fruit/vegetable juice&quot;     &quot;6=grapes&quot;                   
+##  [795] &quot;6=hard cheese&quot;               &quot;6=herbs&quot;                    
+##  [797] &quot;6=honey&quot;                     &quot;6=house keeping products&quot;   
+##  [799] &quot;6=hygiene articles&quot;          &quot;6=ice cream&quot;                
+##  [801] &quot;6=instant coffee&quot;            &quot;6=Instant food products&quot;    
+##  [803] &quot;6=jam&quot;                       &quot;6=light bulbs&quot;              
+##  [805] &quot;6=long life bakery product&quot;  &quot;6=male cosmetics&quot;           
+##  [807] &quot;6=margarine&quot;                 &quot;6=mayonnaise&quot;               
+##  [809] &quot;6=meat spreads&quot;              &quot;6=misc. beverages&quot;          
+##  [811] &quot;6=mustard&quot;                   &quot;6=napkins&quot;                  
+##  [813] &quot;6=newspapers&quot;                &quot;6=nut snack&quot;                
+##  [815] &quot;6=oil&quot;                       &quot;6=onions&quot;                   
+##  [817] &quot;6=other vegetables&quot;          &quot;6=packaged fruit/vegetables&quot;
+##  [819] &quot;6=pasta&quot;                     &quot;6=pastry&quot;                   
+##  [821] &quot;6=pet care&quot;                  &quot;6=photo/film&quot;               
+##  [823] &quot;6=pickled vegetables&quot;        &quot;6=pip fruit&quot;                
+##  [825] &quot;6=pot plants&quot;                &quot;6=processed cheese&quot;         
+##  [827] &quot;6=pudding powder&quot;            &quot;6=red/blush wine&quot;           
+##  [829] &quot;6=roll products &quot;            &quot;6=rolls/buns&quot;               
+##  [831] &quot;6=root vegetables&quot;           &quot;6=rubbing alcohol&quot;          
+##  [833] &quot;6=salad dressing&quot;            &quot;6=salty snack&quot;              
+##  [835] &quot;6=sauces&quot;                    &quot;6=semi-finished bread&quot;      
+##  [837] &quot;6=shopping bags&quot;             &quot;6=sliced cheese&quot;            
+##  [839] &quot;6=snack products&quot;            &quot;6=soda&quot;                     
+##  [841] &quot;6=soft cheese&quot;               &quot;6=soups&quot;                    
+##  [843] &quot;6=specialty bar&quot;             &quot;6=specialty cheese&quot;         
+##  [845] &quot;6=specialty chocolate&quot;       &quot;6=spread cheese&quot;            
+##  [847] &quot;6=sugar&quot;                     &quot;6=sweet spreads&quot;            
+##  [849] &quot;6=tropical fruit&quot;            &quot;6=UHT-milk&quot;                 
+##  [851] &quot;6=vinegar&quot;                   &quot;6=waffles&quot;                  
+##  [853] &quot;6=whipped/sour cream&quot;        &quot;6=white bread&quot;              
+##  [855] &quot;6=white wine&quot;                &quot;6=whole milk&quot;               
+##  [857] &quot;6=yogurt&quot;                    &quot;7=baking powder&quot;            
+##  [859] &quot;7=beverages&quot;                 &quot;7=bottled beer&quot;             
+##  [861] &quot;7=bottled water&quot;             &quot;7=brown bread&quot;              
+##  [863] &quot;7=butter&quot;                    &quot;7=butter milk&quot;              
+##  [865] &quot;7=cake bar&quot;                  &quot;7=candles&quot;                  
+##  [867] &quot;7=candy&quot;                     &quot;7=canned beer&quot;              
+##  [869] &quot;7=canned fish&quot;               &quot;7=cat food&quot;                 
+##  [871] &quot;7=chewing gum&quot;               &quot;7=chocolate&quot;                
+##  [873] &quot;7=chocolate marshmallow&quot;     &quot;7=coffee&quot;                   
+##  [875] &quot;7=condensed milk&quot;            &quot;7=cream cheese &quot;            
+##  [877] &quot;7=curd&quot;                      &quot;7=dental care&quot;              
+##  [879] &quot;7=dessert&quot;                   &quot;7=detergent&quot;                
+##  [881] &quot;7=dish cleaner&quot;              &quot;7=dog food&quot;                 
+##  [883] &quot;7=domestic eggs&quot;             &quot;7=flour&quot;                    
+##  [885] &quot;7=flower (seeds)&quot;            &quot;7=flower soil/fertilizer&quot;   
+##  [887] &quot;7=frozen meals&quot;              &quot;7=frozen vegetables&quot;        
+##  [889] &quot;7=fruit/vegetable juice&quot;     &quot;7=grapes&quot;                   
+##  [891] &quot;7=hard cheese&quot;               &quot;7=herbs&quot;                    
+##  [893] &quot;7=house keeping products&quot;    &quot;7=hygiene articles&quot;         
+##  [895] &quot;7=ice cream&quot;                 &quot;7=instant coffee&quot;           
+##  [897] &quot;7=ketchup&quot;                   &quot;7=light bulbs&quot;              
+##  [899] &quot;7=liquor (appetizer)&quot;        &quot;7=long life bakery product&quot; 
+##  [901] &quot;7=margarine&quot;                 &quot;7=mayonnaise&quot;               
+##  [903] &quot;7=misc. beverages&quot;           &quot;7=napkins&quot;                  
+##  [905] &quot;7=newspapers&quot;                &quot;7=nut snack&quot;                
+##  [907] &quot;7=oil&quot;                       &quot;7=onions&quot;                   
+##  [909] &quot;7=other vegetables&quot;          &quot;7=pasta&quot;                    
+##  [911] &quot;7=pastry&quot;                    &quot;7=photo/film&quot;               
+##  [913] &quot;7=pickled vegetables&quot;        &quot;7=pip fruit&quot;                
+##  [915] &quot;7=popcorn&quot;                   &quot;7=processed cheese&quot;         
+##  [917] &quot;7=rolls/buns&quot;                &quot;7=root vegetables&quot;          
+##  [919] &quot;7=salty snack&quot;               &quot;7=sauces&quot;                   
+##  [921] &quot;7=seasonal products&quot;         &quot;7=semi-finished bread&quot;      
+##  [923] &quot;7=shopping bags&quot;             &quot;7=skin care&quot;                
+##  [925] &quot;7=sliced cheese&quot;             &quot;7=soda&quot;                     
+##  [927] &quot;7=soft cheese&quot;               &quot;7=softener&quot;                 
+##  [929] &quot;7=soups&quot;                     &quot;7=specialty bar&quot;            
+##  [931] &quot;7=specialty cheese&quot;          &quot;7=specialty chocolate&quot;      
+##  [933] &quot;7=spices&quot;                    &quot;7=spread cheese&quot;            
+##  [935] &quot;7=sugar&quot;                     &quot;7=sweet spreads&quot;            
+##  [937] &quot;7=tropical fruit&quot;            &quot;7=UHT-milk&quot;                 
+##  [939] &quot;7=waffles&quot;                   &quot;7=whipped/sour cream&quot;       
+##  [941] &quot;7=white bread&quot;               &quot;7=white wine&quot;               
+##  [943] &quot;7=whole milk&quot;                &quot;7=yogurt&quot;                   
+##  [945] &quot;7=zwieback&quot;                  &quot;8=artif. sweetener&quot;         
+##  [947] &quot;8=berries&quot;                   &quot;8=beverages&quot;                
+##  [949] &quot;8=bottled beer&quot;              &quot;8=bottled water&quot;            
+##  [951] &quot;8=brown bread&quot;               &quot;8=butter&quot;                   
+##  [953] &quot;8=butter milk&quot;               &quot;8=cake bar&quot;                 
+##  [955] &quot;8=candy&quot;                     &quot;8=canned beer&quot;              
+##  [957] &quot;8=canned fish&quot;               &quot;8=canned vegetables&quot;        
+##  [959] &quot;8=cat food&quot;                  &quot;8=chewing gum&quot;              
+##  [961] &quot;8=chocolate&quot;                 &quot;8=condensed milk&quot;           
+##  [963] &quot;8=cream cheese &quot;             &quot;8=curd&quot;                     
+##  [965] &quot;8=dental care&quot;               &quot;8=detergent&quot;                
+##  [967] &quot;8=domestic eggs&quot;             &quot;8=flour&quot;                    
+##  [969] &quot;8=frozen dessert&quot;            &quot;8=frozen fish&quot;              
+##  [971] &quot;8=frozen meals&quot;              &quot;8=frozen potato products&quot;   
+##  [973] &quot;8=frozen vegetables&quot;         &quot;8=fruit/vegetable juice&quot;    
+##  [975] &quot;8=grapes&quot;                    &quot;8=hard cheese&quot;              
+##  [977] &quot;8=hygiene articles&quot;          &quot;8=jam&quot;                      
+##  [979] &quot;8=liquor&quot;                    &quot;8=liquor (appetizer)&quot;       
+##  [981] &quot;8=long life bakery product&quot;  &quot;8=margarine&quot;                
+##  [983] &quot;8=mayonnaise&quot;                &quot;8=misc. beverages&quot;          
+##  [985] &quot;8=mustard&quot;                   &quot;8=napkins&quot;                  
+##  [987] &quot;8=newspapers&quot;                &quot;8=nut snack&quot;                
+##  [989] &quot;8=oil&quot;                       &quot;8=other vegetables&quot;         
+##  [991] &quot;8=pastry&quot;                    &quot;8=photo/film&quot;               
+##  [993] &quot;8=pip fruit&quot;                 &quot;8=pot plants&quot;               
+##  [995] &quot;8=processed cheese&quot;          &quot;8=red/blush wine&quot;           
+##  [997] &quot;8=rolls/buns&quot;                &quot;8=root vegetables&quot;          
+##  [999] &quot;8=salty snack&quot;               &quot;8=sauces&quot;                   
+## [1001] &quot;8=seasonal products&quot;         &quot;8=semi-finished bread&quot;      
+## [1003] &quot;8=shopping bags&quot;             &quot;8=sliced cheese&quot;            
+## [1005] &quot;8=soda&quot;                      &quot;8=specialty bar&quot;            
+## [1007] &quot;8=specialty chocolate&quot;       &quot;8=sugar&quot;                    
+## [1009] &quot;8=sweet spreads&quot;             &quot;8=tropical fruit&quot;           
+## [1011] &quot;8=UHT-milk&quot;                  &quot;8=vinegar&quot;                  
+## [1013] &quot;8=whipped/sour cream&quot;        &quot;8=white bread&quot;              
+## [1015] &quot;8=white wine&quot;                &quot;8=whole milk&quot;               
+## [1017] &quot;8=yogurt&quot;                    &quot;9=baking powder&quot;            
+## [1019] &quot;9=butter&quot;                    &quot;9=canned beer&quot;              
+## [1021] &quot;9=cat food&quot;                  &quot;9=chocolate&quot;                
+## [1023] &quot;9=citrus fruit&quot;              &quot;9=dessert&quot;                  
+## [1025] &quot;9=dog food&quot;                  &quot;9=domestic eggs&quot;            
+## [1027] &quot;9=flour&quot;                     &quot;9=flower (seeds)&quot;           
+## [1029] &quot;9=frozen fish&quot;               &quot;9=frozen meals&quot;             
+## [1031] &quot;9=frozen vegetables&quot;         &quot;9=hard cheese&quot;              
+## [1033] &quot;9=hygiene articles&quot;          &quot;9=male cosmetics&quot;           
+## [1035] &quot;9=margarine&quot;                 &quot;9=misc. beverages&quot;          
+## [1037] &quot;9=newspapers&quot;                &quot;9=onions&quot;                   
+## [1039] &quot;9=other vegetables&quot;          &quot;9=pastry&quot;                   
+## [1041] &quot;9=processed cheese&quot;          &quot;9=rolls/buns&quot;               
+## [1043] &quot;9=salt&quot;                      &quot;9=shopping bags&quot;            
+## [1045] &quot;9=soda&quot;                      &quot;9=softener&quot;                 
+## [1047] &quot;9=soups&quot;                     &quot;9=sugar&quot;                    
+## [1049] &quot;9=syrup&quot;                     &quot;9=whipped/sour cream&quot;       
+## [1051] &quot;9=white bread&quot;               &quot;9=whole milk&quot;               
+## [1053] &quot;10=curd&quot;                     &quot;11=newspapers&quot;</code></pre>
+<pre class="r"><code>? discretizeDF
+itemFrequencyPlot(transaction_object,topN=30,type=&quot;absolute&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
 <p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;relative&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
 <p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<pre class="r"><code>rules &lt;- apriori(transaction_object, parameter = list(supp=0, conf=0.01,minlen=2))</code></pre>
+<pre class="r"><code>?regex
+rules &lt;- apriori(transaction_object, parameter = list(supp=0.0001, conf=0.15,minlen=2))</code></pre>
 <pre><code>## Apriori
 ## 
 ## Parameter specification:
 ##  confidence minval smax arem  aval originalSupport maxtime support minlen
-##        0.01    0.1    1 none FALSE            TRUE       5       0      2
+##        0.15    0.1    1 none FALSE            TRUE       5   1e-04      2
 ##  maxlen target  ext
 ##      10  rules TRUE
 ## 
@@ -130,19 +667,106 @@ summary(transaction_object)</code></pre>
 ##  filter tree heap memopt load sort verbose
 ##     0.1 TRUE TRUE  FALSE TRUE    2    TRUE
 ## 
-## Absolute minimum support count: 0 
+## Absolute minimum support count: 1 
 ## 
 ## set item appearances ...[0 item(s)] done [0.00s].
-## set transactions ...[9111 item(s), 14963 transaction(s)] done [0.01s].
-## sorting and recoding items ... [9111 item(s)] done [0.00s].
+## set transactions ...[1054 item(s), 14963 transaction(s)] done [0.01s].
+## sorting and recoding items ... [877 item(s)] done [0.00s].
 ## creating transaction tree ... done [0.00s].
-## checking subsets of size 1 done [0.00s].
-## writing ... [0 rule(s)] done [0.00s].
+## checking subsets of size 1 2 3 4 done [0.01s].
+## writing ... [1468 rule(s)] done [0.00s].
 ## creating S4 object  ... done [0.00s].</code></pre>
-<pre class="r"><code>transaction_object</code></pre>
-<pre><code>## transactions in sparse format with
-##  14963 transactions (rows) and
-##  9111 items (columns)</code></pre>
-<pre class="r"><code>summary(rules)</code></pre>
-<pre><code>## set of 0 rules</code></pre>
+<pre class="r"><code>rules &lt;- sort(rules, by=&#39;confidence&#39;, decreasing = TRUE)
+rules[1:50] %&gt;% 
+  inspect()</code></pre>
+<pre><code>##      lhs                           rhs                         support confidence    coverage       lift count
+## [1]  {6=sweet spreads}          =&gt; {2=pip fruit}           0.000133663          1 0.000133663   63.13502     2
+## [2]  {6=soups}                  =&gt; {5=yogurt}              0.000133663          1 0.000133663  650.56522     2
+## [3]  {7=semi-finished bread}    =&gt; {1=chicken}             0.000133663          1 0.000133663   46.61371     2
+## [4]  {6=instant coffee}         =&gt; {2=hamburger meat}      0.000133663          1 0.000133663  180.27711     2
+## [5]  {7=flower (seeds)}         =&gt; {4=other vegetables}    0.000133663          1 0.000133663  170.03409     2
+## [6]  {6=house keeping products} =&gt; {4=whole milk}          0.000133663          1 0.000133663  134.80180     2
+## [7]  {8=candy}                  =&gt; {1=ham}                 0.000133663          1 0.000133663   72.63592     2
+## [8]  {8=condensed milk}         =&gt; {3=whole milk}          0.000133663          1 0.000133663   61.32377     2
+## [9]  {8=root vegetables}        =&gt; {5=other vegetables}    0.000133663          1 0.000133663  748.15000     2
+## [10] {8=tropical fruit}         =&gt; {6=bottled water}       0.000133663          1 0.000133663  997.53333     2
+## [11] {4=finished products}      =&gt; {2=bottled water}       0.000133663          1 0.000133663   37.97716     2
+## [12] {4=other vegetables,                                                                                     
+##       5=popcorn}                =&gt; {1=pork}                0.000133663          1 0.000133663   36.23002     2
+## [13] {1=pork,                                                                                                 
+##       5=popcorn}                =&gt; {4=other vegetables}    0.000133663          1 0.000133663  170.03409     2
+## [14] {4=whole milk,                                                                                           
+##       6=pot plants}             =&gt; {2=whole milk}          0.000133663          1 0.000133663   15.22177     2
+## [15] {2=whole milk,                                                                                           
+##       6=pot plants}             =&gt; {4=whole milk}          0.000133663          1 0.000133663  134.80180     2
+## [16] {3=beverages,                                                                                            
+##       5=frozen dessert}         =&gt; {1=sausage}             0.000133663          1 0.000133663   19.92410     2
+## [17] {1=sausage,                                                                                              
+##       5=frozen dessert}         =&gt; {3=beverages}           0.000133663          1 0.000133663  650.56522     2
+## [18] {4=meat,                                                                                                 
+##       5=roll products }         =&gt; {3=other vegetables}    0.000133663          1 0.000133663   88.53846     2
+## [19] {3=other vegetables,                                                                                     
+##       4=meat}                   =&gt; {5=roll products }      0.000133663          1 0.000133663 2992.60000     2
+## [20] {3=other vegetables,                                                                                     
+##       5=roll products }         =&gt; {4=meat}                0.000133663          1 0.000133663 3740.75000     2
+## [21] {4=meat,                                                                                                 
+##       5=roll products }         =&gt; {1=tropical fruit}      0.000133663          1 0.000133663   22.53464     2
+## [22] {1=tropical fruit,                                                                                       
+##       4=meat}                   =&gt; {5=roll products }      0.000133663          1 0.000133663 2992.60000     2
+## [23] {1=tropical fruit,                                                                                       
+##       5=roll products }         =&gt; {4=meat}                0.000133663          1 0.000133663 3740.75000     2
+## [24] {3=other vegetables,                                                                                     
+##       4=meat}                   =&gt; {1=tropical fruit}      0.000133663          1 0.000133663   22.53464     2
+## [25] {1=tropical fruit,                                                                                       
+##       4=meat}                   =&gt; {3=other vegetables}    0.000133663          1 0.000133663   88.53846     2
+## [26] {3=other vegetables,                                                                                     
+##       5=roll products }         =&gt; {1=tropical fruit}      0.000133663          1 0.000133663   22.53464     2
+## [27] {1=tropical fruit,                                                                                       
+##       5=roll products }         =&gt; {3=other vegetables}    0.000133663          1 0.000133663   88.53846     2
+## [28] {2=sausage,                                                                                              
+##       5=cake bar}               =&gt; {3=whole milk}          0.000133663          1 0.000133663   61.32377     2
+## [29] {3=whole milk,                                                                                           
+##       5=cake bar}               =&gt; {2=sausage}             0.000133663          1 0.000133663  100.42282     2
+## [30] {2=sausage,                                                                                              
+##       9=shopping bags}          =&gt; {5=whole milk}          0.000133663          1 0.000133663  383.66667     2
+## [31] {3=meat,                                                                                                 
+##       5=other vegetables}       =&gt; {1=frankfurter}         0.000133663          1 0.000133663   30.85155     2
+## [32] {6=dessert,                                                                                              
+##       7=specialty chocolate}    =&gt; {1=sausage}             0.000133663          1 0.000133663   19.92410     2
+## [33] {1=sausage,                                                                                              
+##       6=dessert}                =&gt; {7=specialty chocolate} 0.000133663          1 0.000133663 2992.60000     2
+## [34] {1=sausage,                                                                                              
+##       7=specialty chocolate}    =&gt; {6=dessert}             0.000133663          1 0.000133663 2992.60000     2
+## [35] {5=cream cheese ,                                                                                        
+##       6=other vegetables}       =&gt; {1=sausage}             0.000133663          1 0.000133663   19.92410     2
+## [36] {1=sausage,                                                                                              
+##       5=cream cheese }          =&gt; {6=other vegetables}    0.000133663          1 0.000133663  935.18750     2
+## [37] {5=semi-finished bread,                                                                                  
+##       6=napkins}                =&gt; {3=whole milk}          0.000133663          1 0.000133663   61.32377     2
+## [38] {3=whole milk,                                                                                           
+##       5=semi-finished bread}    =&gt; {6=napkins}             0.000133663          1 0.000133663 1151.00000     2
+## [39] {3=whole milk,                                                                                           
+##       6=napkins}                =&gt; {5=semi-finished bread} 0.000133663          1 0.000133663 2137.57143     2
+## [40] {4=sugar,                                                                                                
+##       5=detergent}              =&gt; {2=canned beer}         0.000133663          1 0.000133663   65.34061     2
+## [41] {2=canned beer,                                                                                          
+##       5=detergent}              =&gt; {4=sugar}               0.000133663          1 0.000133663  880.17647     2
+## [42] {2=canned beer,                                                                                          
+##       4=sugar}                  =&gt; {5=detergent}           0.000133663          1 0.000133663 1870.37500     2
+## [43] {3=pet care,                                                                                             
+##       4=yogurt}                 =&gt; {2=sausage}             0.000133663          1 0.000133663  100.42282     2
+## [44] {2=sausage,                                                                                              
+##       3=pet care}               =&gt; {4=yogurt}              0.000133663          1 0.000133663  151.14141     2
+## [45] {1=bottled beer,                                                                                         
+##       4=baking powder}          =&gt; {2=tropical fruit}      0.000133663          1 0.000133663   53.24911     2
+## [46] {2=tropical fruit,                                                                                       
+##       4=baking powder}          =&gt; {1=bottled beer}        0.000133663          1 0.000133663   62.34583     2
+## [47] {2=citrus fruit,                                                                                         
+##       5=salty snack}            =&gt; {1=sausage}             0.000133663          1 0.000133663   19.92410     2
+## [48] {1=sausage,                                                                                              
+##       5=salty snack}            =&gt; {2=citrus fruit}        0.000133663          1 0.000133663   79.16931     2
+## [49] {2=sausage,                                                                                              
+##       8=shopping bags}          =&gt; {1=sausage}             0.000133663          1 0.000133663   19.92410     2
+## [50] {1=sausage,                                                                                              
+##       8=shopping bags}          =&gt; {2=sausage}             0.000133663          1 0.000133663  100.42282     2</code></pre>
 </div>

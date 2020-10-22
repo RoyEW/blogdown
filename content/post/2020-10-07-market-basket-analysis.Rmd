@@ -17,14 +17,34 @@ library(arulesViz)
 library(lubridate)
 library(arules)
 library(RColorBrewer)
+library(stringr)
+library(tidyr)
 ```
 
 Data sourced from Kaggle ``````https://www.kaggle.com/heeraldedhia/groceries-dataset?select=Groceries_dataset.csv``````
+
+
+Association rules
+
+$Rule: X \implies Y$
+
+$$Support = \frac{freq(X, Y)}{N}$$
+
+$$Confidence = \frac{freq(X, Y)}{freq(X)}$$
+
+$$Lift = \frac{Support}{Supp(X)\times Supp(Y)}$$
 
 APRIORI Algorithm
 
 ```{r}
 transactions <- read.csv(file.path("data","basket.csv"))
+
+df <- transactions %>%
+  group_by(Member_number, Date) %>%
+  summarise(items = str_c(itemDescription, collapse = ",")) %>% 
+  mutate(n=str_count(items,",")+1)
+
+max(df$n)
 
 transactions %>% 
   count(itemDescription, sort = TRUE) %>% 
@@ -47,10 +67,16 @@ basket <- transactions %>%
   select(items)
 
 
-head(basket)
-basket %>% 
-  count(items)
+dim(basket)
 
+
+
+
+basket <- basket %>% 
+  separate(col = items, sep=",",into = c(paste(seq(1:11))))
+
+#colnames(basket) <- NULL
+basket
 #write.csv(basket,file = file.path("data","basketitems.csv"))
 
 #transaction_object <- read.transactions(file.path("data","basketitems.csv"),sep = ",")
@@ -59,15 +85,22 @@ transaction_object <- as(basket, "transactions")
 
 summary(transaction_object)
 
+# WIP
+#colnames(transaction_object) <- colnames(transaction_object) %>% 
+#  str_remove(pattern = "[123456789][=]")
 
+colnames(transaction_object)
+
+? discretizeDF
 itemFrequencyPlot(transaction_object,topN=30,type="absolute",col=brewer.pal(8,'Pastel1'), main="Absolute Item Frequency Plot")
 
 itemFrequencyPlot(transaction_object,topN=30,type="relative",col=brewer.pal(8,'Pastel1'), main="Absolute Item Frequency Plot")
+?regex
+rules <- apriori(transaction_object, parameter = list(supp=0.0001, conf=0.15,minlen=2))
+rules <- sort(rules, by='confidence', decreasing = TRUE)
+rules[1:50] %>% 
+  inspect()
 
-
-rules <- apriori(transaction_object, parameter = list(supp=0, conf=0.01,minlen=2))
-transaction_object
-summary(rules)
 
 
 ```

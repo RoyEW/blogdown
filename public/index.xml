@@ -6,19 +6,10 @@
     <description>Recent content on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 10 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>US Election</title>
-      <link>/2020/10/10/us-election/</link>
-      <pubDate>Sat, 10 Oct 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/2020/10/10/us-election/</guid>
-      <description></description>
-    </item>
     
     <item>
       <title>Market Basket Analysis</title>
@@ -26,9 +17,14 @@
       <pubDate>Wed, 07 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/10/07/market-basket-analysis/</guid>
-      <description>library(tidyverse)library(arulesViz)library(lubridate)library(arules)library(RColorBrewer)Data sourced from Kaggle https://www.kaggle.com/heeraldedhia/groceries-dataset?select=Groceries_dataset.csv
+      <description>library(tidyverse)library(arulesViz)library(lubridate)library(arules)library(RColorBrewer)library(stringr)library(tidyr)Data sourced from Kaggle https://www.kaggle.com/heeraldedhia/groceries-dataset?select=Groceries_dataset.csv
+Association rules
+\(Rule: X \implies Y\)
+\[Support = \frac{freq(X, Y)}{N}\]
+\[Confidence = \frac{freq(X, Y)}{freq(X)}\]
+\[Lift = \frac{Support}{Supp(X)\times Supp(Y)}\]
 APRIORI Algorithm
-transactions &amp;lt;- read.csv(file.path(&amp;quot;data&amp;quot;,&amp;quot;basket.csv&amp;quot;))transactions %&amp;gt;% count(itemDescription, sort = TRUE) %&amp;gt;% head(5)## itemDescription n## 1 whole milk 2502## 2 other vegetables 1898## 3 rolls/buns 1716## 4 soda 1514## 5 yogurt 1334transactions %&amp;gt;% count(itemDescription, sort = TRUE) %&amp;gt;% tail(5)## itemDescription n## 163 toilet cleaner 5## 164 bags 4## 165 baby cosmetics 3## 166 kitchen utensil 1## 167 preservation products 1Utidying the dataset for use with the APRIORI algorithm in the “arules” package.</description>
+transactions &amp;lt;- read.csv(file.path(&amp;quot;data&amp;quot;,&amp;quot;basket.csv&amp;quot;))df &amp;lt;- transactions %&amp;gt;%group_by(Member_number, Date) %&amp;gt;%summarise(items = str_c(itemDescription, collapse = &amp;quot;,&amp;quot;)) %&amp;gt;% mutate(n=str_count(items,&amp;quot;,&amp;quot;)+1)max(df$n)## [1] 11transactions %&amp;gt;% count(itemDescription, sort = TRUE) %&amp;gt;% head(5)## itemDescription n## 1 whole milk 2502## 2 other vegetables 1898## 3 rolls/buns 1716## 4 soda 1514## 5 yogurt 1334transactions %&amp;gt;% count(itemDescription, sort = TRUE) %&amp;gt;% tail(5)## itemDescription n## 163 toilet cleaner 5## 164 bags 4## 165 baby cosmetics 3## 166 kitchen utensil 1## 167 preservation products 1Utidying the dataset for use with the APRIORI algorithm in the “arules” package.</description>
     </item>
     
     <item>

@@ -16,9 +16,6 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     name = "About"
     url = "/about/"
 [[menu.main]]
-    name = "Facebook"
-    url = "https://www.facebook.com/roy.wilson.94064176/"
-[[menu.main]]
     name = "LinkedIn"
     url = "https://www.linkedin.com/in/roy-w-a5bb3b83/"
     
