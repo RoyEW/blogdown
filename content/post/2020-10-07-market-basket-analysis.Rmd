@@ -91,11 +91,11 @@ summary(transaction_object)
 
 colnames(transaction_object)
 
-? discretizeDF
+
 itemFrequencyPlot(transaction_object,topN=30,type="absolute",col=brewer.pal(8,'Pastel1'), main="Absolute Item Frequency Plot")
 
 itemFrequencyPlot(transaction_object,topN=30,type="relative",col=brewer.pal(8,'Pastel1'), main="Absolute Item Frequency Plot")
-?regex
+
 rules <- apriori(transaction_object, parameter = list(supp=0.0001, conf=0.15,minlen=2))
 rules <- sort(rules, by='confidence', decreasing = TRUE)
 rules[1:50] %>% 

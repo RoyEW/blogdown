@@ -648,13 +648,11 @@ colnames(transaction_object)</code></pre>
 ## [1049] &quot;9=syrup&quot;                     &quot;9=whipped/sour cream&quot;       
 ## [1051] &quot;9=white bread&quot;               &quot;9=whole milk&quot;               
 ## [1053] &quot;10=curd&quot;                     &quot;11=newspapers&quot;</code></pre>
-<pre class="r"><code>? discretizeDF
-itemFrequencyPlot(transaction_object,topN=30,type=&quot;absolute&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
+<pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;absolute&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
 <p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;relative&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
 <p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<pre class="r"><code>?regex
-rules &lt;- apriori(transaction_object, parameter = list(supp=0.0001, conf=0.15,minlen=2))</code></pre>
+<pre class="r"><code>rules &lt;- apriori(transaction_object, parameter = list(supp=0.0001, conf=0.15,minlen=2))</code></pre>
 <pre><code>## Apriori
 ## 
 ## Parameter specification:
@@ -670,7 +668,7 @@ rules &lt;- apriori(transaction_object, parameter = list(supp=0.0001, conf=0.15,
 ## Absolute minimum support count: 1 
 ## 
 ## set item appearances ...[0 item(s)] done [0.00s].
-## set transactions ...[1054 item(s), 14963 transaction(s)] done [0.01s].
+## set transactions ...[1054 item(s), 14963 transaction(s)] done [0.00s].
 ## sorting and recoding items ... [877 item(s)] done [0.00s].
 ## creating transaction tree ... done [0.00s].
 ## checking subsets of size 1 2 3 4 done [0.01s].
