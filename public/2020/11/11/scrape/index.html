@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.73.0" />
+
+
+<title>US Election - Roy Blogdown</title>
+<meta property="og:title" content="US Election - Roy Blogdown">
+
+
+  <link href='/featured.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/featured.png"
+         width="50"
+         height="50"
+         alt="Roy Blogdown">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/roy-w-a5bb3b83/">LinkedIn</a></li>
+    
+    <li><a href="/res/">Resources</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">US Election</h1>
+
+    
+    <span class="article-date">2020-11-11</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre class="r"><code>library(reticulate)
+library(tidyverse)</code></pre>
+<pre class="python"><code>import pandas as pd
+import pprint
+import requests
+
+
+def collapse_results_by_party(results_by_candidate, candidates):
+    results_by_party = {}
+    for candidate, count in results_by_candidate.items():
+        party = candidates[candidate][&#39;party&#39;]
+        results_by_party[party] = results_by_party.get(party, 0) + count
+
+    return results_by_party
+
+states = [
+ &#39;Alaska&#39;, &#39;Alabama&#39;, &#39;Arkansas&#39;, &#39;Arizona&#39;, &#39;California&#39;, &#39;Colorado&#39;,
+ &#39;Connecticut&#39;, &#39;Delaware&#39;, &#39;Florida&#39;, &#39;Georgia&#39;,
+ &#39;Hawaii&#39;, &#39;Iowa&#39;, &#39;Idaho&#39;, &#39;Illinois&#39;, &#39;Indiana&#39;, &#39;Kansas&#39;, &#39;Kentucky&#39;,
+ &#39;Louisiana&#39;, &#39;Massachusetts&#39;, &#39;Maryland&#39;, &#39;Maine&#39;, &#39;Michigan&#39;,
+ &#39;Minnesota&#39;, &#39;Missouri&#39;, &#39;Mississippi&#39;, &#39;Montana&#39;, &#39;North Carolina&#39;,
+ &#39;North Dakota&#39;, &#39;Nebraska&#39;, &#39;New Hampshire&#39;, &#39;New Jersey&#39;, &#39;New Mexico&#39;,
+ &#39;Nevada&#39;, &#39;New York&#39;, &#39;Ohio&#39;, &#39;Oklahoma&#39;, &#39;Oregon&#39;, &#39;Pennsylvania&#39;,
+ &#39;Rhode Island&#39;, &#39;South Carolina&#39;, &#39;South Dakota&#39;, &#39;Tennessee&#39;, &#39;Texas&#39;,
+ &#39;Utah&#39;, &#39;Virginia&#39;, &#39;Vermont&#39;, &#39;Washington&#39;, &#39;Wisconsin&#39;,
+ &#39;West Virginia&#39;, &#39;Wyoming&#39;,
+]
+
+all_results = {}
+for state in states:
+    print(&#39;Downloading {}&#39;.format(state))
+    formatted_state = state.lower().replace(&#39; &#39;, &#39;-&#39;)
+    state_results = requests.get(&#39;https://static01.nyt.com/elections-assets/2020/data/api/2020-11-03/race-page/{}/president.json&#39;.format(formatted_state)).json()
+    all_results[formatted_state] = state_results</code></pre>
+<pre class="python"><code>records = []
+for state, state_results in all_results.items():
+    race = state_results[&#39;data&#39;][&#39;races&#39;][0]
+
+    for candidate in race[&#39;candidates&#39;]:
+        if candidate[&#39;party_id&#39;] == &#39;republican&#39;:
+            candidate[&#39;party&#39;] = &#39;rep&#39;
+        elif candidate[&#39;party_id&#39;] == &#39;democrat&#39;:
+            candidate[&#39;party&#39;] = &#39;dem&#39;
+        else:
+            candidate[&#39;party&#39;] = &#39;trd&#39;
+    candidates = { candidate[&#39;candidate_key&#39;]: candidate for candidate in race[&#39;candidates&#39;] }
+
+    for data_point in race[&#39;timeseries&#39;]:
+        data_point[&#39;state&#39;]             = state
+        data_point[&#39;expected_votes&#39;]    = race[&#39;tot_exp_vote&#39;]
+        data_point[&#39;trump2016&#39;]         = race[&#39;trump2016&#39;]
+        data_point[&#39;votes2012&#39;]         = race[&#39;votes2012&#39;]
+        data_point[&#39;votes2016&#39;]         = race[&#39;votes2016&#39;]
+
+        vote_shares = collapse_results_by_party(data_point[&#39;vote_shares&#39;], candidates)
+        for party in [&#39;rep&#39;, &#39;dem&#39;, &#39;trd&#39;]:
+            data_point[&#39;vote_share_{}&#39;.format(party)] = vote_shares.get(party, 0)
+
+        data_point.pop(&#39;vote_shares&#39;)
+        records.append(data_point)</code></pre>
+<pre class="python"><code>time_series_df = pd.DataFrame.from_records(records)
+time_series_df.to_csv(&#39;data/nyt_ts.csv&#39;, encoding=&#39;utf-8&#39;)</code></pre>
+<pre class="r"><code>votes &lt;- py$time_series_df
+states &lt;- py$states %&gt;% str_to_lower() %&gt;% str_replace(&quot; &quot;,&quot;-&quot;)
+data &lt;- votes %&gt;% pivot_longer(cols=c(colnames(votes)[10],colnames(votes)[11]),names_to=&quot;party&quot;,values_to=&quot;vote_share&quot;) %&gt;% 
+  filter(!votes==0) %&gt;% 
+  mutate(party = case_when(party == &quot;vote_share_rep&quot; ~ &quot;Republican&quot;,
+                           party == &quot;vote_share_dem&quot; ~ &quot;Democrat&quot;,
+                           TRUE ~ &quot;Other&quot;))
+
+theme_set(theme_bw())
+
+crit_states &lt;- c(&quot;wisconsin&quot;,&quot;nevada&quot;,&quot;georgia&quot;,&quot;michigan&quot;,&quot;pennsylvania&quot;,&quot;arizona&quot;,&#39;north carolina&#39;)</code></pre>
+<pre class="r"><code>by_state &lt;- function(x){
+  data &lt;- data %&gt;% 
+  filter(state==x) %&gt;% 
+  mutate(timestamp=row_number()) %&gt;% 
+  rename(&quot;step&quot; = &quot;timestamp&quot;)
+  
+  data %&gt;% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line() +
+    labs(title = str_to_title(x),
+         y=&quot;Vote share&quot;)+
+    scale_y_continuous(labels = scales::percent_format())+
+    #geom_smooth(method = &quot;lm&quot;,se=F,lty=2)+
+    scale_colour_manual(values = c(&quot;blue&quot;,&quot;red&quot;))+
+    geom_hline(yintercept = mean(data$trump2016/data$votes2016),lty=2)+
+    annotate(&quot;text&quot;,label=paste(sep=&quot;&quot;,&quot;Trump 2016 &quot;,round(mean(data$trump2016/data$votes2016)*100,2),&quot;%&quot;),x=max(data$step-max(data$step/8)),y=mean(data$trump2016/data$votes2016-0.05*(max(data$vote_share)-min(data$vote_share))))
+}</code></pre>
+<pre class="r"><code>data %&gt;% 
+  group_by(state) %&gt;%
+  filter(party==&quot;Republican&quot;) %&gt;% 
+  slice(n()) %&gt;% 
+  arrange(vote_share) %&gt;% 
+  tail(5) %&gt;% 
+  select(state,vote_share) %&gt;% 
+  rename(&#39;republican_share&#39;=&#39;vote_share&#39;)</code></pre>
+<pre><code>## # A tibble: 5 x 2
+## # Groups:   state [5]
+##   state         republican_share
+##   &lt;chr&gt;                    &lt;dbl&gt;
+## 1 idaho                    0.638
+## 2 north-dakota             0.651
+## 3 oklahoma                 0.654
+## 4 west-virginia            0.687
+## 5 wyoming                  0.7</code></pre>
+<p>Safe Democrat states</p>
+<pre class="r"><code>data %&gt;% 
+  group_by(state) %&gt;%
+  filter(party==&quot;Republican&quot;) %&gt;% 
+  slice(n()) %&gt;% 
+  arrange(vote_share) %&gt;% 
+  head(5)%&gt;% 
+   select(state,vote_share) %&gt;% 
+  rename(&#39;republican_share&#39;=&#39;vote_share&#39;)</code></pre>
+<pre><code>## # A tibble: 5 x 2
+## # Groups:   state [5]
+##   state         republican_share
+##   &lt;chr&gt;                    &lt;dbl&gt;
+## 1 vermont                  0.317
+## 2 massachusetts            0.325
+## 3 california               0.336
+## 4 maryland                 0.338
+## 5 hawaii                   0.343</code></pre>
+<pre class="r"><code>by_state(states[46])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>by_state(states[19])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>by_state(states[5])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+<pre class="r"><code>by_state(states[20])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-4.png" width="672" /></p>
+<pre class="r"><code>by_state(states[11])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-5.png" width="672" /></p>
+<pre class="r"><code>by_state(states[39])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-6.png" width="672" /></p>
+<pre class="r"><code>by_state(states[47])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-7.png" width="672" /></p>
+<pre class="r"><code>by_state(states[8])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-8.png" width="672" /></p>
+<pre class="r"><code>by_state(states[37])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-9.png" width="672" /></p>
+<pre class="r"><code>by_state(states[34])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-10.png" width="672" /></p>
+<p>Bellwether reference states</p>
+<pre class="r"><code>by_state(states[43])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>by_state(states[9])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<pre class="r"><code>by_state(states[35])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<p>States with voting irregularities</p>
+<pre class="r"><code>by_state(states[22])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>by_state(states[48])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<pre class="r"><code>by_state(states[10])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-3.png" width="672" /></p>
+<pre class="r"><code>by_state(states[38])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-4.png" width="672" /></p>
+<pre class="r"><code>by_state(states[4])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-5.png" width="672" /></p>
+<pre class="r"><code>by_state(states[33])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-6.png" width="672" />
+Other states</p>
+<pre class="r"><code>by_state(states[45])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
