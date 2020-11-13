@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">1 min read</span>
+    <span class="article-duration">2 min read</span>
     
 
     <h1 class="article-title">Climate change data</h1>
@@ -78,46 +78,67 @@
 <div id="climate-change-data" class="section level1">
 <h1>Climate change data</h1>
 <p>data sourced from the World Bank using WDI R package api.</p>
-<pre class="r"><code>#library(Quandl)
-#library(wbstats)
-#library(rWBclimate)
-#library(WDI)
-#library(tidyverse)
-
-#WDIsearch(&quot;gdp&quot;)
+<pre class="r"><code>library(Quandl)</code></pre>
+<pre><code>## Loading required package: xts</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(wbstats)
+library(rWBclimate)
+library(WDI)
+library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.2     v purrr   0.3.4
+## v tibble  3.0.3     v dplyr   1.0.1
+## v tidyr   1.1.1     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::first()  masks xts::first()
+## x dplyr::lag()    masks stats::lag()
+## x dplyr::last()   masks xts::last()</code></pre>
+<pre class="r"><code>#WDIsearch(&quot;gdp&quot;)
 
 #&quot;EN.ATM.GHGT.KT.CE&quot;
-#dat = WDI(indicator=&quot;EN.ATM.GHGT.KT.CE&quot;, #country=c(&#39;CN&#39;,&#39;US&#39;,&#39;IN&#39;,&#39;RU&#39;,&#39;JP&#39;,&#39;GB&#39;,&#39;FR&#39;,&#39;DE&#39;), start=1970)
+dat = WDI(indicator=&quot;EN.ATM.GHGT.KT.CE&quot;, country=c(&#39;CN&#39;,&#39;US&#39;,&#39;IN&#39;,&#39;RU&#39;,&#39;JP&#39;,&#39;GB&#39;,&#39;FR&#39;,&#39;DE&#39;), start=1970)
 
-#gdp &lt;- WDI(indicator = c(&quot;gdp_per_capita&quot; = &quot;NY.GDP.PCAP.KD&quot;,
-#                         &quot;population&quot; = &quot;SP.POP.TOTL&quot;))
+gdp &lt;- WDI(indicator = c(&quot;gdp_per_capita&quot; = &quot;NY.GDP.PCAP.KD&quot;,
+                         &quot;population&quot; = &quot;SP.POP.TOTL&quot;))
 
-#dat %&gt;% 
-#  ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
-#  geom_line()+
-#  scale_y_log10(labels=scales::number_format())+
-#  theme_void()+
-#  theme(axis.text.x  = element_text(),axis.text.y  = element_text(),legend.position = #&quot;bottom&quot;)
-
-#data &lt;- dat %&gt;% 
-#  group_by(year) %&gt;% 
-#  summarise(total_emissions = sum(EN.ATM.GHGT.KT.CE)) %&gt;% 
-#  mutate(cumulative=cumsum(total_emissions))
-
-#data %&gt;% 
-#  mutate(perc_emissions = (total_emissions/lag(total_emissions)-1),
-#         state=ifelse(perc_emissions&gt;0,&quot;increasing&quot;,&quot;decreasing&quot;)) %&gt;%
-#  ggplot(aes(year, perc_emissions))+
-#  geom_rect(aes(ymin=ifelse(state==&quot;red&quot;,perc_emissions,0),xmin=year-0.5,xmax=year+0.#5,fill=state,ymax=ifelse(state==&quot;red&quot;,0,perc_emissions)),alpha=0.8)+
-#  scale_color_manual(values=c(&quot;green&quot;,&quot;red&quot;),aesthetics = c(&quot;fill&quot;))+
-#  geom_errorbar(aes(ymax=perc_emissions,ymin=0),lty=1,size=1,width=2)+
-#  geom_hline(yintercept = 0)+
-#  theme_void()+
-#  labs(title=&quot;Top 10 combined most polluting nations&quot;,
-#       subtitle=&quot;Percentage change year on year of global Co2 and equivalent #emissions&quot;)+
-#  theme(axis.text.x = element_text(),axis.text.y = element_text(),
-#        legend.position=&quot;none&quot;)+
-#  scale_y_continuous(labels=scales::percent_format())</code></pre>
+dat %&gt;% 
+  ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
+  geom_line()+
+  scale_y_log10(labels=scales::number_format())+
+  theme_void()+
+  labs(title = &quot;CO2 and Equiv. emissions (Tonnes)&quot;,
+       y = &quot;CO2 and Equiv. emissions&quot;)+
+  theme(axis.text.x  = element_text(),axis.text.y  = element_text(),legend.position = &quot;bottom&quot;)</code></pre>
+<pre><code>## Warning: Removed 64 row(s) containing missing values (geom_path).</code></pre>
+<p><img src="/post/2020-07-16-climate-change-data_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>data &lt;- dat %&gt;% 
+  group_by(year) %&gt;% 
+  summarise(total_emissions = sum(EN.ATM.GHGT.KT.CE)) %&gt;% 
+  mutate(cumulative=cumsum(total_emissions))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>data %&gt;% 
+  mutate(perc_emissions = (total_emissions/lag(total_emissions)-1),
+         state=ifelse(perc_emissions&gt;0,&quot;increasing&quot;,&quot;decreasing&quot;)) %&gt;%
+  ggplot(aes(year, perc_emissions))+
+  geom_rect(aes(ymin=ifelse(state==&quot;red&quot;,perc_emissions,0),xmin=year-0.5,xmax=year+0.5,fill=state,ymax=ifelse(state==&quot;red&quot;,0,perc_emissions)),alpha=0.8)+
+  scale_color_manual(values=c(&quot;green&quot;,&quot;red&quot;),aesthetics = c(&quot;fill&quot;))+
+  geom_errorbar(aes(ymax=perc_emissions,ymin=0),lty=1,size=1,width=2)+
+  geom_hline(yintercept = 0)+
+  theme_void()+
+  labs(title=&quot;Top 10 combined most polluting nations&quot;,
+       subtitle=&quot;Percentage change year on year of global Co2 and equivalent #emissions&quot;)+
+  theme(axis.text.x = element_text(),axis.text.y = element_text(),
+        legend.position=&quot;none&quot;)+
+  scale_y_continuous(labels=scales::percent_format())</code></pre>
+<pre><code>## Warning: Removed 9 rows containing missing values (geom_rect).</code></pre>
+<p><img src="/post/2020-07-16-climate-change-data_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
 </div>
 
     </div>

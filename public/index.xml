@@ -83,7 +83,7 @@ library(tidyverse)library(lubridate)library(httr)library(zoo)library(plotly)
       
       <guid>/2020/07/16/climate-change-data/</guid>
       <description>Climate change datadata sourced from the World Bank using WDI R package api.
-#library(Quandl)#library(wbstats)#library(rWBclimate)#library(WDI)#library(tidyverse)#WDIsearch(&amp;quot;gdp&amp;quot;)#&amp;quot;EN.ATM.GHGT.KT.CE&amp;quot;#dat = WDI(indicator=&amp;quot;EN.ATM.GHGT.KT.CE&amp;quot;, #country=c(&amp;#39;CN&amp;#39;,&amp;#39;US&amp;#39;,&amp;#39;IN&amp;#39;,&amp;#39;RU&amp;#39;,&amp;#39;JP&amp;#39;,&amp;#39;GB&amp;#39;,&amp;#39;FR&amp;#39;,&amp;#39;DE&amp;#39;), start=1970)#gdp &amp;lt;- WDI(indicator = c(&amp;quot;gdp_per_capita&amp;quot; = &amp;quot;NY.GDP.PCAP.KD&amp;quot;,# &amp;quot;population&amp;quot; = &amp;quot;SP.POP.TOTL&amp;quot;))#dat %&amp;gt;% # ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+# geom_line()+# scale_y_log10(labels=scales::number_format())+# theme_void()+# theme(axis.text.x = element_text(),axis.text.y = element_text(),legend.position = #&amp;quot;bottom&amp;quot;)#data &amp;lt;- dat %&amp;gt;% # group_by(year) %&amp;gt;% # summarise(total_emissions = sum(EN.</description>
+library(Quandl)## Loading required package: xts## Loading required package: zoo## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)library(rWBclimate)library(WDI)library(tidyverse)## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.2 v purrr 0.3.4## v tibble 3.0.3 v dplyr 1.0.1## v tidyr 1.</description>
     </item>
     
     <item>

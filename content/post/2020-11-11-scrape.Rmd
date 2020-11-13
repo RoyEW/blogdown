@@ -84,23 +84,36 @@ time_series_df.to_csv('data/nyt_ts.csv', encoding='utf-8')
 ```{r}
 votes <- py$time_series_df
 states <- py$states %>% str_to_lower() %>% str_replace(" ","-")
-data <- votes %>% pivot_longer(cols=c(colnames(votes)[10],colnames(votes)[11]),names_to="party",values_to="vote_share") %>% 
-  filter(!votes==0) %>% 
-  mutate(party = case_when(party == "vote_share_rep" ~ "Republican",
-                           party == "vote_share_dem" ~ "Democrat",
+
+data <- votes %>% 
+  mutate(trump_nominal = votes * vote_share_rep,
+         biden_nominal = votes * vote_share_dem,
+         third_nominal = votes * vote_share_trd)
+
+
+data <- data %>% 
+  pivot_longer(cols=c(colnames(data)[10],colnames(data)[11],colnames(data)[12],colnames(data)[13],colnames(data)[14]),names_to="party",values_to="vote_share") %>% 
+  mutate(party = case_when(party == "vote_share_rep" ~ "Republican share",
+                           party == "vote_share_dem" ~ "Democrat share",
+                           party == "vote_share_trd" ~ "Third party share",
+                           party == "trump_nominal" ~ "Republican votes",
+                           party == "biden_nominal" ~ "Democrat votes",
+                           party == "third_nominal" ~ "Third party votes",
                            TRUE ~ "Other"))
 
 theme_set(theme_bw())
 
-crit_states <- c("wisconsin","nevada","georgia","michigan","pennsylvania","arizona",'north carolina')
 
+crit_states <- c("wisconsin","nevada","georgia","michigan","minnesota","pennsylvania","arizona",'north carolina')
 
 ```
 
 ```{r}
-by_state <- function(x){
+by_state_voteshare <- function(x){
   data <- data %>% 
-  filter(state==x) %>% 
+  filter(state==x,
+         party %in% c("Republican share","Democrat share"),
+         !vote_share == 0) %>% 
   mutate(timestamp=row_number()) %>% 
   rename("step" = "timestamp")
   
@@ -115,6 +128,30 @@ by_state <- function(x){
     geom_hline(yintercept = mean(data$trump2016/data$votes2016),lty=2)+
     annotate("text",label=paste(sep="","Trump 2016 ",round(mean(data$trump2016/data$votes2016)*100,2),"%"),x=max(data$step-max(data$step/8)),y=mean(data$trump2016/data$votes2016-0.05*(max(data$vote_share)-min(data$vote_share))))
 }
+
+
+
+by_state_nominal <- function(x){
+  data <- data %>% 
+  filter(state==x,
+         party %in% c("Republican votes","Democrat votes"),
+         !vote_share == 0) %>% 
+  mutate(timestamp=row_number()) %>% 
+  rename("step" = "timestamp")
+  
+  data %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line() +
+    labs(title = str_to_title(x),
+         y="Vote share")+
+    scale_y_continuous(labels = scales::number_format())+
+    #geom_smooth(method = "lm",se=F,lty=2)+
+    scale_colour_manual(values = c("blue","red"))+
+    geom_hline(yintercept = mean(data$trump2016),lty=2)+
+    annotate("text",label=paste(sep="","Trump 2016 ",""),x=max(data$step-max(data$step/8)),y=data$trump2016-0.05*(max(data$vote_share)-min(data$vote_share)))
+}
+
+
 ```
 
 
@@ -141,40 +178,56 @@ data %>%
    select(state,vote_share) %>% 
   rename('republican_share'='vote_share')
 
-by_state(states[46])
-by_state(states[19])
-by_state(states[5])
-by_state(states[20])
-by_state(states[11])
-by_state(states[39])
-by_state(states[47])
-by_state(states[8])
-by_state(states[37])
-by_state(states[34])
+by_state_voteshare(states[46])
+by_state_voteshare(states[19])
+by_state_voteshare(states[5])
+by_state_voteshare(states[20])
+by_state_voteshare(states[11])
+by_state_voteshare(states[39])
+by_state_voteshare(states[47])
+by_state_voteshare(states[8])
+by_state_voteshare(states[37])
+by_state_voteshare(states[34])
 ```
 
 Bellwether reference states
 
 ```{r}
-by_state(states[43])
-by_state(states[9])
-by_state(states[35])
+by_state_voteshare(states[43])
+by_state_voteshare(states[9])
+by_state_voteshare(states[35])
+
+by_state_nominal(states[43])
+by_state_nominal(states[9])
+by_state_nominal(states[35])
 
 ```
 
 States with voting irregularities
 
 ```{r}
-by_state(states[22])
-by_state(states[48])
-by_state(states[10])
-by_state(states[38])
-by_state(states[4])
-by_state(states[33])
+by_state_voteshare(states[22])
+by_state_voteshare(states[48])
+by_state_voteshare(states[10])
+by_state_voteshare(states[38])
+by_state_voteshare(states[4])
+by_state_voteshare(states[33])
+
+by_state_nominal(states[22])
+by_state_nominal(states[48])
+by_state_nominal(states[10])
+by_state_nominal(states[38])
+by_state_nominal(states[4])
+by_state_nominal(states[33])
 ```
 Other states
 
 ```{r}
-by_state(states[45])
+by_state_voteshare(states[45])
 ```
+
+```{r}
+
+```
+
 

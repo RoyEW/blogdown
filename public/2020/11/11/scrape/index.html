@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">2 min read</span>
+    <span class="article-duration">3 min read</span>
     
 
     <h1 class="article-title">US Election</h1>
@@ -139,18 +139,32 @@ for state, state_results in all_results.items():
 time_series_df.to_csv(&#39;data/nyt_ts.csv&#39;, encoding=&#39;utf-8&#39;)</code></pre>
 <pre class="r"><code>votes &lt;- py$time_series_df
 states &lt;- py$states %&gt;% str_to_lower() %&gt;% str_replace(&quot; &quot;,&quot;-&quot;)
-data &lt;- votes %&gt;% pivot_longer(cols=c(colnames(votes)[10],colnames(votes)[11]),names_to=&quot;party&quot;,values_to=&quot;vote_share&quot;) %&gt;% 
-  filter(!votes==0) %&gt;% 
-  mutate(party = case_when(party == &quot;vote_share_rep&quot; ~ &quot;Republican&quot;,
-                           party == &quot;vote_share_dem&quot; ~ &quot;Democrat&quot;,
+
+data &lt;- votes %&gt;% 
+  mutate(trump_nominal = votes * vote_share_rep,
+         biden_nominal = votes * vote_share_dem,
+         third_nominal = votes * vote_share_trd)
+
+
+data &lt;- data %&gt;% 
+  pivot_longer(cols=c(colnames(data)[10],colnames(data)[11],colnames(data)[12],colnames(data)[13],colnames(data)[14]),names_to=&quot;party&quot;,values_to=&quot;vote_share&quot;) %&gt;% 
+  mutate(party = case_when(party == &quot;vote_share_rep&quot; ~ &quot;Republican share&quot;,
+                           party == &quot;vote_share_dem&quot; ~ &quot;Democrat share&quot;,
+                           party == &quot;vote_share_trd&quot; ~ &quot;Third party share&quot;,
+                           party == &quot;trump_nominal&quot; ~ &quot;Republican votes&quot;,
+                           party == &quot;biden_nominal&quot; ~ &quot;Democrat votes&quot;,
+                           party == &quot;third_nominal&quot; ~ &quot;Third party votes&quot;,
                            TRUE ~ &quot;Other&quot;))
 
 theme_set(theme_bw())
 
-crit_states &lt;- c(&quot;wisconsin&quot;,&quot;nevada&quot;,&quot;georgia&quot;,&quot;michigan&quot;,&quot;pennsylvania&quot;,&quot;arizona&quot;,&#39;north carolina&#39;)</code></pre>
-<pre class="r"><code>by_state &lt;- function(x){
+
+crit_states &lt;- c(&quot;wisconsin&quot;,&quot;nevada&quot;,&quot;georgia&quot;,&quot;michigan&quot;,&quot;minnesota&quot;,&quot;pennsylvania&quot;,&quot;arizona&quot;,&#39;north carolina&#39;)</code></pre>
+<pre class="r"><code>by_state_voteshare &lt;- function(x){
   data &lt;- data %&gt;% 
-  filter(state==x) %&gt;% 
+  filter(state==x,
+         party %in% c(&quot;Republican share&quot;,&quot;Democrat share&quot;),
+         !vote_share == 0) %&gt;% 
   mutate(timestamp=row_number()) %&gt;% 
   rename(&quot;step&quot; = &quot;timestamp&quot;)
   
@@ -164,6 +178,28 @@ crit_states &lt;- c(&quot;wisconsin&quot;,&quot;nevada&quot;,&quot;georgia&quot;
     scale_colour_manual(values = c(&quot;blue&quot;,&quot;red&quot;))+
     geom_hline(yintercept = mean(data$trump2016/data$votes2016),lty=2)+
     annotate(&quot;text&quot;,label=paste(sep=&quot;&quot;,&quot;Trump 2016 &quot;,round(mean(data$trump2016/data$votes2016)*100,2),&quot;%&quot;),x=max(data$step-max(data$step/8)),y=mean(data$trump2016/data$votes2016-0.05*(max(data$vote_share)-min(data$vote_share))))
+}
+
+
+
+by_state_nominal &lt;- function(x){
+  data &lt;- data %&gt;% 
+  filter(state==x,
+         party %in% c(&quot;Republican votes&quot;,&quot;Democrat votes&quot;),
+         !vote_share == 0) %&gt;% 
+  mutate(timestamp=row_number()) %&gt;% 
+  rename(&quot;step&quot; = &quot;timestamp&quot;)
+  
+  data %&gt;% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line() +
+    labs(title = str_to_title(x),
+         y=&quot;Vote share&quot;)+
+    scale_y_continuous(labels = scales::number_format())+
+    #geom_smooth(method = &quot;lm&quot;,se=F,lty=2)+
+    scale_colour_manual(values = c(&quot;blue&quot;,&quot;red&quot;))+
+    geom_hline(yintercept = mean(data$trump2016),lty=2)+
+    annotate(&quot;text&quot;,label=paste(sep=&quot;&quot;,&quot;Trump 2016 &quot;,&quot;&quot;),x=max(data$step-max(data$step/8)),y=data$trump2016-0.05*(max(data$vote_share)-min(data$vote_share)))
 }</code></pre>
 <pre class="r"><code>data %&gt;% 
   group_by(state) %&gt;%
@@ -173,15 +209,9 @@ crit_states &lt;- c(&quot;wisconsin&quot;,&quot;nevada&quot;,&quot;georgia&quot;
   tail(5) %&gt;% 
   select(state,vote_share) %&gt;% 
   rename(&#39;republican_share&#39;=&#39;vote_share&#39;)</code></pre>
-<pre><code>## # A tibble: 5 x 2
-## # Groups:   state [5]
-##   state         republican_share
-##   &lt;chr&gt;                    &lt;dbl&gt;
-## 1 idaho                    0.638
-## 2 north-dakota             0.651
-## 3 oklahoma                 0.654
-## 4 west-virginia            0.687
-## 5 wyoming                  0.699</code></pre>
+<pre><code>## # A tibble: 0 x 2
+## # Groups:   state [0]
+## # ... with 2 variables: state &lt;chr&gt;, republican_share &lt;dbl&gt;</code></pre>
 <p>Safe Democrat states</p>
 <pre class="r"><code>data %&gt;% 
   group_by(state) %&gt;%
@@ -191,57 +221,69 @@ crit_states &lt;- c(&quot;wisconsin&quot;,&quot;nevada&quot;,&quot;georgia&quot;
   head(5)%&gt;% 
    select(state,vote_share) %&gt;% 
   rename(&#39;republican_share&#39;=&#39;vote_share&#39;)</code></pre>
-<pre><code>## # A tibble: 5 x 2
-## # Groups:   state [5]
-##   state         republican_share
-##   &lt;chr&gt;                    &lt;dbl&gt;
-## 1 vermont                  0.306
-## 2 massachusetts            0.325
-## 3 maryland                 0.335
-## 4 california               0.336
-## 5 hawaii                   0.343</code></pre>
-<pre class="r"><code>by_state(states[46])</code></pre>
+<pre><code>## # A tibble: 0 x 2
+## # Groups:   state [0]
+## # ... with 2 variables: state &lt;chr&gt;, republican_share &lt;dbl&gt;</code></pre>
+<pre class="r"><code>by_state_voteshare(states[46])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<pre class="r"><code>by_state(states[19])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[19])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
-<pre class="r"><code>by_state(states[5])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[5])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
-<pre class="r"><code>by_state(states[20])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[20])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-4.png" width="672" /></p>
-<pre class="r"><code>by_state(states[11])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[11])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-5.png" width="672" /></p>
-<pre class="r"><code>by_state(states[39])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[39])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-6.png" width="672" /></p>
-<pre class="r"><code>by_state(states[47])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[47])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-7.png" width="672" /></p>
-<pre class="r"><code>by_state(states[8])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[8])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-8.png" width="672" /></p>
-<pre class="r"><code>by_state(states[37])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[37])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-9.png" width="672" /></p>
-<pre class="r"><code>by_state(states[34])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[34])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-6-10.png" width="672" /></p>
 <p>Bellwether reference states</p>
-<pre class="r"><code>by_state(states[43])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[43])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<pre class="r"><code>by_state(states[9])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[9])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
-<pre class="r"><code>by_state(states[35])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[35])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[43])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[9])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-5.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[35])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-7-6.png" width="672" /></p>
 <p>States with voting irregularities</p>
-<pre class="r"><code>by_state(states[22])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[22])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<pre class="r"><code>by_state(states[48])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[48])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
-<pre class="r"><code>by_state(states[10])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[10])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-3.png" width="672" /></p>
-<pre class="r"><code>by_state(states[38])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[38])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-4.png" width="672" /></p>
-<pre class="r"><code>by_state(states[4])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[4])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-5.png" width="672" /></p>
-<pre class="r"><code>by_state(states[33])</code></pre>
-<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-6.png" width="672" />
+<pre class="r"><code>by_state_voteshare(states[33])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-6.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[22])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-7.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[48])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-8.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[10])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-9.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[38])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-10.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[4])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-11.png" width="672" /></p>
+<pre class="r"><code>by_state_nominal(states[33])</code></pre>
+<p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-8-12.png" width="672" />
 Other states</p>
-<pre class="r"><code>by_state(states[45])</code></pre>
+<pre class="r"><code>by_state_voteshare(states[45])</code></pre>
 <p><img src="/post/2020-11-11-scrape_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 
     </div>
