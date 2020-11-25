@@ -106,9 +106,9 @@ library(tidyverse)</code></pre>
 dat = WDI(indicator=&quot;EN.ATM.GHGT.KT.CE&quot;, country=c(&#39;CN&#39;,&#39;US&#39;,&#39;IN&#39;,&#39;RU&#39;,&#39;JP&#39;,&#39;GB&#39;,&#39;FR&#39;,&#39;DE&#39;), start=1970)
 
 gdp &lt;- WDI(indicator = c(&quot;gdp_per_capita&quot; = &quot;NY.GDP.PCAP.KD&quot;,
-                         &quot;population&quot; = &quot;SP.POP.TOTL&quot;))
-
-dat %&gt;% 
+                         &quot;population&quot; = &quot;SP.POP.TOTL&quot;))</code></pre>
+<pre><code>## These indicators could not be downloaded: NY.GDP.PCAP.KD</code></pre>
+<pre class="r"><code>dat %&gt;% 
   ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
   geom_line()+
   scale_y_log10(labels=scales::number_format())+
