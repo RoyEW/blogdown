@@ -88,17 +88,24 @@ states <- py$states %>% str_to_lower() %>% str_replace(" ","-")
 data <- votes %>% 
   mutate(trump_nominal = votes * vote_share_rep,
          biden_nominal = votes * vote_share_dem,
-         third_nominal = votes * vote_share_trd)
+         third_nominal = votes * vote_share_trd) %>% 
+  mutate(trump_change = trump_nominal - lag(trump_nominal),
+         biden_change = biden_nominal - lag(biden_nominal))
+
+
+
 
 
 data <- data %>% 
-  pivot_longer(cols=c(colnames(data)[10],colnames(data)[11],colnames(data)[12],colnames(data)[13],colnames(data)[14]),names_to="party",values_to="vote_share") %>% 
+  pivot_longer(cols=c(colnames(data)[10:17]),names_to="party",values_to="vote_share") %>% 
   mutate(party = case_when(party == "vote_share_rep" ~ "Republican share",
                            party == "vote_share_dem" ~ "Democrat share",
                            party == "vote_share_trd" ~ "Third party share",
                            party == "trump_nominal" ~ "Republican votes",
                            party == "biden_nominal" ~ "Democrat votes",
                            party == "third_nominal" ~ "Third party votes",
+                           party == "trump_change" ~ "Republican change",
+                           party == "biden_change" ~ "Democrat change",
                            TRUE ~ "Other"))
 
 theme_set(theme_bw())
@@ -151,6 +158,99 @@ by_state_nominal <- function(x){
     annotate("text",label=paste(sep="","Trump 2016 ",""),x=max(data$step-max(data$step/8)),y=data$trump2016-0.05*(max(data$vote_share)-min(data$vote_share)))
 }
 
+library(plotly)
+ga <- data %>% 
+  filter(state=="georgia",
+         party %in% c("Republican change","Democrat change"),
+         !is.na(vote_share),
+         !votes==0) %>% 
+  mutate(timestamp=row_number()) %>%
+  rename("step" = "timestamp") %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))+
+  scale_y_continuous(labels = scales::number_format())
+  
+ggplotly(ga)
+
+tx <- data %>% 
+  filter(state=="texas",
+         party %in% c("Republican change","Democrat change"),
+         !is.na(vote_share),
+         !votes==0) %>% 
+  mutate(timestamp=row_number()) %>%
+  rename("step" = "timestamp") %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))+
+  scale_y_continuous(labels = scales::number_format())
+
+fl <- data %>% 
+  filter(state=="florida",
+         party %in% c("Republican change","Democrat change"),
+         !is.na(vote_share),
+         !votes==0) %>% 
+  mutate(timestamp=row_number()) %>%
+  rename("step" = "timestamp") %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))+
+  scale_y_continuous(labels = scales::number_format())
+
+oh <- data %>% 
+  filter(state=="ohio",
+         party %in% c("Republican change","Democrat change"),
+         !is.na(vote_share),
+         !votes==0) %>% 
+  mutate(timestamp=row_number()) %>%
+  rename("step" = "timestamp") %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))+
+  scale_y_continuous(labels = scales::number_format())
+
+wi <- data %>% 
+  filter(state=="wisconsin",
+         party %in% c("Republican change","Democrat change"),
+         !is.na(vote_share),
+         !votes==0) %>% 
+  mutate(timestamp=row_number()) %>%
+  rename("step" = "timestamp") %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))+
+  scale_y_continuous(labels = scales::number_format())
+
+pa <- data %>% 
+  filter(state=="pennsylvania",
+         party %in% c("Republican change","Democrat change"),
+         !is.na(vote_share),
+         !votes==0) %>% 
+  mutate(timestamp=row_number()) %>%
+  rename("step" = "timestamp") %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))+
+  scale_y_continuous(labels = scales::number_format())
+
+mi <- data %>% 
+  filter(state=="michigan",
+         party %in% c("Republican change","Democrat change"),
+         !is.na(vote_share),
+         !votes==0) %>% 
+  mutate(timestamp=row_number()) %>%
+  rename("step" = "timestamp") %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))+
+  scale_y_continuous(labels = scales::number_format())
+
+ggplotly(tx)
+ggplotly(oh)
+ggplotly(fl)
+ggplotly(mi)
+ggplotly(wi)
+ggplotly(pa)
 
 ```
 
