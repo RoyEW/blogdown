@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 ```{r}
 library(reticulate)
 library(tidyverse)
+library(lubridate)
 ``` 
 
 ```{python echo=TRUE, results = 'hide'}
@@ -85,18 +86,21 @@ time_series_df.to_csv('data/nyt_ts.csv', encoding='utf-8')
 votes <- py$time_series_df
 states <- py$states %>% str_to_lower() %>% str_replace(" ","-")
 
+
+
 data <- votes %>% 
   mutate(trump_nominal = votes * vote_share_rep,
          biden_nominal = votes * vote_share_dem,
          third_nominal = votes * vote_share_trd) %>% 
   mutate(trump_change = trump_nominal - lag(trump_nominal),
-         biden_change = biden_nominal - lag(biden_nominal))
+         biden_change = biden_nominal - lag(biden_nominal)) %>% 
+  mutate(time = as_datetime(timestamp))
 
 
 
 
 
-data <- data %>% 
+data %<>% 
   pivot_longer(cols=c(colnames(data)[10:17]),names_to="party",values_to="vote_share") %>% 
   mutate(party = case_when(party == "vote_share_rep" ~ "Republican share",
                            party == "vote_share_dem" ~ "Democrat share",
@@ -252,6 +256,62 @@ ggplotly(mi)
 ggplotly(wi)
 ggplotly(pa)
 
+
+by_state_voteshare <- function(x){
+  data <- data %>% 
+  filter(state==x,
+         party %in% c("Republican share","Democrat share"),
+         !vote_share == 0) %>% 
+  mutate(timestamp=row_number()) %>% 
+  rename("step" = "timestamp")
+  
+  data %>% 
+  ggplot(aes(step,vote_share,colour = party))+
+  geom_line() +
+    labs(title = str_to_title(x),
+         y="Vote share")+
+    scale_y_continuous(labels = scales::percent_format())+
+    #geom_smooth(method = "lm",se=F,lty=2)+
+    scale_colour_manual(values = c("blue","red"))+
+    geom_hline(yintercept = mean(data$trump2016/data$votes2016),lty=2)+
+    annotate("text",label=paste(sep="","Trump 2016 ",round(mean(data$trump2016/data$votes2016)*100,2),"%"),x=max(data$step-max(data$step/8)),y=mean(data$trump2016/data$votes2016-0.05*(max(data$vote_share)-min(data$vote_share))))
+}
+
+data %>% 
+  filter(state=='wisconsin',
+         party %in% c("Republican share","Democrat share"),
+         !vote_share==0,
+         time < ymd(20201105)) %>% 
+  ggplot(aes(time, vote_share,colour = party)) +
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))
+  
+data %>% 
+  filter(state=='georgia',
+         party %in% c("Republican share","Democrat share"),
+         !vote_share==0,
+         time < ymd(20201107)) %>% 
+  ggplot(aes(time, vote_share,colour = party)) +
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))
+
+data %>% 
+  filter(state=='wisconsin',
+         party %in% c("Republican votes","Democrat votes"),
+         !vote_share==0,
+         time < ymd(20201105)) %>% 
+  ggplot(aes(time, vote_share,colour = party)) +
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))
+
+data %>% 
+  filter(state=='georgia',
+         party %in% c("Republican votes","Democrat votes"),
+         !vote_share==0,
+         time < ymd(20201107)) %>% 
+  ggplot(aes(time, vote_share,colour = party)) +
+  geom_line()+
+  scale_colour_manual(values = c("blue","red"))
 ```
 
 
