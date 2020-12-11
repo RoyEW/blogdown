@@ -106,9 +106,9 @@ library(tidyverse)</code></pre>
 dat = WDI(indicator=&quot;EN.ATM.GHGT.KT.CE&quot;, country=c(&#39;CN&#39;,&#39;US&#39;,&#39;IN&#39;,&#39;RU&#39;,&#39;JP&#39;,&#39;GB&#39;,&#39;FR&#39;,&#39;DE&#39;), start=1970)
 
 gdp &lt;- WDI(indicator = c(&quot;gdp_per_capita&quot; = &quot;NY.GDP.PCAP.KD&quot;,
-                         &quot;population&quot; = &quot;SP.POP.TOTL&quot;))
-
-dat %&gt;% 
+                         &quot;population&quot; = &quot;SP.POP.TOTL&quot;))</code></pre>
+<pre><code>## None of the indicators your requested could be downloaded. Please verify the arguments of the `WDI()` function. You can also type a URL of this form in your browser to check if the World Bank web API is currently serving the indicator(s) of interest: https://api.worldbank.org/v2/country/all/indicator/NY.GDP.PCAP.KD?format=json&amp;date=1960:2020&amp;per_page=32500&amp;page=1</code></pre>
+<pre class="r"><code>dat %&gt;% 
   ggplot(aes(year, EN.ATM.GHGT.KT.CE, color = country))+
   geom_line()+
   scale_y_log10(labels=scales::number_format())+
