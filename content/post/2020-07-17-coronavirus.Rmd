@@ -38,7 +38,8 @@ covid_raw <- read.csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/
          "code" = countryterritoryCode,
          "population2019" = popData2019,
          "continent" = continentExp,
-         "cases_rate" = Cumulative_number_for_14_days_of_COVID.19_cases_per_100000)
+         "cases_rate" = notification_rate_per_100000_population_14.days,
+         "deaths" = deaths_weekly)
 ```
 
 Defining of the G8 and G20 nations

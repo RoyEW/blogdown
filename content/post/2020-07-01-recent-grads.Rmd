@@ -247,9 +247,9 @@ g <- majors_processed %>%
        subtitle = "Ordered by major and coloured by major category",
        x="Percentage share of women in the field",
        y="Median salary income")+
-  theme(legend.position = 'none')+
-  annotate("text",x=0.8,y=max(majors_processed$Median)-2000,hjust=1,vjust=1,label="Size refers to sample size")+
-  annotate("text",x=0.8,y=max(majors_processed$Median)-8000,hjust=1,vjust=1,label="Colour refers to major category")+
+  theme(legend.position = 'bottom')+
+  #annotate("text",x=0.8,y=max(majors_processed$Median)-2000,hjust=1,vjust=1,label="Size refers to sample size")+
+  #annotate("text",x=0.8,y=max(majors_processed$Median)-8000,hjust=1,vjust=1,label="Colour refers to major category")+
   scale_y_continuous(labels=scales::dollar_format())+
   scale_x_continuous(labels=scales::percent_format())
 
