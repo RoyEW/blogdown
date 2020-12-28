@@ -6,10 +6,19 @@
     <description>Recent content on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 11 Dec 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 27 Dec 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Thermal Expansion Calculator with RShiny</title>
+      <link>/2020/12/27/thermal-expansion-calculator-with-rshiny/</link>
+      <pubDate>Sun, 27 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/12/27/thermal-expansion-calculator-with-rshiny/</guid>
+      <description>https://jackwilson.shinyapps.io/cterom/</description>
+    </item>
     
     <item>
       <title>Coronavirus Dashboard with RShiny (slow load)</title>

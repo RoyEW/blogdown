@@ -1,0 +1,11 @@
+---
+title: Thermal Expansion Calculator with RShiny
+author: ~
+date: '2020-12-27'
+slug: thermal-expansion-calculator-with-rshiny
+categories: []
+tags: []
+---
+
+
+https://jackwilson.shinyapps.io/cterom/
