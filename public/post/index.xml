@@ -79,7 +79,7 @@ A market with an HHI of less than 1,500 is considered to be a competitive market
       <pubDate>Tue, 04 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/08/04/oscillations/</guid>
-      <description>library(readxl)library(tidyverse)oscillations_raw &amp;lt;- read_excel(&amp;quot;oscillations.xlsx&amp;quot;, sheet = 3)osc &amp;lt;- oscillations_rawosc %&amp;gt;% pivot_longer(cols =colnames(osc)[2:5], names_to = &amp;quot;variable&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% mutate(group = case_when(str_detect(variable,&amp;quot;PMASS1500&amp;quot;) ~ &amp;quot;PMASS1500&amp;quot;,TRUE ~ &amp;quot;PMASS500&amp;quot;)) %&amp;gt;% ggplot(aes(step, value, colour = variable))+labs(colour = &amp;quot;&amp;quot;)+facet_grid(~ group) +theme(legend.position = &amp;quot;bottom&amp;quot;)+geom_line()</description>
+      <description>library(readxl)library(tidyverse)oscillations_raw &amp;lt;- read_excel(&amp;quot;oscillations.xlsx&amp;quot;, sheet = 3)osc &amp;lt;- oscillations_rawosc %&amp;gt;% pivot_longer(cols =colnames(osc)[2:5], names_to = &amp;quot;variable&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% mutate(group = case_when(str_detect(variable,&amp;quot;PMASS1500&amp;quot;) ~ &amp;quot;PMASS1500&amp;quot;,TRUE ~ &amp;quot;PMASS500&amp;quot;)) %&amp;gt;% ggplot(aes(step, value, colour = variable))+labs(colour = &amp;quot;&amp;quot;)+facet_grid(~ group) +theme(legend.position = &amp;quot;bottom&amp;quot;)+geom_line()</description>
     </item>
     
     <item>
