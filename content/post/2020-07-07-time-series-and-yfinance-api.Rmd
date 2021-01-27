@@ -341,6 +341,26 @@ share_prices <- multiplot("TSLA","HYMTF", "FCAU","RACE","NSANY","F","BMW.MI","BM
 ```
 
 
+```{r}
+share_prices <- multiplot("CCJ","NXE","U", period = "max",length = 1825) %>% 
+  filter(!is.na(price),
+         price>1) %>%
+  mutate(price=price)
+
+ 
+ share_prices %>% 
+  ggplot()+
+  geom_line(aes(date, price, colour = ticker))+
+  geom_smooth(aes(date, price, colour = ticker),se = F)+
+   scale_y_log10(labels=scales::dollar_format())+
+  theme_void()+
+  labs(colour = "Ticker",
+       title="Share prices of global car companies (5year)")+
+  theme(axis.text = element_text(),
+        legend.position = "bottom")
+
+```
+
 ### <i>"Global stocks have worst day in two years as coronavirus fears spread"</i> - FT 24th Feb 2020
 
 https://www.ft.com/content/5ec9aeae-56a1-11ea-a528-dd0f971febbc

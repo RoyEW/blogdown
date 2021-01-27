@@ -22,6 +22,11 @@
 
 
 
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
 <link rel="stylesheet" href="/css/fonts.css" media="all">
 <link rel="stylesheet" href="/css/main.css" media="all">
 
@@ -72,6 +77,43 @@
 
 
 <p><a href="https://jackwilson.shinyapps.io/cterom/" class="uri">https://jackwilson.shinyapps.io/cterom/</a></p>
+<p>App UI code template for future modularised apps</p>
+<pre><code>
+    # Leave this function for adding external resources
+    golem_add_external_resources(),
+    # Define this page as a dashboard page to signal we&#39;re using the     dashboard page format
+    shinydashboardPlus::dashboardPagePlus(
+      skin = &quot;green&quot;,
+      header = shinydashboardPlus::dashboardHeaderPlus(
+        title = &quot;CTE Calculator&quot;,
+        enable_rightsidebar = FALSE
+      ),
+      # Create our navigation menu that links to each of the tabs we defined
+      sidebar = shinydashboard::dashboardSidebar(
+        shinydashboard::sidebarMenu(
+          # Setting id makes input$tabs give the tabName of currently-selected tab
+          id = &quot;tabs&quot;,
+          shinydashboard::menuItem(&quot;Calculator&quot;, tabName = &quot;dashboard&quot;, icon = icon(&quot;atom&quot;)),
+          #shinydashboard::menuItem(&quot;Tab&quot;, icon = icon(&quot;radiation&quot;), tabName = &quot;secondn&quot;),
+          #shinydashboard::menuItem(&quot;Tab&quot;, icon = icon(&quot;comment-alt&quot;), tabName = &quot;thirdn&quot;),
+          shinydashboard::menuItem(&quot;Jack &amp; Roy Wilson&quot;, icon = icon(&quot;cog&quot;),badgeColor = &quot;red&quot;,badgeLabel = &quot;DEV&quot;,tabName = &quot;dev&quot;))
+      ),
+      # Show the appropriate tab&#39;s content in the main body of our dashboard when we select it
+      body = shinydashboard::dashboardBody(
+        shinydashboard::tabItems(
+          shinydashboard::tabItem(&quot;dashboard&quot;, mod_Home_ui(&quot;Home_ui_1&quot;)),
+          shinydashboard::tabItem(&quot;secondn&quot;, mod_second_ui(&quot;second_ui_1&quot;)),
+          shinydashboard::tabItem(&quot;thirdn&quot;, mod_third_ui(&quot;third_ui_1&quot;)),
+          shinydashboard::tabItem(&quot;dev&quot;, mod_dev_ui(&quot;dev_ui_1&quot;)
+                                  
+          )
+        ) 
+      ),
+      rightsidebar = NULL,
+      title = &quot;TEC Calculator&quot;
+    )
+  )
+  </code></pre>
 
     </div>
   </article>
@@ -95,7 +137,22 @@
     </div>
     
 
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
     
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 
     
   </body>
