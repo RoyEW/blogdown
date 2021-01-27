@@ -114,6 +114,7 @@ library(Quandl)## Loading required package: xts## Loading required package: zo
       <guid>/2020/07/07/time-series-and-yfinance-api/</guid>
       <description>Python integration using the reticulate package.
 yFinance api from https://pypi.org/project/yfinance/
+test commit
 library(reticulate)library(tidyverse)library(bbplot)library(lubridate)library(broom)library(plotly)library(readxl)use_miniconda()import yfinance as yfimport requestsdef yfinance01(ticker,period):g = yf.Ticker(ticker)data=g.history(period=period)return datafixcol01 &amp;lt;- function(g){g &amp;lt;- cbind(date = rownames(g), g)rownames(g) &amp;lt;- 1:nrow(g)return(g)}retrieve01 &amp;lt;- function(ticker,period=&amp;quot;max&amp;quot;){g &amp;lt;- py$yfinance01(ticker,period)g &amp;lt;- fixcol01(g)g &amp;lt;- g %&amp;gt;% select(date, Close)%&amp;gt;% mutate(date=as_date(ymd(date)))colnames(g) &amp;lt;- c(&amp;quot;date&amp;quot;, ticker)return(g)}plotting01 &amp;lt;- function(ticker, period=&amp;quot;max&amp;quot;){g &amp;lt;- retrieve01(ticker, period)plot &amp;lt;- g %&amp;gt;% ggplot(aes(date, get(ticker), group=1))+geom_point(shape=&amp;quot;.</description>
     </item>
     
