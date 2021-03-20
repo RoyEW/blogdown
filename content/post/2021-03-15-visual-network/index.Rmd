@@ -10,17 +10,30 @@ tags: []
 ```{r warning=FALSE}
 library(visNetwork)
 library(widgetframe)
+```
 
-nodes <- data.frame(id = 1:7)
+
+# Hierarchical network example
+## Using Font Awesome integration
+
+```{r warning=FALSE}
+nodes <- data.frame(id = 1:7,
+                    group = c("A", "A", "A","B","B","B","B")
+                    )
 
 edges <- data.frame(
   from = c(1,2,2,2,3,3),
   to = c(2,3,4,5,6,7)
 )
 
-figure <- visNetwork(nodes, edges, width = "100%") %>% 
+figure <- visNetwork(nodes, edges, width = "100%") %>%
+  visGroups(groupname = "A", shape = "icon", 
+            icon = list(code = "f0c0", size = 75)) %>% 
+  visGroups(groupname = "B", shape = "icon", 
+            icon = list(code = "f007", color = "red")) %>%
   visEdges(arrows = "from") %>% 
-  visHierarchicalLayout() 
+  visHierarchicalLayout() %>% 
+  addFontAwesome()
 
 htmlwidgets::saveWidget(figure, file = "figure.html", selfcontained = T)
 
@@ -29,8 +42,8 @@ htmlwidgets::saveWidget(figure, file = "figure.html", selfcontained = T)
 #figure
 
 htmlwidgets::saveWidget(
-widgetframe::frameableWidget(figure),'some-directory-on-your-disk.html')
-htmltools::includeHTML("some-directory-on-your-disk.html")
+widgetframe::frameableWidget(figure),'hierarchical.html')
+htmltools::includeHTML("hierarchical.html")
 
 
 ```
@@ -40,6 +53,8 @@ htmltools::includeHTML("some-directory-on-your-disk.html")
 
 
 
+
+# Random netowrk generated example
 
 ```{r}
 nb <- 10
@@ -54,5 +69,86 @@ edges <- data.frame(from = trunc(runif(nb)*(nb-1))+1,
 g <- visNetwork(nodes, edges, width = "100%")
 frameableWidget(g, renderCallback = NULL)
 
+```
+
+# R part classification tree
+## Iris dataset
+
+```{r}
+
+library(rpart)
+library(sparkline)
+res <- rpart(Species~., data=iris)
+figure <- visTree(res, main = "Iris classification Tree", width = "100%")
+
+
+htmlwidgets::saveWidget(
+widgetframe::frameableWidget(figure),'classification.html')
+htmltools::includeHTML("classification.html")
+```
+
+# Select by ID
+## Les miserables example
+
+```{r}
+nodes <- jsonlite::fromJSON("https://raw.githubusercontent.com/datastorm-open/datastorm-open.github.io/master/visNetwork/data/nodes_miserables.json")
+
+edges <- jsonlite::fromJSON("https://raw.githubusercontent.com/datastorm-open/datastorm-open.github.io/master/visNetwork/data/edges_miserables.json")
+
+
+figure <- visNetwork(nodes, edges, height = "700px", width = "100%") %>%
+  visOptions(selectedBy = "group", 
+             highlightNearest = TRUE, 
+             nodesIdSelection = TRUE) %>%
+  visPhysics(stabilization = FALSE)
+
+htmlwidgets::saveWidget(
+widgetframe::frameableWidget(figure),'lesmis.html')
+htmltools::includeHTML("lesmis.html")
+```
+
+# Circle network
+## Example of defining coordinates 
+
+```{r}
+nnodes <- 100
+nnedges <- 200
+
+nodes <- data.frame(id = 1:nnodes)
+edges <- data.frame(from = sample(1:nnodes, nnedges, replace = T),
+                    to = sample(1:nnodes, nnedges, replace = T))
+
+figure <- visNetwork(nodes, edges, height = "500px") %>%
+  visIgraphLayout(layout = "layout_in_circle") %>%
+  visNodes(size = 10) %>%
+  visOptions(highlightNearest = list(enabled = T, hover = T), 
+             nodesIdSelection = T)
+
+
+htmlwidgets::saveWidget(
+widgetframe::frameableWidget(figure),'circle.html')
+htmltools::includeHTML("circle.html")
+```
+
+# Custom image example
+
+```{r}
+path_to_images <- "https://raw.githubusercontent.com/datastorm-open/datastorm-open.github.io/master/visNetwork/data/img/indonesia/"
+ 
+nodes <- data.frame(id = 1:4, 
+                    shape = c("image", "circularImage"),
+                    image = paste0(path_to_images, 1:4, ".png"),
+                    label = "I'm an image")
+  
+edges <- data.frame(from = c(2,4,3,3), to = c(1,2,4,2))
+
+figure <- visNetwork(nodes, edges, width = "100%") %>% 
+  visNodes(shapeProperties = list(useBorderWithImage = TRUE)) %>%
+  visLayout(randomSeed = 2)
+
+
+htmlwidgets::saveWidget(
+widgetframe::frameableWidget(figure),'custom.html')
+htmltools::includeHTML("custom.html")
 ```
 
