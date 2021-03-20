@@ -17,10 +17,23 @@ edges <- data.frame(
   to = c(2,3,4,5,6,7)
 )
 
-visNetwork(nodes, edges, width = "100%") %>% 
+figure <- visNetwork(nodes, edges, width = "100%") %>% 
   visEdges(arrows = "from") %>% 
   visHierarchicalLayout() 
+
+htmlwidgets::saveWidget(figure, file = "figure.html", selfcontained = TRUE)
+
+htmltools::includeHTML("figure.html")
+
+
 ```
+
+
+
+
+
+
+
 ```{r}
 nb <- 10
 nodes <- data.frame(id = 1:nb, label = paste("Label", 1:nb),
