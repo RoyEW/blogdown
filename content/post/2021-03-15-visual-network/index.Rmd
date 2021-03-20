@@ -7,8 +7,9 @@ categories: []
 tags: []
 ---
 
-```{r}
+```{r warning=FALSE}
 library(visNetwork)
+library(widgetframe)
 
 nodes <- data.frame(id = 1:7)
 
@@ -21,9 +22,15 @@ figure <- visNetwork(nodes, edges, width = "100%") %>%
   visEdges(arrows = "from") %>% 
   visHierarchicalLayout() 
 
-htmlwidgets::saveWidget(figure, file = "figure.html", selfcontained = TRUE)
+htmlwidgets::saveWidget(figure, file = "figure.html", selfcontained = T)
 
-htmltools::includeHTML("figure.html")
+#htmltools::includeHTML("figure.html")
+#frameableWidget(figure, renderCallback = NULL)
+#figure
+
+htmlwidgets::saveWidget(
+widgetframe::frameableWidget(figure),'some-directory-on-your-disk.html')
+htmltools::includeHTML("some-directory-on-your-disk.html")
 
 
 ```
@@ -44,7 +51,8 @@ edges <- data.frame(from = trunc(runif(nb)*(nb-1))+1,
  to = trunc(runif(nb)*(nb-1))+1,
  value = rnorm(nb, 10), label = paste("Edge", 1:nb),
  title = paste0("<p>", 1:nb,"<br>Edge Tooltip !</p>"))
+g <- visNetwork(nodes, edges, width = "100%")
+frameableWidget(g, renderCallback = NULL)
 
-visNetwork(nodes, edges, width = "100%")
 ```
 
