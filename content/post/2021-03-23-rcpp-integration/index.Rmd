@@ -1,0 +1,74 @@
+---
+title: Rcpp integration
+author: ''
+date: '2021-03-23'
+slug: rcpp-integration
+categories: []
+tags: []
+---
+
+
+```{r}
+library(Rcpp)
+library(rbenchmark)
+library(tidyverse)
+```
+
+# Benchmarking a computationally demanding function in R and C++
+
+The Fibonacci sequence mathematically defined as $$F_n = \begin{cases}
+n, & n\le 2\\
+F_{n-1} + F_{n-2}, & n>2
+\end{cases}$$
+
+
+### R implementation
+
+```{r}
+f <- function(n){
+  if (n < 2) return(n)
+  return(f(n - 1)+f(n - 2))
+}
+
+sapply(1:10, f)
+
+(Rscores <- benchmark(f(10),f(15), f(20), f(25))[,1:4])
+```
+
+```{r}
+Rscores %>% 
+  filter(elapsed>0) %>% 
+  ggplot(aes(test,elapsed, group = 1))+
+  geom_line()+theme_minimal()+
+  labs(title = "Fibonacci function benchmarked in R",
+       y = "time elapsed (seconds)",
+       x = "Function and iteration")
+```
+
+
+### C++ implementation
+
+The function defined above within C++ is now callable from R through the Rcpp package.
+
+```{r}
+Rcpp::sourceCpp("g.cpp")
+```
+
+
+```{r}
+sapply(0:10, g)
+
+(Cscores <- benchmark(g(10),g(15), g(20), g(25),g(30))[,1:4])
+
+```
+
+```{r}
+Cscores %>% 
+  ggplot(aes(test,elapsed, group = 1))+
+  geom_line()+ theme_minimal()+
+  labs(title = "Fibonacci function benchmarked in C++",
+       y = "time elapsed (seconds)",
+       x = "Function and iteration")
+```
+
+

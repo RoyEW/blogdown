@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Mar 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Mar 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rcpp integration</title>
+      <link>/2021/03/23/rcpp-integration/</link>
+      <pubDate>Tue, 23 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/03/23/rcpp-integration/</guid>
+      <description>library(Rcpp)## Warning: package &amp;#39;Rcpp&amp;#39; was built under R version 4.0.4library(rbenchmark)library(tidyverse)## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.3 v purrr 0.3.4## v tibble 3.0.6 v dplyr 1.0.4## v tidyr 1.1.2 v stringr 1.4.0## v readr 1.4.0 v forcats 0.5.1## -- Conflicts ------------------------------------------ tidyverse_conflicts() --## x dplyr::filter() masks stats::filter()## x dplyr::lag() masks stats::lag()Benchmarking a computationally demanding function in R and C++The Fibonacci sequence mathematically defined as \[F_n = \begin{cases}n, &amp;amp; n\le 2\\F_{n-1} + F_{n-2}, &amp;amp; n&amp;gt;2\end{cases}\]</description>
+    </item>
     
     <item>
       <title>Visual network</title>
