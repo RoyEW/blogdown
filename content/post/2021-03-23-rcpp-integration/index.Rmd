@@ -90,7 +90,7 @@ p <- Cscores %>%
 print(p)
 ```
 
-```{r}
+```{r include=FALSE}
 last_elapsed_r <- Rscores %>% tail(1)
 
 last_elapsed_r <- last_elapsed_r[[3]]

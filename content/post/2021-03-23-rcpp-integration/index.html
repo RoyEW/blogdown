@@ -43,9 +43,9 @@ Rscores</code></pre>
 <pre><code>##    test replications elapsed relative
 ## 1 f(10)          100    0.02      1.0
 ## 2 f(15)          100    0.06      3.0
-## 3 f(20)          100    0.85     42.5
-## 4 f(25)          100    8.72    436.0
-## 5 f(30)          100   98.03   4901.5</code></pre>
+## 3 f(20)          100    0.81     40.5
+## 4 f(25)          100    8.75    437.5
+## 5 f(30)          100   95.23   4761.5</code></pre>
 <pre class="r"><code>p &lt;- Rscores %&gt;% 
   filter(elapsed&gt;0) %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
@@ -74,9 +74,9 @@ Cscores</code></pre>
 <pre><code>##    test replications elapsed relative
 ## 1 g(10)          100    0.00       NA
 ## 2 g(15)          100    0.00       NA
-## 3 g(20)          100    0.01       NA
+## 3 g(20)          100    0.02       NA
 ## 4 g(25)          100    0.02       NA
-## 5 g(30)          100    0.22       NA</code></pre>
+## 5 g(30)          100    0.20       NA</code></pre>
 <pre class="r"><code>p &lt;- Cscores %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
   geom_line()+ theme_minimal()+
@@ -86,16 +86,9 @@ Cscores</code></pre>
 
 print(p)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/cplot-1.png" width="672" /></p>
-<pre class="r"><code>last_elapsed_r &lt;- Rscores %&gt;% tail(1)
-
-last_elapsed_r &lt;- last_elapsed_r[[3]]
-
-last_elapsed_c &lt;- Cscores %&gt;% tail(1)
-
-last_elapsed_c &lt;- last_elapsed_c[[3]]</code></pre>
 </div>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>The speed gains in calculating the 30th iteration of the Fibonacci sequence within C++ (0.22 seconds) massively outperforms R (98.03 seconds).</p>
+<p>The speed gains in calculating the 30th iteration of the Fibonacci sequence within C++ (0.2 seconds) massively outperforms R (95.23 seconds).</p>
 </div>
