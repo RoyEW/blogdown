@@ -109,9 +109,9 @@ Rscores</code></pre>
 <pre><code>##    test replications elapsed relative
 ## 1 f(10)          100    0.00       NA
 ## 2 f(15)          100    0.08       NA
-## 3 f(20)          100    0.83       NA
-## 4 f(25)          100    8.93       NA
-## 5 f(30)          100  102.22       NA</code></pre>
+## 3 f(20)          100    0.82       NA
+## 4 f(25)          100    8.97       NA
+## 5 f(30)          100   97.26       NA</code></pre>
 <pre class="r"><code>p &lt;- Rscores %&gt;% 
   filter(elapsed&gt;0) %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
@@ -120,7 +120,7 @@ Rscores</code></pre>
        y = &quot;time elapsed (seconds)&quot;,
        x = &quot;Function and iteration&quot;) 
 print(p)</code></pre>
-<p><img src="/2021/03/23/rcpp-integration/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/2021/03/23/rcpp-integration/index_files/figure-html/rplot-1.png" width="672" /></p>
 </div>
 <div id="c-implementation" class="section level3">
 <h3>C++ implementation</h3>
@@ -142,7 +142,7 @@ Cscores</code></pre>
 ## 2 g(15)          100    0.00       NA
 ## 3 g(20)          100    0.00       NA
 ## 4 g(25)          100    0.01       NA
-## 5 g(30)          100    0.21       NA</code></pre>
+## 5 g(30)          100    0.20       NA</code></pre>
 <pre class="r"><code>p &lt;- Cscores %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
   geom_line()+ theme_minimal()+
@@ -151,7 +151,7 @@ Cscores</code></pre>
        x = &quot;Function and iteration&quot;)
 
 print(p)</code></pre>
-<p><img src="/2021/03/23/rcpp-integration/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/2021/03/23/rcpp-integration/index_files/figure-html/cplot-1.png" width="672" /></p>
 </div>
 </div>
 
