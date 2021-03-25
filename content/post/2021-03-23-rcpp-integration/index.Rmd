@@ -25,6 +25,7 @@ F_{n-1} + F_{n-2}, & n>2
 ### R implementation
 
 ```{r}
+
 f <- function(n){
   if (n < 2) return(n)
   return(f(n - 1)+f(n - 2))
@@ -51,7 +52,17 @@ Rscores %>%
 The function defined above within C++ is now callable from R through the Rcpp package.
 
 ```{r}
-Rcpp::sourceCpp("g.cpp")
+#Rcpp::sourceCpp("g.cpp")
+
+```
+
+```{Rcpp}
+#include <Rcpp.h>
+//[[Rcpp::export]]
+int g(int n) {
+  if (n < 2) return(n);
+  return(g(n-1) + g(n-2));
+}
 ```
 
 
