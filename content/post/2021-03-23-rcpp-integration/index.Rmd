@@ -90,4 +90,16 @@ p <- Cscores %>%
 print(p)
 ```
 
+```{r}
+last_elapsed_r <- Rscores %>% tail(1)
 
+last_elapsed_r <- last_elapsed_r[[3]]
+
+last_elapsed_c <- Cscores %>% tail(1)
+
+last_elapsed_c <- last_elapsed_c[[3]]
+```
+
+
+# Conclusion
+The speed gains in calculating the 30th iteration of the Fibonacci sequence within C++ (`r last_elapsed_c` seconds) massively outperforms R (`r last_elapsed_r` seconds).
