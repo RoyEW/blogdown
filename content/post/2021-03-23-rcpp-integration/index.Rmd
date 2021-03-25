@@ -52,11 +52,10 @@ print(p)
 
 ### C++ implementation
 
-The function defined above within C++ is now callable from R through the Rcpp package.
+The function defined above can be written within C++ as shown below and is callable from R through the Rcpp package. Rcpp::sourceCpp() is an option to source C++ files directly. Alternatively, the C++ function can be written within its own chunk using the Rcpp engine by using ```{Rcpp} as a code chunk header.
 
 ```{r}
-#Rcpp::sourceCpp("g.cpp")
-
+# Rcpp::sourceCpp("g.cpp")
 ```
 
 ```{Rcpp}

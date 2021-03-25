@@ -43,9 +43,9 @@ Rscores</code></pre>
 <pre><code>##    test replications elapsed relative
 ## 1 f(10)          100    0.00       NA
 ## 2 f(15)          100    0.08       NA
-## 3 f(20)          100    0.77       NA
-## 4 f(25)          100    8.71       NA
-## 5 f(30)          100   97.00       NA</code></pre>
+## 3 f(20)          100    1.00       NA
+## 4 f(25)          100    8.61       NA
+## 5 f(30)          100   97.17       NA</code></pre>
 <pre class="r"><code>p &lt;- Rscores %&gt;% 
   filter(elapsed&gt;0) %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
@@ -58,8 +58,8 @@ print(p)</code></pre>
 </div>
 <div id="c-implementation" class="section level3">
 <h3>C++ implementation</h3>
-<p>The function defined above within C++ is now callable from R through the Rcpp package.</p>
-<pre class="r"><code>#Rcpp::sourceCpp(&quot;g.cpp&quot;)</code></pre>
+<p>The function defined above can be written within C++ as shown below and is callable from R through the Rcpp package. Rcpp::sourceCpp() is an option to source C++ files directly. Alternatively, the C++ function can be written within its own chunk using the Rcpp engine by using ```{Rcpp} as a code chunk header.</p>
+<pre class="r"><code># Rcpp::sourceCpp(&quot;g.cpp&quot;)</code></pre>
 <pre class="cpp"><code>#include &lt;Rcpp.h&gt;
 //[[Rcpp::export]]
 int g(int n) {
@@ -75,8 +75,8 @@ Cscores</code></pre>
 ## 1 g(10)          100    0.00       NA
 ## 2 g(15)          100    0.00       NA
 ## 3 g(20)          100    0.00       NA
-## 4 g(25)          100    0.02       NA
-## 5 g(30)          100    0.22       NA</code></pre>
+## 4 g(25)          100    0.01       NA
+## 5 g(30)          100    0.21       NA</code></pre>
 <pre class="r"><code>p &lt;- Cscores %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
   geom_line()+ theme_minimal()+
