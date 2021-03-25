@@ -109,9 +109,9 @@ Rscores</code></pre>
 <pre><code>##    test replications elapsed relative
 ## 1 f(10)          100    0.00       NA
 ## 2 f(15)          100    0.08       NA
-## 3 f(20)          100    1.00       NA
-## 4 f(25)          100    8.61       NA
-## 5 f(30)          100   97.17       NA</code></pre>
+## 3 f(20)          100    0.83       NA
+## 4 f(25)          100    8.93       NA
+## 5 f(30)          100  102.22       NA</code></pre>
 <pre class="r"><code>p &lt;- Rscores %&gt;% 
   filter(elapsed&gt;0) %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+

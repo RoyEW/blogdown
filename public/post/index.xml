@@ -103,37 +103,13 @@ A market with an HHI of less than 1,500 is considered to be a competitive market
     </item>
     
     <item>
-      <title>Coronavirus</title>
-      <link>/2020/07/17/coronavirus/</link>
-      <pubDate>Fri, 17 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/2020/07/17/coronavirus/</guid>
-      <description>https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide
-Libraries, reading in of the data and light tidying.
-library(tidyverse)library(lubridate)library(httr)library(zoo)library(plotly)library(dplyr)library(ggrepel)library(gganimate)library(gifski)library(transformr)library(tidyr)library(ggthemes)theme_set(theme_minimal())covid_raw &amp;lt;- read.csv(&amp;quot;https://opendata.ecdc.europa.eu/covid19/casedistribution/csv&amp;quot;, na.strings = &amp;quot;&amp;quot;, fileEncoding = &amp;quot;UTF-8-BOM&amp;quot;) %&amp;gt;% rename(&amp;quot;date&amp;quot; = dateRep,&amp;quot;country&amp;quot; = countriesAndTerritories,&amp;quot;code&amp;quot; = countryterritoryCode,&amp;quot;population2019&amp;quot; = popData2019,&amp;quot;continent&amp;quot; = continentExp,&amp;quot;cases_rate&amp;quot; = notification_rate_per_100000_population_14.days,&amp;quot;deaths&amp;quot; = deaths_weekly)Defining of the G8 and G20 nations
-#covid_data &amp;lt;- read.</description>
-    </item>
-    
-    <item>
       <title>Climate change data</title>
       <link>/2020/07/16/climate-change-data/</link>
       <pubDate>Thu, 16 Jul 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/07/16/climate-change-data/</guid>
       <description>Climate change datadata sourced from the World Bank using WDI R package api.
-library(Quandl)## Loading required package: xts## Loading required package: zoo## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)library(rWBclimate)library(WDI)library(tidyverse)## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.2 v purrr 0.3.4## v tibble 3.0.3 v dplyr 1.0.1## v tidyr 1.</description>
-    </item>
-    
-    <item>
-      <title>Time-series and yfinance api</title>
-      <link>/2020/07/07/time-series-and-yfinance-api/</link>
-      <pubDate>Tue, 07 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/2020/07/07/time-series-and-yfinance-api/</guid>
-      <description>Python integration using the reticulate package.
-yFinance api from https://pypi.org/project/yfinance/
-test commit
-library(reticulate)library(tidyverse)library(bbplot)library(lubridate)library(broom)library(plotly)library(readxl)use_miniconda()import yfinance as yfimport requestsdef yfinance01(ticker,period):g = yf.Ticker(ticker)data=g.history(period=period)return datafixcol01 &amp;lt;- function(g){g &amp;lt;- cbind(date = rownames(g), g)rownames(g) &amp;lt;- 1:nrow(g)return(g)}retrieve01 &amp;lt;- function(ticker,period=&amp;quot;max&amp;quot;){g &amp;lt;- py$yfinance01(ticker,period)g &amp;lt;- fixcol01(g)g &amp;lt;- g %&amp;gt;% select(date, Close)%&amp;gt;% mutate(date=as_date(ymd(date)))colnames(g) &amp;lt;- c(&amp;quot;date&amp;quot;, ticker)return(g)}plotting01 &amp;lt;- function(ticker, period=&amp;quot;max&amp;quot;){g &amp;lt;- retrieve01(ticker, period)plot &amp;lt;- g %&amp;gt;% ggplot(aes(date, get(ticker), group=1))+geom_point(shape=&amp;quot;.</description>
+library(Quandl)## Loading required package: xts## Loading required package: zoo## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)library(rWBclimate)library(WDI)library(tidyverse)## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.3 v purrr 0.3.4## v tibble 3.0.6 v dplyr 1.0.4## v tidyr 1.</description>
     </item>
     
     <item>
