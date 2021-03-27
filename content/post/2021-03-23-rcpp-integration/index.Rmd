@@ -8,7 +8,7 @@ tags: []
 ---
 
 
-```{r}
+```{r warning=FALSE, include=FALSE}
 library(Rcpp)
 library(rbenchmark)
 library(tidyverse)
@@ -102,4 +102,5 @@ last_elapsed_c <- last_elapsed_c[[3]]
 
 
 # Conclusion
-The speed gains in calculating the 30th iteration of the Fibonacci sequence within C++ (`r last_elapsed_c` seconds) massively outperforms R (`r last_elapsed_r` seconds).
+The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (`r last_elapsed_c` seconds) massively outperforms R (`r last_elapsed_r` seconds).
+
