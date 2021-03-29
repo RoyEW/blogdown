@@ -51,14 +51,12 @@ The UK energy market has a HHI of <a><span style="color: red;">`r round(HHI,2)`<
 
 ```{r}
 data %>% 
-  mutate(if_edf = case_when(name == "EDF Energy" ~ "EDF",
-                            TRUE ~ "Other"),
-         name = fct_reorder(name, no_customers),
+  mutate(name = fct_reorder(name, no_customers),
          row = row_number()) %>% 
   arrange(desc(no_customers)) %>% 
   ggplot(aes(name, no_customers))+
-    geom_segment(aes(xend = name, yend = 0, colour = if_edf), size = 1.5) +
-    geom_point(shape = 21, colour = "black", aes(fill = if_edf), size = 12) +
+    geom_segment(aes(xend = name, yend = 0), size = 1.5) +
+    geom_point(shape = 21, colour = "black", aes(fill = "blue"), size = 12) +
     geom_text(size = 3, aes(label = paste(round(no_customers / 1000000, 1), "m", sep = "")))+
   scale_color_manual(values = c("orange","dodgerblue"), aesthetics = c("fill"))+
   scale_color_manual(values = c("orange","black"), aesthetics = c("colour"))+

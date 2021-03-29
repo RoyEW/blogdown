@@ -46,7 +46,8 @@ R implementationf &amp;lt;- function(n){if (n &amp;lt; 2) return(n)return(f(n
       
       <guid>/2020/12/27/thermal-expansion-calculator-with-rshiny/</guid>
       <description>https://jackwilson.shinyapps.io/cterom/
-App UI code template for future modularised apps
+A CTE calculator and design hub for high entropy alloys.
+App UI code template for future modularised apps:
 # Leave this function for adding external resourcesgolem_add_external_resources(),# Define this page as a dashboard page to signal we&amp;#39;re using the dashboard page formatshinydashboardPlus::dashboardPagePlus(skin = &amp;quot;green&amp;quot;,header = shinydashboardPlus::dashboardHeaderPlus(title = &amp;quot;CTE Calculator&amp;quot;,enable_rightsidebar = FALSE),# Create our navigation menu that links to each of the tabs we definedsidebar = shinydashboard::dashboardSidebar(shinydashboard::sidebarMenu(# Setting id makes input$tabs give the tabName of currently-selected tabid = &amp;quot;tabs&amp;quot;,shinydashboard::menuItem(&amp;quot;Calculator&amp;quot;, tabName = &amp;quot;dashboard&amp;quot;, icon = icon(&amp;quot;atom&amp;quot;)),#shinydashboard::menuItem(&amp;quot;Tab&amp;quot;, icon = icon(&amp;quot;radiation&amp;quot;), tabName = &amp;quot;secondn&amp;quot;),#shinydashboard::menuItem(&amp;quot;Tab&amp;quot;, icon = icon(&amp;quot;comment-alt&amp;quot;), tabName = &amp;quot;thirdn&amp;quot;),shinydashboard::menuItem(&amp;quot;Jack &amp;amp; Roy Wilson&amp;quot;, icon = icon(&amp;quot;cog&amp;quot;),badgeColor = &amp;quot;red&amp;quot;,badgeLabel = &amp;quot;DEV&amp;quot;,tabName = &amp;quot;dev&amp;quot;))),# Show the appropriate tab&amp;#39;s content in the main body of our dashboard when we select itbody = shinydashboard::dashboardBody(shinydashboard::tabItems(shinydashboard::tabItem(&amp;quot;dashboard&amp;quot;, mod_Home_ui(&amp;quot;Home_ui_1&amp;quot;)),shinydashboard::tabItem(&amp;quot;secondn&amp;quot;, mod_second_ui(&amp;quot;second_ui_1&amp;quot;)),shinydashboard::tabItem(&amp;quot;thirdn&amp;quot;, mod_third_ui(&amp;quot;third_ui_1&amp;quot;)),shinydashboard::tabItem(&amp;quot;dev&amp;quot;, mod_dev_ui(&amp;quot;dev_ui_1&amp;quot;))) ),rightsidebar = NULL,title = &amp;quot;TEC Calculator&amp;quot;))</description>
     </item>
     
@@ -119,7 +120,7 @@ A market with an HHI of less than 1,500 is considered to be a competitive market
       
       <guid>/2020/07/16/climate-change-data/</guid>
       <description>Climate change datadata sourced from the World Bank using WDI R package api.
-library(Quandl)## Loading required package: xts## Loading required package: zoo## Warning: package &amp;#39;zoo&amp;#39; was built under R version 4.0.4## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)library(rWBclimate)library(WDI)library(tidyverse)## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.3 v purrr 0.</description>
+library(Quandl)## Loading required package: xts## Warning: package &amp;#39;xts&amp;#39; was built under R version 4.0.3## Loading required package: zoo## Warning: package &amp;#39;zoo&amp;#39; was built under R version 4.0.4## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)## Warning: package &amp;#39;wbstats&amp;#39; was built under R version 4.</description>
     </item>
     
     <item>

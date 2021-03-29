@@ -10,9 +10,9 @@ tags: []
 
 https://jackwilson.shinyapps.io/cterom/
 
+A CTE calculator and design hub for high entropy alloys. 
 
-
-App UI code template for future modularised apps
+App UI code template for future modularised apps:
 
 ```
 

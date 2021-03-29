@@ -33,14 +33,12 @@ HHI &lt;- mean(data_HHI$HHI)</code></pre>
 <div id="uk-energy-market-biggest-suppliers" class="section level1">
 <h1>UK energy market biggest suppliers</h1>
 <pre class="r"><code>data %&gt;% 
-  mutate(if_edf = case_when(name == &quot;EDF Energy&quot; ~ &quot;EDF&quot;,
-                            TRUE ~ &quot;Other&quot;),
-         name = fct_reorder(name, no_customers),
+  mutate(name = fct_reorder(name, no_customers),
          row = row_number()) %&gt;% 
   arrange(desc(no_customers)) %&gt;% 
   ggplot(aes(name, no_customers))+
-    geom_segment(aes(xend = name, yend = 0, colour = if_edf), size = 1.5) +
-    geom_point(shape = 21, colour = &quot;black&quot;, aes(fill = if_edf), size = 12) +
+    geom_segment(aes(xend = name, yend = 0), size = 1.5) +
+    geom_point(shape = 21, colour = &quot;black&quot;, aes(fill = &quot;blue&quot;), size = 12) +
     geom_text(size = 3, aes(label = paste(round(no_customers / 1000000, 1), &quot;m&quot;, sep = &quot;&quot;)))+
   scale_color_manual(values = c(&quot;orange&quot;,&quot;dodgerblue&quot;), aesthetics = c(&quot;fill&quot;))+
   scale_color_manual(values = c(&quot;orange&quot;,&quot;black&quot;), aesthetics = c(&quot;colour&quot;))+
