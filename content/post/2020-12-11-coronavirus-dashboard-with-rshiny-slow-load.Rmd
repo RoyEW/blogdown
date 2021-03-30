@@ -1,9 +1,0 @@
----
-title: Coronavirus Dashboard with RShiny (slow load)
-author: ~
-date: '2020-12-11'
-slug: coronavirus-dashboard-with-rshiny-slow-load
-categories: []
-tags: []
----
-https://roy-wilson.shinyapps.io/corona/
