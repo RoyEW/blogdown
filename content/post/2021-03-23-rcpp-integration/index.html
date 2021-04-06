@@ -29,11 +29,11 @@ sapply(1:10, f)</code></pre>
 
 Rscores</code></pre>
 <pre><code>##    test replications elapsed relative
-## 1 f(10)          100    0.00       NA
-## 2 f(15)          100    0.07       NA
-## 3 f(20)          100    0.78       NA
-## 4 f(25)          100    8.64       NA
-## 5 f(30)          100   95.79       NA</code></pre>
+## 1 f(10)          100    0.01        1
+## 2 f(15)          100    0.07        7
+## 3 f(20)          100    0.80       80
+## 4 f(25)          100    8.83      883
+## 5 f(30)          100   98.58     9858</code></pre>
 <pre class="r"><code>p &lt;- Rscores %&gt;% 
   filter(elapsed&gt;0) %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
@@ -63,7 +63,7 @@ Cscores</code></pre>
 ## 1 g(10)          100    0.00       NA
 ## 2 g(15)          100    0.00       NA
 ## 3 g(20)          100    0.00       NA
-## 4 g(25)          100    0.01       NA
+## 4 g(25)          100    0.02       NA
 ## 5 g(30)          100    0.22       NA</code></pre>
 <pre class="r"><code>p &lt;- Cscores %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
@@ -78,5 +78,5 @@ print(p)</code></pre>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (0.22 seconds) massively outperforms R (95.79 seconds).</p>
+<p>The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (0.22 seconds) massively outperforms R (98.58 seconds).</p>
 </div>
