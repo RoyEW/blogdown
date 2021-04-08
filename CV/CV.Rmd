@@ -1,0 +1,100 @@
+---
+name: Roy
+surname: Wilson
+position: "CIMA Cert BA, MSc, BSc"
+address: "Bangor, Wales. Open to relocation."
+phone: +44 777 617 5496
+www: royw.netlify.app
+email: "RoyWilson.MSC@gmail.com"
+linkedin: Roy Wilson
+date: "`r format(Sys.time(), '%B %Y')`"
+output: vitae::hyndman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+library(tibble)
+```
+
+# Overview
+ * Masters graduate in Accounting and Finance (Distinction). 
+ * Special interests in R statistical programming, data analysis and visualisation, and data processes automation.
+
+# Education
+
+```{r}
+
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "Master of Science in Accounting and Finance with Distinction", "2019", "Bangor University", "Financial Analysis (78%), Management Accounting (83%), Accounting Theory (81%), Financial Econometrics (65%), Research Methods (71%), Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%)",
+         "Financial Research and CFA Series summer project", "2019","Bangor University & Fitch Learning","Covered the CFA Level 1 syllabus with mock exam and 2 financial research assignments", 
+  "Bachelor of Science in Accounting and Finance with First-Class Honours", "2018", "Bangor University", "Investment, Advanced Corporate Finance, Auditing, Advanced Investment Theory and Practice, Corporate Risk
+Management, Financial Statement Analysis, Comparative Banking, Taxation, Advanced Accounting Theory and Practice, Statistical
+Methods, Company Law for Business",
+  "A Levels: ICT, Accounts, Mathematics (statistics)", "2015", "Birmingham Metropolitan College", "Birmingham, UK",
+  "GCSEs: 8 qualifications A-B, including English, Mathematics, and Sciences", "2013", "Beamont Collegiate Academy", "Warrington, UK"
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+```
+
+# Employment
+
+```{r}
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "ASDA", "2016-Present",  "Bangor, UK","Fresh colleague, experience giving great customer service"
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+```
+
+# Professional qualifications and awards
+
+```{r}
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "Associate Member, Chartered Institute of Management Accountants", "2021", "CIMA", "Active associate member for 2021",
+   "CIMA Certificate in Business Accounting", "2020", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law",
+   "2020 Digital Mindset AICPA certificate", "2020", "CIMA","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance",
+  "Safeguarding training","2016", "Bangor University","Looking out for the vulnerable in society"
+ ) %>%
+   detailed_entries(Degree, Year, Institution, Where)
+```
+
+# Professional interests and skills
+
+```{r}
+
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "2020", "R for Data Science", "Manipulating data, statistical modelling, functional programming, and advanced
+graphics in R. Pivot tables with data.table and filtering data", "Jumping Rivers RSS Accredited",
+  "2020", "SQL", "SQL fundamentals","Data Camp",
+"", "Microsoft Office Suite", "Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases","",
+"", "Desire to expand on my knowledge of specialist tools for different applications.", "","",
+"2019", "Experience and familiarity with Stata", "Financial Econometrics","Bangor University",
+"2019", "Experience and familiarity with Python programming and its popular libraries", "Including NumPy and Pandas","Bangor Doctoral school"
+
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+# Projects
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "2021", "Data analysis blog written in R markdown", "Example of dynamicly produced articles and a useful resource to keep track of useful code snippets", "RoyW.netlify.app",
+    "2020", "Dashboard web application written in R shiny", "Useful application for designing High Entropy Alloys (HEAs)", "JackWilson.shinyapps.io/cterom/",
+      "2016-2018", "Treasurer at Bangor University Chess Society", "Experience running interactive sessions; undertook a teaching role; managing purchases and the society's budget", "Bangor University",
+        "2019", "Welsh language courses", "Adult learning centre, pellach/further equivalent to level B2 in the Common European Framework of Reference for Languages (CEFR).", "Bangor University",
+          "2021", "Dynamic documents", "This CV was produced using code in R using the {vitae} package.", "",
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+
+## Professional and academic referees are available on request. 
+```{r}
+plot(cars)
+```
