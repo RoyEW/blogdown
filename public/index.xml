@@ -6,19 +6,10 @@
     <description>Recent content on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Mar 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Mar 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
-    
-    <item>
-      <title>TEST</title>
-      <link>/2021/03/27/test/</link>
-      <pubDate>Sat, 27 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>/2021/03/27/test/</guid>
-      <description>plot(cars)</description>
-    </item>
     
     <item>
       <title>Rcpp integration</title>
