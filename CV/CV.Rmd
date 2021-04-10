@@ -20,6 +20,7 @@ library(tibble)
 # Overview
  * Masters graduate in Accounting and Finance (Distinction). 
  * Special interests in R statistical programming, data analysis and visualisation, and data processes automation.
+ * Seeking role within a finance or data analytics function. 
 
 # Education
 
@@ -28,7 +29,7 @@ library(tibble)
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
   "MSc in Accounting and Finance (Distinction)", "2019", "Bangor University & Fitch Learning", "Financial Analysis (78%), Management Accounting (83%), Accounting Theory (81%), Financial Econometrics (65%), Research Methods (71%), Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%). Summer project: Financial Research and CFA Series covering the CFA Level 1 syllabus with mock exam and 2 financial research assignments.",
-  "BSc in Accounting and Finance with First-Class Honours", "2018", "Bangor University", "Investment, Advanced Corporate Finance, Auditing, Advanced Investment Theory and Practice, Corporate Risk
+  "BSc in Accounting and Finance (First-Class with Honours)", "2018", "Bangor University", "Investment, Advanced Corporate Finance, Auditing, Advanced Investment Theory and Practice, Corporate Risk
 Management, Financial Statement Analysis, Comparative Banking, Taxation, Advanced Accounting Theory and Practice, Statistical
 Methods, Company Law for Business",
   "A Levels: Information Technology, Accounting, and Maths (statistics)", "2015", "Birmingham Metropolitan College", "",
