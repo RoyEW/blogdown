@@ -118,5 +118,5 @@ Cscores %>%
   labs(title = "Pushing C++ further")+
   theme_minimal()
 ```
-The function $f(35)$ takes around 15 minutes to complete in R. C++ can handle $g(40)$ in just 26 seconds. 
+The function $f(35)$ takes around 15 minutes to complete in R. C++ can handle $g(40)$ in just 26 seconds. test
 
