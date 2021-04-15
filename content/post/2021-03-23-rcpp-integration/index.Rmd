@@ -104,3 +104,19 @@ last_elapsed_c <- last_elapsed_c[[3]]
 # Conclusion
 The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (`r last_elapsed_c` seconds) massively outperforms R (`r last_elapsed_r` seconds).
 
+
+## Pushing C++ further
+
+```{r}
+
+
+Cscores <- benchmark(g(10),g(15), g(20), g(25),g(30),g(35),g(40))[,1:4]
+
+Cscores %>% 
+  ggplot(aes(test,elapsed))+
+  geom_point()+
+  labs(title = "Pushing C++ further")+
+  theme_minimal()
+```
+The function $f(35)$ takes around ~15 minutes to complete in R. C++ can handle $g(40)$ in just 26 seconds. 
+
