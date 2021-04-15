@@ -4,7 +4,7 @@ author: ~
 date: '2020-11-11'
 slug: scrape
 categories: []
-tags: []
+tags: [reticulate, lubridate]
 ---
 
 ```{r setup, include=FALSE, message=FALSE,warning=FALSE}

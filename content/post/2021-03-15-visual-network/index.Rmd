@@ -4,7 +4,7 @@ author: ''
 date: '2021-03-15'
 slug: Visual-network
 categories: []
-tags: []
+tags: [visNetwork]
 ---
 
 ```{r warning=FALSE}

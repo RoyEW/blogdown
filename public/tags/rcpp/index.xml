@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rcpp on Roy Blogdown</title>
+    <link>/tags/rcpp/</link>
+    <description>Recent content in Rcpp on Roy Blogdown</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 23 Mar 2021 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/rcpp/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>C&#43;&#43; integration with Rcpp</title>
+      <link>/2021/03/23/rcpp-integration/</link>
+      <pubDate>Tue, 23 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/03/23/rcpp-integration/</guid>
+      <description>Benchmarking a computationally demanding function in R and C++The Fibonacci sequence mathematically defined as \[F_n = \begin{cases}n, &amp;amp; n\le 2\\F_{n-1} + F_{n-2}, &amp;amp; n&amp;gt;2\end{cases}\]
+R implementationf &amp;lt;- function(n){if (n &amp;lt; 2) return(n)return(f(n - 1)+f(n - 2))}sapply(1:10, f)## [1] 1 1 2 3 5 8 13 21 34 55Rscores &amp;lt;- benchmark(f(10),f(15), f(20), f(25), f(30))[,1:4]Rscores## test replications elapsed relative## 1 f(10) 100 0.</description>
+    </item>
+    
+  </channel>
+</rss>
