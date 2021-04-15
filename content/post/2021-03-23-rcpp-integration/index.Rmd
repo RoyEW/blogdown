@@ -1,5 +1,5 @@
 ---
-title: Rcpp integration
+title: C++ integration with Rcpp
 author: ''
 date: '2021-03-23'
 slug: rcpp-integration
