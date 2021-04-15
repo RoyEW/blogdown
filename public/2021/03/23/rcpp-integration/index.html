@@ -6,8 +6,8 @@
 <meta name="generator" content="Hugo 0.73.0" />
 
 
-<title>Rcpp integration - Roy Blogdown</title>
-<meta property="og:title" content="Rcpp integration - Roy Blogdown">
+<title>C&#43;&#43; integration with Rcpp - Roy Blogdown</title>
+<meta property="og:title" content="C&#43;&#43; integration with Rcpp - Roy Blogdown">
 
 
   <link href='/featured.ico' rel='icon' type='image/x-icon'/>
@@ -65,7 +65,7 @@
     <span class="article-duration">2 min read</span>
     
 
-    <h1 class="article-title">Rcpp integration</h1>
+    <h1 class="article-title">C&#43;&#43; integration with Rcpp</h1>
 
     
     <span class="article-date">2021-03-23</span>
@@ -95,11 +95,11 @@ sapply(1:10, f)</code></pre>
 
 Rscores</code></pre>
 <pre><code>##    test replications elapsed relative
-## 1 f(10)          100    0.02      1.0
-## 2 f(15)          100    0.06      3.0
-## 3 f(20)          100    0.77     38.5
-## 4 f(25)          100    8.67    433.5
-## 5 f(30)          100   95.20   4760.0</code></pre>
+## 1 f(10)          100    0.00       NA
+## 2 f(15)          100    0.10       NA
+## 3 f(20)          100    0.91       NA
+## 4 f(25)          100   10.63       NA
+## 5 f(30)          100  105.93       NA</code></pre>
 <pre class="r"><code>p &lt;- Rscores %&gt;% 
   filter(elapsed&gt;0) %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
@@ -128,7 +128,7 @@ Cscores</code></pre>
 <pre><code>##    test replications elapsed relative
 ## 1 g(10)          100    0.00       NA
 ## 2 g(15)          100    0.00       NA
-## 3 g(20)          100    0.00       NA
+## 3 g(20)          100    0.01       NA
 ## 4 g(25)          100    0.03       NA
 ## 5 g(30)          100    0.22       NA</code></pre>
 <pre class="r"><code>p &lt;- Cscores %&gt;% 
@@ -144,7 +144,7 @@ print(p)</code></pre>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (0.22 seconds) massively outperforms R (95.2 seconds).</p>
+<p>The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (0.22 seconds) massively outperforms R (105.93 seconds).</p>
 </div>
 
     </div>
