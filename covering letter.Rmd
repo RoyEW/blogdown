@@ -1,0 +1,29 @@
+---
+title: "Covering Letter"
+author: "Roy Wilson"
+date: "02/05/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summer Intern - Research Analyst
+
+
+I am interested in the advertised research analyst summer internship role.
+
+I would like to use the opportunity to expand on my skills and interests as well as to learn how financial market research is approached in large-scale and real-world applications. 
+
+I have an interest in financial markets and have gained exposure through academia, notably Investment, International Financial Markets, and Financial Analysis modules that I undertook when completing my MSc and BSc in Accounting and Finance. I have experience within my Financial Analysis module in fundamental analysis of companies and their industry. This research analyst internship looks to be an ideal opportunity to learn how to analyse companies using a credit analysis lens and how to quantify credit risk within an analysis. It would be ideal to gain experience of how financial modeling and financial research is generally approached outside of academia. 
+
+My ICT skills are sufficient to provide a good foundation for success in this role, and I'm very interested in learning about new technologies for different types of tasks and applications.  
+
+I am highly organised and take a methodical approach to my work and time-management as demonstrated by my ability to work part-time throughout every stage of my MSc programme, notably the financial research and CFA series where 2 pieces of financial research was required as well as covering the CFA's expansive syllabus for a CFA mock exam, and keep on course for my preferred degree classification. With being limited to 4 days a week, and all of the deadlines falling into the same 2-week window, excellent time-management, organisation, as well as being self-motivated proved crucial in my success. 
+
+I believe I meet the key requirements for this role and have attached my CV for reference.
+
+Thanks,
+
+Roy Wilson
