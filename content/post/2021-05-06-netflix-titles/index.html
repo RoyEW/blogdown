@@ -1,0 +1,323 @@
+---
+title: Netflix titles
+author: ''
+date: '2021-05-06'
+slug: netflix-titles
+categories: []
+tags: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="load-the-weekly-data" class="section level1">
+<h1>Load the weekly Data</h1>
+<p>Download the weekly data and make available in the <code>tt</code> object.</p>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>## Warning: package &#39;lubridate&#39; was built under R version 4.0.4</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>tt &lt;- tt_load(&quot;2021-04-20&quot;)</code></pre>
+<pre><code>## --- Compiling #TidyTuesday Information for 2021-04-20 ----</code></pre>
+<pre><code>## --- There is 1 file available ---</code></pre>
+<pre><code>## --- Starting Download ---</code></pre>
+<pre><code>## 
+##  Downloading file 1 of 1: `netflix_titles.csv`</code></pre>
+<pre><code>## --- Download complete ---</code></pre>
+<pre class="r"><code>netflix_titles &lt;- tt$netflix_titles %&gt;%
+  separate(duration, c(&quot;duration&quot;, &quot;duration_units&quot;), sep = &quot; &quot;, convert = TRUE) %&gt;%
+  mutate(date_added = mdy(date_added),
+         year_added = year(date_added)) %&gt;%
+  mutate(mature = rating %in% c(&quot;TV-MA&quot;, &quot;R&quot;, &quot;NC-17&quot;)) </code></pre>
+<pre class="r"><code>netflix_titles %&gt;%
+  ggplot(aes(release_year, fill = type)) +
+  geom_histogram(binwidth = 5) +
+  facet_wrap(~ type, ncol = 1, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>netflix_titles %&gt;%
+  #count(year = 2 * (release_year %/% 2), type) %&gt;%
+  count(year = release_year, type) %&gt;%
+  group_by(type) %&gt;%
+  mutate(percent = n / sum(n)) %&gt;%
+  ggplot(aes(year, percent, color = type)) +
+  geom_line()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(type == &quot;Movie&quot;) %&gt;%
+  mutate(decade = 10 * (release_year %/% 10)) %&gt;%
+  ggplot(aes(decade, duration, group = decade)) +
+  geom_boxplot()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>summarize_titles &lt;- function(tbl) {
+  tbl %&gt;%
+    summarize(n = n(),
+              median_duration = median(duration),
+              median_year = median(release_year)) %&gt;%
+    arrange(desc(n))
+}</code></pre>
+<pre class="r"><code>netflix_titles %&gt;%
+  count(rating, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 15 x 2
+##    rating       n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 TV-MA     2863
+##  2 TV-14     1931
+##  3 TV-PG      806
+##  4 R          665
+##  5 PG-13      386
+##  6 TV-Y       280
+##  7 TV-Y7      271
+##  8 PG         247
+##  9 TV-G       194
+## 10 NR          84
+## 11 G           39
+## 12 &lt;NA&gt;         7
+## 13 TV-Y7-FV     6
+## 14 UR           5
+## 15 NC-17        3</code></pre>
+<pre class="r"><code>netflix_titles %&gt;%
+  separate_rows(listed_in, sep = &quot;, &quot;) %&gt;%
+  group_by(type, genre = listed_in) %&gt;%
+  summarize_titles() %&gt;%
+  filter(type == &quot;Movie&quot;) %&gt;%
+  filter(genre != &quot;Movies&quot;) %&gt;%
+  mutate(genre = fct_reorder(genre, median_duration)) %&gt;%
+  ggplot(aes(median_duration, genre)) +
+  geom_col()</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;type&#39;. You can override using the `.groups` argument.</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>head(netflix_titles$date_added)</code></pre>
+<pre><code>## [1] &quot;2020-08-14&quot; &quot;2016-12-23&quot; &quot;2018-12-20&quot; &quot;2017-11-16&quot; &quot;2020-01-01&quot;
+## [6] &quot;2017-07-01&quot;</code></pre>
+<p>Date added</p>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(!is.na(date_added)) %&gt;%
+  arrange(date_added) %&gt;%
+  select(type, title, date_added)</code></pre>
+<pre><code>## # A tibble: 7,777 x 3
+##    type    title                       date_added
+##    &lt;chr&gt;   &lt;chr&gt;                       &lt;date&gt;    
+##  1 Movie   To and From New York        2008-01-01
+##  2 TV Show Dinner for Five             2008-02-04
+##  3 Movie   Just Another Love Story     2009-05-05
+##  4 Movie   Splatter                    2009-11-18
+##  5 Movie   Mad Ron&#39;s Prevues from Hell 2010-11-01
+##  6 Movie   Even the Rain               2011-05-17
+##  7 Movie   Joseph: King of Dreams      2011-09-27
+##  8 Movie   A Stoning in Fulham County  2011-10-01
+##  9 Movie   Adam: His Song Continues    2011-10-01
+## 10 Movie   Hard Lessons                2011-10-01
+## # ... with 7,767 more rows</code></pre>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(!is.na(date_added)) %&gt;%
+  count(year_added, type) %&gt;%
+  ggplot(aes(year_added, n, fill = type)) +
+  geom_area()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(year_added &gt;= 2015) %&gt;%
+  filter(!is.na(date_added), !is.na(rating)) %&gt;%
+  mutate(rating = fct_lump(rating, 5)) %&gt;%
+  ungroup() %&gt;%
+  count(type, year_added, rating) %&gt;%
+  group_by(type, year_added) %&gt;%
+  mutate(percent = n / sum(n)) %&gt;%
+  ggplot(aes(year_added, percent, fill = rating)) +
+  geom_area() +
+  facet_wrap(~ type)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(!is.na(country)) %&gt;%
+  count(country = fct_lump(country, 20),
+        type,
+        sort = TRUE) %&gt;%
+  mutate(country = fct_reorder(country, n)) %&gt;%
+  ggplot(aes(n, country, fill = type)) +
+  geom_col()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(!is.na(country)) %&gt;%
+  filter(type == &quot;Movie&quot;) %&gt;%
+  group_by(country) %&gt;%
+  summarize_titles()</code></pre>
+<pre><code>## # A tibble: 590 x 4
+##    country            n median_duration median_year
+##    &lt;chr&gt;          &lt;int&gt;           &lt;dbl&gt;       &lt;dbl&gt;
+##  1 United States   1850             91        2016 
+##  2 India            852            127        2014.
+##  3 United Kingdom   193             90        2016 
+##  4 Canada           118             89        2017 
+##  5 Egypt             89            101        2012 
+##  6 Spain             89             99        2018 
+##  7 Turkey            73            104        2015 
+##  8 Philippines       70            112.       2016 
+##  9 France            69             95        2017 
+## 10 Japan             69             98        2016 
+## # ... with 580 more rows</code></pre>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(rating %in% c(&quot;R&quot;, &quot;TV-MA&quot;)) %&gt;%
+  count(country, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 399 x 2
+##    country            n
+##    &lt;chr&gt;          &lt;int&gt;
+##  1 United States   1244
+##  2 India            230
+##  3 United Kingdom   199
+##  4 &lt;NA&gt;             161
+##  5 Spain            111
+##  6 South Korea       83
+##  7 Japan             82
+##  8 France            77
+##  9 Canada            76
+## 10 Mexico            73
+## # ... with 389 more rows</code></pre>
+<pre class="r"><code>netflix_titles %&gt;%
+  filter(!is.na(rating), !is.na(country)) %&gt;%
+  group_by(type, country = fct_lump(country, 9)) %&gt;%
+  summarize(n_mature = sum(rating %in% c(&quot;R&quot;, &quot;TV-MA&quot;, &quot;NC-17&quot;)),
+            n = n(),
+            .groups = &quot;drop&quot;) %&gt;%
+  mutate(pct_mature = n_mature / n,
+         conf_low = qbeta(.025, n_mature + .5, n - n_mature + .5),
+         conf_high = qbeta(.975, n_mature + .5, n - n_mature + .5)) %&gt;%
+  ggplot(aes(pct_mature, country, color = type)) +
+  geom_point(aes(size = n)) +
+  geom_errorbar(aes(xmin = conf_low, xmax = conf_high), width = .1) +
+  scale_x_continuous(labels = percent) +
+  expand_limits(x = 0) +
+  labs(x = &quot;% of titles that are R/TV-MA&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>library(tidytext)
+library(snakecase)
+library(tidylo)</code></pre>
+<pre><code>## Warning: package &#39;tidylo&#39; was built under R version 4.0.5</code></pre>
+<pre class="r"><code>words_unnested &lt;- netflix_titles %&gt;%
+  unnest_tokens(word, description) %&gt;%
+  anti_join(stop_words, by = &quot;word&quot;)
+words_unnested %&gt;%
+  count(type, word, sort = TRUE) %&gt;%
+  mutate(type = to_snake_case(type)) %&gt;%
+  spread(type, n, fill = 0) %&gt;%
+  mutate(total = movie + tv_show) %&gt;%
+  arrange(desc(total)) %&gt;%
+  head(100) %&gt;%
+  ggplot(aes(movie, tv_show)) +
+  geom_point() +
+  geom_text(aes(label = word) , vjust = 1, hjust = 1) +
+  scale_x_log10() +
+  scale_y_log10()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>words_unnested %&gt;%
+  count(type, word) %&gt;%
+  bind_log_odds(type, word, n) %&gt;%
+  arrange(desc(log_odds_weighted)) %&gt;%
+  group_by(type) %&gt;%
+  top_n(10, log_odds_weighted) %&gt;%
+  ungroup() %&gt;%
+  mutate(word = fct_reorder(word, log_odds_weighted)) %&gt;%
+  ggplot(aes(log_odds_weighted, word)) +
+  geom_col() +
+  facet_wrap(~ type, scales = &quot;free_y&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<pre class="r"><code>library(widyr)
+library(tidygraph)</code></pre>
+<pre><code>## Warning: package &#39;tidygraph&#39; was built under R version 4.0.5</code></pre>
+<pre><code>## 
+## Attaching package: &#39;tidygraph&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre class="r"><code>library(ggraph)</code></pre>
+<pre><code>## Warning: package &#39;ggraph&#39; was built under R version 4.0.5</code></pre>
+<pre class="r"><code>set.seed(2021)
+words_unnested %&gt;%
+  distinct(type, title, word) %&gt;%
+  add_count(word, name = &quot;word_total&quot;) %&gt;%
+  filter(word_total &gt;= 40) %&gt;%
+  pairwise_cor(word, title, sort = TRUE) %&gt;%
+  filter(correlation &gt;= .1) %&gt;%
+  igraph::graph_from_data_frame() %&gt;%
+  ggraph(layout = &quot;fr&quot;) +
+  geom_edge_link(aes(alpha = correlation)) +
+  geom_node_point() +
+  geom_node_text(aes(label = name),
+                 repel = TRUE) +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<pre><code>## Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+## Please use `tibble::as_tibble()` instead.</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>word_genre_log_odds &lt;- words_unnested %&gt;%
+  distinct(type, title, word, genre = listed_in) %&gt;%
+  add_count(word, name = &quot;word_total&quot;) %&gt;%
+  filter(word_total &gt;= 25) %&gt;%
+  separate_rows(genre, sep = &quot;, &quot;) %&gt;%
+  filter(fct_lump(genre, 9) != &quot;Other&quot;) %&gt;%
+  count(genre, word) %&gt;%
+  bind_log_odds(genre, word, n)</code></pre>
+<pre class="r"><code>word_genre_log_odds %&gt;%
+  group_by(genre) %&gt;%
+  top_n(10, log_odds_weighted) %&gt;%
+  ungroup() %&gt;%
+  mutate(word = reorder_within(word, log_odds_weighted, genre)) %&gt;%
+  ggplot(aes(log_odds_weighted, word, fill = genre)) +
+  geom_col() +
+  facet_wrap(~ genre, scales = &quot;free_y&quot;) +
+  scale_y_reordered() +
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;Log-odds of word&#39;s specificity to genre&quot;,
+       y = &quot;&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<div id="lasso-regression" class="section level2">
+<h2>Lasso regression</h2>
+<pre class="r"><code>word_ratings &lt;- words_unnested %&gt;%
+  count(type, title, rating, word) %&gt;%
+  filter(!is.na(rating)) %&gt;%
+  add_count(word, name = &quot;word_total&quot;) %&gt;%
+  filter(word_total &gt;= 30)</code></pre>
+<pre class="r"><code>library(glmnet)</code></pre>
+<pre><code>## Warning: package &#39;glmnet&#39; was built under R version 4.0.4</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre><code>## Loaded glmnet 4.1-1</code></pre>
+<pre class="r"><code>library(broom)</code></pre>
+<pre><code>## Warning: package &#39;broom&#39; was built under R version 4.0.4</code></pre>
+<pre class="r"><code>other_features &lt;- netflix_titles %&gt;%
+  select(title, director, cast, genre = listed_in, country) %&gt;%
+  gather(feature_type, feature, director, cast, genre, country) %&gt;%
+  filter(!is.na(feature)) %&gt;%
+  separate_rows(feature, sep = &quot;, &quot;) %&gt;%
+  mutate(feature_type = str_to_title(feature_type)) %&gt;%
+  unite(feature, feature_type, feature, sep = &quot;: &quot;) %&gt;%
+  add_count(feature, name = &quot;feature_count&quot;) %&gt;%
+  filter(feature_count &gt;= 10)
+feature_matrix &lt;- word_ratings %&gt;%
+  mutate(feature = paste(&quot;Description:&quot;, word)) %&gt;%
+  bind_rows(other_features) %&gt;%
+  cast_sparse(title, feature)
+y &lt;- netflix_titles$mature[match(rownames(feature_matrix), netflix_titles$title)]
+mod &lt;- cv.glmnet(feature_matrix, y, family = &quot;binomial&quot;)
+plot(mod)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code>mod$glmnet.fit %&gt;%
+  tidy() %&gt;%
+  separate(term, c(&quot;feature_type&quot;, &quot;feature&quot;), sep = &quot;: &quot;) %&gt;%
+  filter(lambda == mod$lambda.1se) %&gt;%
+  top_n(60, abs(estimate)) %&gt;%
+  mutate(feature = fct_reorder(feature, estimate)) %&gt;%
+  ggplot(aes(estimate, feature, fill = feature_type)) +
+  geom_col() +
+  labs(x = &quot;Coefficient: does this make the title more likely to be TV-MA/R?&quot;,
+       y = &quot;&quot;,
+       fill = &quot;Feature Type&quot;)</code></pre>
+<pre><code>## Warning: Expected 2 pieces. Missing pieces filled with `NA` in 86 rows [1, 2, 3,
+## 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+</div>
+</div>

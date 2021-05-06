@@ -6,10 +6,20 @@
     <description>Recent content on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Mar 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 06 May 2021 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Netflix titles</title>
+      <link>/2021/05/06/netflix-titles/</link>
+      <pubDate>Thu, 06 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/05/06/netflix-titles/</guid>
+      <description>Load the weekly DataDownload the weekly data and make available in the tt object.
+library(lubridate)## Warning: package &amp;#39;lubridate&amp;#39; was built under R version 4.0.4## ## Attaching package: &amp;#39;lubridate&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## date, intersect, setdiff, uniontt &amp;lt;- tt_load(&amp;quot;2021-04-20&amp;quot;)## --- Compiling #TidyTuesday Information for 2021-04-20 ----## --- There is 1 file available ---## --- Starting Download ---## ## Downloading file 1 of 1: `netflix_titles.</description>
+    </item>
     
     <item>
       <title>C&#43;&#43; integration with Rcpp</title>
