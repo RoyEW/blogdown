@@ -113,7 +113,7 @@ A market with an HHI of less than 1,500 is considered to be a competitive market
       
       <guid>/2020/07/16/climate-change-data/</guid>
       <description>Climate change datadata sourced from the World Bank using WDI R package api.
-library(Quandl)## Loading required package: xts## Loading required package: zoo## Warning: package &amp;#39;zoo&amp;#39; was built under R version 4.0.4## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)library(rWBclimate)library(WDI)library(tidyverse)## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --## v ggplot2 3.3.3 v purrr 0.</description>
+library(Quandl)## Loading required package: xts## Warning: package &amp;#39;xts&amp;#39; was built under R version 4.0.3## Loading required package: zoo## Warning: package &amp;#39;zoo&amp;#39; was built under R version 4.0.4## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)## Warning: package &amp;#39;wbstats&amp;#39; was built under R version 4.</description>
     </item>
     
     <item>

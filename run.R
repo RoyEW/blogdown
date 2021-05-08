@@ -34,16 +34,25 @@ for (i in seq(1:length(filesindir))){
   git2r::add(path = paste(workingdir,"/", filesindir[i],sep=""))
 }
 
-cred <- git2r::cred_user_pass("RoyEW","wIbgUPE6YuKPGKhlcW")
+#cred <- git2r::cred_user_pass("RoyEW","wIbgUPE6YuKPGKhlcW")
 
-cred <- git2r::cred_ssh_key(publickey = "C:/Users/Roy/.ssh/id_rsa.pub",
-                    privatekey = "C:/Users/Roy/.ssh/id_rsa"
+cred <- git2r::cred_ssh_key(publickey = file.path("C:","Users","Roy",".ssh","id_rsa.pub",fsep = "/"),
+                    privatekey = file.path("C:","Users","Roy",".ssh","id_rsa",fsep = "/"),
+                    passphrase = "work"
                     )
+cred <- cred_ssh_key(passphrase = "work")
+cred
 
-
+cred <- git2r::cred_token(token = "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")
 tryCatch({
   git2r::commit(message = "automated commit")
   
   git2r::push(credentials = cred)
 },error = function(e){print(e)})
-git2r::push(git2r::init(),credentials = cred)
+
+git2r::push(credentials = cred)
+git2r::cred_token()
+credentials::ssh_update_passphrase()
+credentials::credential_fill(cred = cred)
+
+credentials::git_credential_update()
