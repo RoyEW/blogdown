@@ -1,0 +1,232 @@
+---
+title: Heart attack risk analysis
+author: ''
+date: '2021-05-10'
+slug: heart-attack-risk-analysis
+categories: []
+tags: []
+---
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(readr)
+library(broom)
+theme_set(theme_minimal())
+
+heart <- read_csv("heart.csv")
+
+
+```
+
+The dataset can be found on [kaggle](https://www.kaggle.com/rashikrahmanpritom/heart-attack-analysis-prediction-dataset) 
+
+```{r}
+glimpse(heart)
+
+
+```
+N = 303
+
+# Explanation of features
+
+1. age - age in years
+2. sex - sex (1 = male; 0 = female)
+3. cp - chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 0 = asymptomatic)
+4. trestbps - resting blood pressure (in mm Hg on admission to the hospital)
+5. chol - serum cholestoral in mg/dl
+6. fbs - fasting blood sugar > 120 mg/dl (1 = true; 0 = false)
+7. restecg - resting electrocardiographic results (1 = normal; 2 = having ST-T wave abnormality; 0 = hypertrophy)
+8. thalach - maximum heart rate achieved
+9. exang - exercise induced angina (1 = yes; 0 = no)
+10. oldpeak - ST depression induced by exercise relative to rest
+11. slope - the slope of the peak exercise ST segment (2 = upsloping; 1 = flat; 0 = downsloping)
+12. ca - number of major vessels (0-3) colored by flourosopy
+13. thal - 2 = normal; 1 = fixed defect; 3 = reversable defect
+14. output - diagnosis of heart disease 
+
+It is my understanding that the ST is a specific interval of time during an electrocardiogram stress test. 
+
+# Exploring the dataset
+
+```{r}
+heart %>% 
+  count(output)
+```
+```{r include=FALSE}
+percent <- round(100*165/(165+138),2)
+```
+
+The dataset represents `r percent`% of people who suffer with heart disease.
+
+## Covariance matrix
+
+```{r}
+g <- cor(heart)
+
+corrplot::corrplot(g)
+```
+
+The covariance matrix above shows heart disease to be positively correlated with chest pain, the maximum heart rate achieved, and the incline type of exercise during the testing segment; and negatively correlated with exercise induced angina, and ST depression induced by exercise. I expect any machine learning model to take these correlations into account. 
+
+
+## Age distribution
+
+```{r}
+heart %>% 
+  ggplot(aes(age)) +
+  geom_histogram(alpha = 0.5, fill = "dodgerblue",binwidth = 5)+
+  geom_vline(xintercept = mean(heart$age),lty = 2)
+  
+```
+
+```{r}
+
+heart %>% 
+  ggplot(aes(age))+
+  geom_density()+
+  geom_vline(xintercept = mean(heart$age),lty = 2)
+```
+
+The observations within the dataset tends to skew older ages.
+
+## Sex distribution
+
+```{r}
+heart %>% 
+  count(sex)
+```
+
+There are ~twice the amount of men featured in the dataset than women.
+
+## Chest pain distribution
+
+```{r}
+heart %>% 
+  ggplot(aes(cp))+
+  geom_histogram(fill = "dodgerblue")+
+  ggtitle("Chest pain", subtitle = "chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 0 = asymptomatic)")
+```
+
+## Resting blood pressure
+
+```{r warning=FALSE}
+heart %>% 
+  ggplot(aes(trtbps))+
+  geom_histogram(fill = "dodgerblue")+
+  ggtitle("Resting blood pressure", subtitle = "resting blood pressure (in mm Hg on admission to the hospital)")+
+  geom_errorbarh(aes(xmin = 90, xmax = 120, y = 20),height = 4)+
+  annotate("text",label = "NHS 'normal' range", x = 105, y = 22)
+```
+There are a few observations with very high outlier resting blood pressure. According to the [NHS](https://www.nhs.uk/common-health-questions/lifestyle/what-is-blood-pressure/), a normal range for resting blood pressure in between 90 and 120.
+
+```{r}
+heart %>% 
+  filter(trtbps>120) %>% 
+  count()
+```
+
+
+```{r include=FALSE}
+g <- round(100*206/303,2)
+```
+
+The dataset skews heavily `r g`% outside of the 'normal' range for resting blood pressure.
+
+## Cholestoral levels
+
+```{r}
+heart %>% 
+  ggplot(aes(chol)) +
+  geom_histogram(fill = "dodgerblue") +
+  ggtitle("Cholestoral levels",subtitle = "serum cholestoral in mg/dl")+
+  geom_errorbarh(aes(xmin = 125, xmax = 200, y = 20),height = 2) +
+  annotate("text",label = "'normal' range", x = 162.5, y = 22)
+```
+The normal range for cholesterol levels according to [medicinenet.com](https://www.medicinenet.com/what_is_the_normal_range_for_cholesterol_levels/article.htm) is 125 to 200 mg/dL for men and women over age 20. Most of the observations fall outside of this range. There are very high outliers within the dataset with levels above 400 mg/dL.
+
+# Fitting a model with predictive power
+
+```{r}
+i <- sample(c(rep(0, 0.7 * (nrow(heart)+1)),
+              rep(1, 0.3 * (nrow(heart)+1))))
+
+
+heart_train <- heart[i == 0, ]       
+heart_test <- heart[i == 1, ]     
+
+
+
+y <- heart_train$output
+#colnames(heart)[1:ncol(heart)-1]
+x <- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])
+
+
+library(glmnet)
+
+
+```
+```{r}
+heart_model <- cv.glmnet(x, y, alpha = 1)
+
+best_lambda <- heart_model$lambda.min
+
+best_lambda
+```
+```{r}
+plot(heart_model)
+```
+
+
+```{r}
+best_model <- glmnet(x, y, alpha = 1, lambda = best_lambda)
+coef(best_model)
+```
+
+The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely.  
+
+```{r}
+
+heart_test_x <- data.matrix(heart_test[, c(colnames(heart)[1:ncol(heart)-1])])
+heart_test_y <- heart_test$output
+predictions <- predict(best_model, s = best_lambda, newx = heart_test_x)
+dim(predictions)
+dim(y)
+sst <- sum((y - mean(y))^2)
+sse <- sum((predictions - heart_test_y)^2)
+
+#find R-Squared
+rsq <- 1 - sse/sst
+rsq
+
+
+
+```
+The R-squared turns out to be `r round(rsq,4)`. That is, the best model was able to explain `r round(100*rsq,2)`% of the variation in the response values of the training data.
+
+```{r}
+
+
+
+full_results <- cbind(data.frame(heart_test_y),predictions, heart_test_x) %>% 
+  rename("prediction" = "1",
+         "output" = "heart_test_y")
+
+
+
+full_results
+
+confusion_matrix <- full_results %>% 
+  mutate(correct_prediction = ifelse(output == round(prediction,0),"CORRECT","INCORRECT"))
+
+```
+
+```{r}
+(cf <- confusion_matrix %>% 
+  count(correct_prediction))
+```
+```{r include=FALSE}
+cf_perc <- round(100*cf[1,2]/(cf[2,2]+cf[1,2]),2)
+```
+The lasso regression is correct for `r cf_perc`% of the testing observations. 
+
+
