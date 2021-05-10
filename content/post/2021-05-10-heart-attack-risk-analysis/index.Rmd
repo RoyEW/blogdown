@@ -227,6 +227,6 @@ confusion_matrix <- full_results %>%
 ```{r include=FALSE}
 cf_perc <- round(100*cf[1,2]/(cf[2,2]+cf[1,2]),2)
 ```
-The lasso regression is correct for `r cf_perc`% of the testing observations. test2
+The lasso regression is correct for `r cf_perc`% of the testing observations. 
 
 
