@@ -212,9 +212,6 @@ full_results <- cbind(data.frame(heart_test_y),predictions, heart_test_x) %>%
          "output" = "heart_test_y")
 
 
-
-full_results
-
 confusion_matrix <- full_results %>% 
   mutate(correct_prediction = ifelse(output == round(prediction,0),"CORRECT","INCORRECT"))
 
@@ -227,7 +224,6 @@ confusion_matrix <- full_results %>%
 ```{r include=FALSE}
 cf_perc <- round(100*cf[1,2]/(cf[2,2]+cf[1,2]),2)
 ```
-
 The lasso regression is correct for `r cf_perc`% of the testing observations. 
 
 
