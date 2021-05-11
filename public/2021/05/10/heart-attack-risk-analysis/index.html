@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">7 min read</span>
+    <span class="article-duration">8 min read</span>
     
 
     <h1 class="article-title">Heart attack risk analysis</h1>
@@ -226,23 +226,13 @@ x &lt;- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])</code></
 </div>
 <div id="fitting-the-lasso-regression" class="section level2">
 <h2>Fitting the Lasso Regression</h2>
-<p>The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty (<span class="math inline">\(\lambda\)</span>) to drop certain weakly significant variables from the model.</p>
-<p><span class="math display">\[\sum\limits_{i = 1}^{N}(y_i - \hat{y} _i)^2 = \sum\limits_{i = 1}^{N}\left (y_i - \sum\limits_{j = 0}^{p}(w_j \times x_{i, j})\right)^2 + \lambda \sum\limits_{j = 0}^{p}\mid{w_j}\mid{}\]</span></p>
-<pre class="r"><code>library(glmnet)</code></pre>
-<pre><code>## Warning: package &#39;glmnet&#39; was built under R version 4.0.4</code></pre>
-<pre><code>## Loading required package: Matrix</code></pre>
-<pre><code>## 
-## Attaching package: &#39;Matrix&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
-## 
-##     expand, pack, unpack</code></pre>
-<pre><code>## Loaded glmnet 4.1-1</code></pre>
-<pre class="r"><code>heart_model &lt;- cv.glmnet(x, y, alpha = 1)
+<p>The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty (<span class="math inline">\(\lambda\)</span>) to drop certain weakly significant variables from the model and aims to minimise over-fitting.</p>
+<p><span class="math display">\[\sum\limits_{i = 1}^{N}(y_i - \hat{y} _i)^2 = \sum\limits_{i = 1}^{N}\left (y_i - \sum\limits_{j = 0}^{p}(\hat{\beta}_j \times x_{i, j})\right)^2 + \lambda \sum\limits_{j = 0}^{p}\mid{\hat{\beta}_j}\mid{}\]</span>
+The MSE (mean-squared error) formula for the lasso regression above takes the form of a cost or optimisation function. The larger the coefficients, the greater the MSE is, and the greater the model is penalised. The model requires an optimisation of lambda <span class="math inline">\(\lambda\)</span> to shrink the absolute value of the coefficients <span class="math inline">\(\hat{\beta}_j\)</span> and optimise for the MSE. This penalty or shrinkage of the coefficients helps to reduce the models complexity and helps to reduce the impact of multi-collinearity between variables.</p>
+<pre class="r"><code>library(glmnet)
+heart_model &lt;- cv.glmnet(x, y, alpha = 1)
 
-best_lambda &lt;- heart_model$lambda.min
-
-best_lambda</code></pre>
-<pre><code>## [1] 0.008836644</code></pre>
+best_lambda &lt;- heart_model$lambda.min</code></pre>
 <div id="minimising-mse-for-an-appropriate-lambda-and-coefficient-matrix" class="section level3">
 <h3>Minimising MSE for an appropriate <span class="math inline">\(\lambda\)</span> and coefficient matrix</h3>
 <pre class="r"><code>plot(heart_model)</code></pre>
@@ -250,21 +240,21 @@ best_lambda</code></pre>
 <pre class="r"><code>best_model &lt;- glmnet(x, y, alpha = 1, lambda = best_lambda)
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
-##                        s0
-## (Intercept)  0.7759009861
-## age          .           
-## sex         -0.1782239828
-## cp           0.0834324421
-## trtbps      -0.0014576596
-## chol        -0.0003439428
-## fbs          .           
-## restecg      0.0170450688
-## thalachh     0.0029970515
-## exng        -0.2046319643
-## oldpeak     -0.0554380635
-## slp          0.0494919941
-## caa         -0.1356793515
-## thall       -0.0981750395</code></pre>
+##                       s0
+## (Intercept)  0.648949419
+## age          .          
+## sex         -0.174792798
+## cp           0.098896135
+## trtbps      -0.002217850
+## chol         .          
+## fbs          .          
+## restecg      0.073749634
+## thalachh     0.002700063
+## exng        -0.132547298
+## oldpeak     -0.082678742
+## slp          0.059431602
+## caa         -0.111249061
+## thall       -0.051324377</code></pre>
 <p>The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -283,8 +273,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.7441731</code></pre>
-<p>The R-squared turns out to be 0.7442. That is, the best model was able to explain 74.42% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.7610495</code></pre>
+<p>The R-squared turns out to be 0.761. That is, the best model was able to explain 76.1% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -293,13 +283,50 @@ rsq</code></pre>
          &quot;output&quot; = &quot;heart_test_y&quot;)
 
 confusion_matrix &lt;- full_results %&gt;% 
-  mutate(correct_prediction = ifelse(output == round(prediction,0),&quot;CORRECT&quot;,&quot;INCORRECT&quot;))</code></pre>
+  mutate(correct_prediction = ifelse(output == round(prediction,0),&quot;CORRECT&quot;,&quot;INCORRECT&quot;),
+         prediction_adj = round(prediction,0))
+
+
+library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## 
+## Attaching package: &#39;caret&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     lift</code></pre>
+<pre class="r"><code>library(InformationValue)</code></pre>
+<pre><code>## Warning: package &#39;InformationValue&#39; was built under R version 4.0.5</code></pre>
+<pre><code>## 
+## Attaching package: &#39;InformationValue&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:caret&#39;:
+## 
+##     confusionMatrix, precision, sensitivity, specificity</code></pre>
+<pre class="r"><code>optimal &lt;- optimalCutoff(actuals = confusion_matrix$output, predictedScores = confusion_matrix$prediction)
+
+# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than siimply rounding to the nearest integer.  
+
+optimal</code></pre>
+<pre><code>## [1] 0.4502243</code></pre>
+<pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
+<pre><code>##    0  1
+## 0 26  7
+## 1 11 47</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 69
-## 2          INCORRECT 22</code></pre>
-<p>The lasso regression is correct for 75.82% of the testing observations.</p>
+## 1            CORRECT 73
+## 2          INCORRECT 18</code></pre>
+<p>The lasso regression is correct for 80.22% of the testing observations.</p>
+</div>
+<div id="confusion-matrix-metrics" class="section level2">
+<h2>Confusion matrix metrics</h2>
+<pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
+<pre><code>## [1] 0.8703704</code></pre>
+<pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
+<pre><code>## [1] 0.7027027</code></pre>
+<pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
+<pre><code>## [1] 0.1978</code></pre>
+<p>The model has a misclassification rate of 19.78% which is actually reasonably low for a classification model.</p>
 </div>
 </div>
 

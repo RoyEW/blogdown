@@ -167,18 +167,16 @@ x <- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])
 ```
 
 ## Fitting the Lasso Regression
-The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty ($\lambda$) to drop certain weakly significant variables from the model. 
+The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty ($\lambda$) to drop certain weakly significant variables from the model and aims to minimise over-fitting. 
 
-$$\sum\limits_{i = 1}^{N}(y_i - \hat{y} _i)^2 = \sum\limits_{i = 1}^{N}\left (y_i - \sum\limits_{j = 0}^{p}(w_j \times x_{i, j})\right)^2 + \lambda \sum\limits_{j = 0}^{p}\mid{w_j}\mid{}$$
- 
+$$\sum\limits_{i = 1}^{N}(y_i - \hat{y} _i)^2 = \sum\limits_{i = 1}^{N}\left (y_i - \sum\limits_{j = 0}^{p}(\hat{\beta}_j \times x_{i, j})\right)^2 + \lambda \sum\limits_{j = 0}^{p}\mid{\hat{\beta}_j}\mid{}$$
+The MSE (mean-squared error) formula for the lasso regression above takes the form of a cost or optimisation function. The larger the coefficients, the greater the MSE is, and the greater the model is penalised. The model requires an optimisation of lambda $\lambda$ to shrink the absolute value of the coefficients $\hat{\beta}_j$ and optimise for the MSE. This penalty or shrinkage of the coefficients helps to reduce the models complexity and helps to reduce the impact of multi-collinearity between variables. 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(glmnet)
 heart_model <- cv.glmnet(x, y, alpha = 1)
 
 best_lambda <- heart_model$lambda.min
-
-best_lambda
 ```
 ### Minimising MSE for an appropriate $\lambda$ and coefficient matrix
 
@@ -224,8 +222,19 @@ full_results <- cbind(data.frame(heart_test_y),predictions, heart_test_x) %>%
          "output" = "heart_test_y")
 
 confusion_matrix <- full_results %>% 
-  mutate(correct_prediction = ifelse(output == round(prediction,0),"CORRECT","INCORRECT"))
+  mutate(correct_prediction = ifelse(output == round(prediction,0),"CORRECT","INCORRECT"),
+         prediction_adj = round(prediction,0))
 
+
+library(caret)
+library(InformationValue)
+optimal <- optimalCutoff(actuals = confusion_matrix$output, predictedScores = confusion_matrix$prediction)
+
+# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than siimply rounding to the nearest integer.  
+
+optimal
+
+confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)
 ```
 
 ```{r}
@@ -236,5 +245,14 @@ confusion_matrix <- full_results %>%
 cf_perc <- round(100*cf[1,2]/(cf[2,2]+cf[1,2]),2)
 ```
 The lasso regression is correct for `r cf_perc`% of the testing observations. 
+
+## Confusion matrix metrics
+
+```{r}
+sensitivity(confusion_matrix$output, confusion_matrix$prediction)
+specificity(confusion_matrix$output, confusion_matrix$prediction)
+misClassError(confusion_matrix$output, confusion_matrix$prediction)
+```
+The model has a misclassification rate of `r misClassError(confusion_matrix$output, confusion_matrix$prediction) * 100`% which is actually reasonably low for a classification model. 
 
 
