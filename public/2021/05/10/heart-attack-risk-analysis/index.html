@@ -240,22 +240,22 @@ best_lambda &lt;- heart_model$lambda.min</code></pre>
 <pre class="r"><code>best_model &lt;- glmnet(x, y, alpha = 1, lambda = best_lambda)
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
-##                       s0
-## (Intercept)  0.648949419
-## age          .          
-## sex         -0.174792798
-## cp           0.098896135
-## trtbps      -0.002217850
-## chol         .          
-## fbs          .          
-## restecg      0.073749634
-## thalachh     0.002700063
-## exng        -0.132547298
-## oldpeak     -0.082678742
-## slp          0.059431602
-## caa         -0.111249061
-## thall       -0.051324377</code></pre>
-<p>The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
+##                        s0
+## (Intercept)  7.809654e-01
+## age         -1.562930e-03
+## sex         -1.469284e-01
+## cp           1.118597e-01
+## trtbps      -2.122455e-03
+## chol        -9.974303e-05
+## fbs          4.325654e-02
+## restecg      4.015318e-02
+## thalachh     2.469388e-03
+## exng        -1.247495e-01
+## oldpeak     -4.507179e-02
+## slp          1.355036e-01
+## caa         -1.285306e-01
+## thall       -1.129364e-01</code></pre>
+<p>There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
 <div id="measuring-the-r-squared-value-of-the-lasso-regression-model" class="section level2">
@@ -273,8 +273,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.7610495</code></pre>
-<p>The R-squared turns out to be 0.761. That is, the best model was able to explain 76.1% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.7852579</code></pre>
+<p>The R-squared turns out to be 0.7853. That is, the best model was able to explain 78.53% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -303,30 +303,30 @@ library(caret)</code></pre>
 ##     confusionMatrix, precision, sensitivity, specificity</code></pre>
 <pre class="r"><code>optimal &lt;- optimalCutoff(actuals = confusion_matrix$output, predictedScores = confusion_matrix$prediction)
 
-# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than siimply rounding to the nearest integer.  
+# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.  
 
 optimal</code></pre>
-<pre><code>## [1] 0.4502243</code></pre>
+<pre><code>## [1] 0.4516788</code></pre>
 <pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
 <pre><code>##    0  1
-## 0 26  7
-## 1 11 47</code></pre>
+## 0 36  4
+## 1  9 42</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 73
-## 2          INCORRECT 18</code></pre>
-<p>The lasso regression is correct for 80.22% of the testing observations.</p>
+## 1            CORRECT 78
+## 2          INCORRECT 13</code></pre>
+<p>The lasso regression is correct for 85.71% of the testing observations.</p>
 </div>
 <div id="confusion-matrix-metrics" class="section level2">
 <h2>Confusion matrix metrics</h2>
 <pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.8703704</code></pre>
+<pre><code>## [1] 0.9130435</code></pre>
 <pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.7027027</code></pre>
+<pre><code>## [1] 0.8</code></pre>
 <pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.1978</code></pre>
-<p>The model has a misclassification rate of 19.78% which is actually reasonably low for a classification model.</p>
+<pre><code>## [1] 0.1429</code></pre>
+<p>The model has a misclassification rate of 14.29% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
 </div>
 </div>
 

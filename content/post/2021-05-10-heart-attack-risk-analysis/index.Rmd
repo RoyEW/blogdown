@@ -190,7 +190,7 @@ best_model <- glmnet(x, y, alpha = 1, lambda = best_lambda)
 coef(best_model)
 ```
 
-The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.
+There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.
 
 ## Measuring the R-Squared value of the lasso regression model
 
@@ -230,7 +230,7 @@ library(caret)
 library(InformationValue)
 optimal <- optimalCutoff(actuals = confusion_matrix$output, predictedScores = confusion_matrix$prediction)
 
-# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than siimply rounding to the nearest integer.  
+# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.  
 
 optimal
 
@@ -253,6 +253,6 @@ sensitivity(confusion_matrix$output, confusion_matrix$prediction)
 specificity(confusion_matrix$output, confusion_matrix$prediction)
 misClassError(confusion_matrix$output, confusion_matrix$prediction)
 ```
-The model has a misclassification rate of `r misClassError(confusion_matrix$output, confusion_matrix$prediction) * 100`% which is actually reasonably low for a classification model. 
+The model has a misclassification rate of `r misClassError(confusion_matrix$output, confusion_matrix$prediction) * 100`% which is quite reasonable for predicting if someone is at greater risk of heart disease. 
 
 
