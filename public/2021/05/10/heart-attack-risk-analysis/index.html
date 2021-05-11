@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">6 min read</span>
+    <span class="article-duration">7 min read</span>
     
 
     <h1 class="article-title">Heart attack risk analysis</h1>
@@ -208,6 +208,9 @@ The normal range for cholesterol levels according to <a href="https://www.medici
 </div>
 <div id="fitting-a-model-with-predictive-power" class="section level1">
 <h1>Fitting a model with predictive power</h1>
+<div id="splitting-the-dataset-into-training-and-testing-sets" class="section level3">
+<h3>Splitting the dataset into training and testing sets</h3>
+<p>This allows the model to be applied to previously unseen data to really test for accuracy.</p>
 <pre class="r"><code>i &lt;- sample(c(rep(0, 0.7 * (nrow(heart)+1)),
               rep(1, 0.3 * (nrow(heart)+1))))
 
@@ -219,10 +222,12 @@ heart_test &lt;- heart[i == 1, ]
 
 y &lt;- heart_train$output
 #colnames(heart)[1:ncol(heart)-1]
-x &lt;- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])
-
-
-library(glmnet)</code></pre>
+x &lt;- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])</code></pre>
+</div>
+<div id="fitting-the-lasso-regression" class="section level2">
+<h2>Fitting the Lasso Regression</h2>
+<p>The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty (<span class="math inline">\(\lambda\)</span>) to drop certain weakly significant variables from the model.</p>
+<pre class="r"><code>library(glmnet)</code></pre>
 <pre><code>## Warning: package &#39;glmnet&#39; was built under R version 4.0.4</code></pre>
 <pre><code>## Loading required package: Matrix</code></pre>
 <pre><code>## 
@@ -236,56 +241,65 @@ library(glmnet)</code></pre>
 best_lambda &lt;- heart_model$lambda.min
 
 best_lambda</code></pre>
-<pre><code>## [1] 0.01388338</code></pre>
+<pre><code>## [1] 0.008128132</code></pre>
+<div id="minimising-mse-for-an-appropriate-lambda-and-coefficient-matrix" class="section level3">
+<h3>Minimising MSE for an appropriate <span class="math inline">\(\lambda\)</span> and coefficient matrix</h3>
 <pre class="r"><code>plot(heart_model)</code></pre>
 <p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <pre class="r"><code>best_model &lt;- glmnet(x, y, alpha = 1, lambda = best_lambda)
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        s0
-## (Intercept)  7.544331e-01
-## age         -6.982576e-05
-## sex         -1.147653e-01
-## cp           8.246521e-02
-## trtbps      -1.888315e-03
-## chol         .           
-## fbs          .           
-## restecg      2.490706e-02
-## thalachh     2.644368e-03
-## exng        -2.042538e-01
-## oldpeak     -6.785157e-02
-## slp          7.020784e-02
-## caa         -1.012481e-01
-## thall       -1.094835e-01</code></pre>
-<p>The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely.</p>
+## (Intercept)  6.572810e-01
+## age          .           
+## sex         -1.694499e-01
+## cp           9.905776e-02
+## trtbps      -1.626772e-03
+## chol        -2.186341e-06
+## fbs         -3.767239e-03
+## restecg      3.831429e-02
+## thalachh     3.174655e-03
+## exng        -1.692852e-01
+## oldpeak     -6.034406e-02
+## slp          4.891514e-02
+## caa         -1.008546e-01
+## thall       -1.055907e-01</code></pre>
+<p>The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
+</div>
+</div>
+<div id="measuring-the-r-squared-value-of-the-lasso-regression-model" class="section level2">
+<h2>Measuring the R-Squared value of the lasso regression model</h2>
 <pre class="r"><code>heart_test_x &lt;- data.matrix(heart_test[, c(colnames(heart)[1:ncol(heart)-1])])
-heart_test_y &lt;- heart_test$output
-predictions &lt;- predict(best_model, s = best_lambda, newx = heart_test_x)
-dim(predictions)</code></pre>
-<pre><code>## [1] 91  1</code></pre>
-<pre class="r"><code>dim(y)</code></pre>
-<pre><code>## NULL</code></pre>
-<pre class="r"><code>sst &lt;- sum((y - mean(y))^2)
-sse &lt;- sum((predictions - heart_test_y)^2)
 
-#find R-Squared
-rsq &lt;- 1 - sse/sst
+heart_test_y &lt;- heart_test$output
+
+predictions &lt;- predict(best_model, s = best_lambda, newx = heart_test_x)
+
+sst &lt;- sum((y - mean(y))^2) # sum of squares total
+
+sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
+
+rsq &lt;- 1 - sse/sst # r-squared
+
 rsq</code></pre>
-<pre><code>## [1] 0.7718157</code></pre>
-<p>The R-squared turns out to be 0.7718. That is, the best model was able to explain 77.18% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.804014</code></pre>
+<p>The R-squared turns out to be 0.804. That is, the best model was able to explain 80.4% of the variation in the response values of the training data.</p>
+</div>
+<div id="confusion-matrix-how-correct-was-our-model" class="section level2">
+<h2>Confusion matrix (how correct was our model?)</h2>
 <pre class="r"><code>full_results &lt;- cbind(data.frame(heart_test_y),predictions, heart_test_x) %&gt;% 
   rename(&quot;prediction&quot; = &quot;1&quot;,
          &quot;output&quot; = &quot;heart_test_y&quot;)
-
 
 confusion_matrix &lt;- full_results %&gt;% 
   mutate(correct_prediction = ifelse(output == round(prediction,0),&quot;CORRECT&quot;,&quot;INCORRECT&quot;))</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 74
-## 2          INCORRECT 17</code></pre>
-<p>The lasso regression is correct for 81.32% of the testing observations.</p>
+## 1            CORRECT 78
+## 2          INCORRECT 13</code></pre>
+<p>The lasso regression is correct for 85.71% of the testing observations.</p>
+</div>
 </div>
 
     </div>

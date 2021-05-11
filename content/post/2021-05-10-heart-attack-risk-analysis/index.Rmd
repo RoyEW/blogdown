@@ -146,6 +146,10 @@ The normal range for cholesterol levels according to [medicinenet.com](https://w
 
 # Fitting a model with predictive power
 
+### Splitting the dataset into training and testing sets
+
+This allows the model to be applied to previously unseen data to really test for accuracy.
+
 ```{r}
 i <- sample(c(rep(0, 0.7 * (nrow(heart)+1)),
               rep(1, 0.3 * (nrow(heart)+1))))
@@ -160,18 +164,24 @@ y <- heart_train$output
 #colnames(heart)[1:ncol(heart)-1]
 x <- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])
 
-
-library(glmnet)
-
-
 ```
+
+## Fitting the Lasso Regression
+The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty ($\lambda$) to drop certain weakly significant variables from the model. 
+
+
+ 
+
 ```{r}
+library(glmnet)
 heart_model <- cv.glmnet(x, y, alpha = 1)
 
 best_lambda <- heart_model$lambda.min
 
 best_lambda
 ```
+### Minimising MSE for an appropriate $\lambda$ and coefficient matrix
+
 ```{r}
 plot(heart_model)
 ```
@@ -182,35 +192,36 @@ best_model <- glmnet(x, y, alpha = 1, lambda = best_lambda)
 coef(best_model)
 ```
 
-The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely.  
+The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.
+
+## Measuring the R-Squared value of the lasso regression model
 
 ```{r}
 
 heart_test_x <- data.matrix(heart_test[, c(colnames(heart)[1:ncol(heart)-1])])
+
 heart_test_y <- heart_test$output
+
 predictions <- predict(best_model, s = best_lambda, newx = heart_test_x)
-dim(predictions)
-dim(y)
-sst <- sum((y - mean(y))^2)
-sse <- sum((predictions - heart_test_y)^2)
 
-#find R-Squared
-rsq <- 1 - sse/sst
+sst <- sum((y - mean(y))^2) # sum of squares total
+
+sse <- sum((predictions - heart_test_y)^2) # sum of squares error
+
+rsq <- 1 - sse/sst # r-squared
+
 rsq
-
 
 
 ```
 The R-squared turns out to be `r round(rsq,4)`. That is, the best model was able to explain `r round(100*rsq,2)`% of the variation in the response values of the training data.
 
+## Confusion matrix (how correct was our model?)
+
 ```{r}
-
-
-
 full_results <- cbind(data.frame(heart_test_y),predictions, heart_test_x) %>% 
   rename("prediction" = "1",
          "output" = "heart_test_y")
-
 
 confusion_matrix <- full_results %>% 
   mutate(correct_prediction = ifelse(output == round(prediction,0),"CORRECT","INCORRECT"))
