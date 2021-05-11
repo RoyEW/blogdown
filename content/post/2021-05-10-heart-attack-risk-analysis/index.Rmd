@@ -58,15 +58,31 @@ percent <- round(100*165/(165+138),2)
 
 The dataset represents `r percent`% of people who suffer with heart disease.
 
-## Covariance matrix
+## Variance-covariance matrix and correlation matrix
 
 ```{r}
 g <- cor(heart)
 
+h <- reshape2::melt(cov(heart))
+
+ggplot(h, aes(Var1, Var2)) + geom_tile(aes(fill = log(abs(value)))) +
+  ggtitle("Variance-covariance matrix")+
+  labs(x="",y="")+
+  theme(axis.text.x = element_text(angle = 90))+
+  geom_text(aes(x = Var1, y= Var2,label = round(value,2)),size = 2)
+
+cov(g) %>% 
+  heatmap()
+```
+
+```{r}
 corrplot::corrplot(g)
 ```
 
-The covariance matrix above shows heart disease to be positively correlated with chest pain, the maximum heart rate achieved, and the incline type of exercise during the testing segment; and negatively correlated with exercise induced angina, and ST depression induced by exercise. I expect any machine learning model to take these correlations into account. 
+
+The correlation matrix above shows heart disease to be positively correlated with chest pain, the maximum heart rate achieved, and the incline type of exercise during the testing segment; and negatively correlated with exercise induced angina, and ST depression induced by exercise. I expect any predictive model to take these correlations into account as multi-collinearity violates the assumptions of a normal OLS regression. 
+
+The variance-covariance matrix above may suggest that scaling features between 0 and 1 may be useful but I'm unsure if this is applicable and/or it makes it more difficult to interpret any model or coefficients afterwards. 
 
 
 ## Age distribution
@@ -140,9 +156,25 @@ heart %>%
   geom_histogram(fill = "dodgerblue") +
   ggtitle("Cholestoral levels",subtitle = "serum cholestoral in mg/dl")+
   geom_errorbarh(aes(xmin = 125, xmax = 200, y = 20),height = 2) +
-  annotate("text",label = "'normal' range", x = 162.5, y = 22)
+  annotate("text",label = "healthy", x = 162.5, y = 22)
 ```
 The normal range for cholesterol levels according to [medicinenet.com](https://www.medicinenet.com/what_is_the_normal_range_for_cholesterol_levels/article.htm) is 125 to 200 mg/dL for men and women over age 20. Most of the observations fall outside of this range. There are very high outliers within the dataset with levels above 400 mg/dL.
+
+
+```{r}
+
+heart %>% 
+  
+  ggplot(aes(chol, fill = paste(output))) +
+  geom_histogram() +
+  ggtitle("Cholestoral levels",subtitle = "serum cholestoral in mg/dl, faceted by evidence of heart disease")+
+  geom_errorbarh(aes(xmin = 125, xmax = 200, y = 5),height = 2) +
+  annotate("text",label = "healthy", x = 162.5, y = 7)+
+  facet_grid(~output)+
+  scale_fill_manual(values = c("dodgerblue","red"),aesthetics = c("fill"))+
+  theme(legend.position = 'none')
+```
+### 
 
 # Fitting a model with predictive power
 
@@ -224,17 +256,25 @@ full_results <- cbind(data.frame(heart_test_y),predictions, heart_test_x) %>%
 confusion_matrix <- full_results %>% 
   mutate(correct_prediction = ifelse(output == round(prediction,0),"CORRECT","INCORRECT"),
          prediction_adj = round(prediction,0))
+```
 
 
-library(caret)
+```{r message=FALSE, warning=FALSE}
+
+# These packages include useful ML tidying functions
+library(caret) 
 library(InformationValue)
+```
+
+
+```{r}
 optimal <- optimalCutoff(actuals = confusion_matrix$output, predictedScores = confusion_matrix$prediction)
 
-# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.  
+# The InformationValue::optimalCutoff function attempts to predict a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.
 
 optimal
 
-confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)
+
 ```
 
 ```{r}
@@ -249,6 +289,8 @@ The lasso regression is correct for `r cf_perc`% of the testing observations.
 ## Confusion matrix metrics
 
 ```{r}
+confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)
+
 sensitivity(confusion_matrix$output, confusion_matrix$prediction)
 specificity(confusion_matrix$output, confusion_matrix$prediction)
 misClassError(confusion_matrix$output, confusion_matrix$prediction)

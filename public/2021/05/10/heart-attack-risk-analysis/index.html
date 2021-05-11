@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">8 min read</span>
+    <span class="article-duration">9 min read</span>
     
 
     <h1 class="article-title">Heart attack risk analysis</h1>
@@ -131,13 +131,25 @@ heart &lt;- read_csv(&quot;heart.csv&quot;)</code></pre>
 ## 1      0   138
 ## 2      1   165</code></pre>
 <p>The dataset represents 54.46% of people who suffer with heart disease.</p>
-<div id="covariance-matrix" class="section level2">
-<h2>Covariance matrix</h2>
+<div id="variance-covariance-matrix-and-correlation-matrix" class="section level2">
+<h2>Variance-covariance matrix and correlation matrix</h2>
 <pre class="r"><code>g &lt;- cor(heart)
 
-corrplot::corrplot(g)</code></pre>
+h &lt;- reshape2::melt(cov(heart))
+
+ggplot(h, aes(Var1, Var2)) + geom_tile(aes(fill = log(abs(value)))) +
+  ggtitle(&quot;Variance-covariance matrix&quot;)+
+  labs(x=&quot;&quot;,y=&quot;&quot;)+
+  theme(axis.text.x = element_text(angle = 90))+
+  geom_text(aes(x = Var1, y= Var2,label = round(value,2)),size = 2)</code></pre>
 <p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>The covariance matrix above shows heart disease to be positively correlated with chest pain, the maximum heart rate achieved, and the incline type of exercise during the testing segment; and negatively correlated with exercise induced angina, and ST depression induced by exercise. I expect any machine learning model to take these correlations into account.</p>
+<pre class="r"><code>cov(g) %&gt;% 
+  heatmap()</code></pre>
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code>corrplot::corrplot(g)</code></pre>
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>The correlation matrix above shows heart disease to be positively correlated with chest pain, the maximum heart rate achieved, and the incline type of exercise during the testing segment; and negatively correlated with exercise induced angina, and ST depression induced by exercise. I expect any predictive model to take these correlations into account as multi-collinearity violates the assumptions of a normal OLS regression.</p>
+<p>The variance-covariance matrix above may suggest that scaling features between 0 and 1 may be useful but I’m unsure if this is applicable and/or it makes it more difficult to interpret any model or coefficients afterwards.</p>
 </div>
 <div id="age-distribution" class="section level2">
 <h2>Age distribution</h2>
@@ -145,12 +157,12 @@ corrplot::corrplot(g)</code></pre>
   ggplot(aes(age)) +
   geom_histogram(alpha = 0.5, fill = &quot;dodgerblue&quot;,binwidth = 5)+
   geom_vline(xintercept = mean(heart$age),lty = 2)</code></pre>
-<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code>heart %&gt;% 
   ggplot(aes(age))+
   geom_density()+
   geom_vline(xintercept = mean(heart$age),lty = 2)</code></pre>
-<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>The observations within the dataset tends to skew older ages.</p>
 </div>
 <div id="sex-distribution" class="section level2">
@@ -171,7 +183,7 @@ corrplot::corrplot(g)</code></pre>
   geom_histogram(fill = &quot;dodgerblue&quot;)+
   ggtitle(&quot;Chest pain&quot;, subtitle = &quot;chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 0 = asymptomatic)&quot;)</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="resting-blood-pressure" class="section level2">
 <h2>Resting blood pressure</h2>
@@ -182,7 +194,7 @@ corrplot::corrplot(g)</code></pre>
   geom_errorbarh(aes(xmin = 90, xmax = 120, y = 20),height = 4)+
   annotate(&quot;text&quot;,label = &quot;NHS &#39;normal&#39; range&quot;, x = 105, y = 22)</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 There are a few observations with very high outlier resting blood pressure. According to the <a href="https://www.nhs.uk/common-health-questions/lifestyle/what-is-blood-pressure/">NHS</a>, a normal range for resting blood pressure in between 90 and 120.</p>
 <pre class="r"><code>heart %&gt;% 
   filter(trtbps&gt;120) %&gt;% 
@@ -200,10 +212,23 @@ There are a few observations with very high outlier resting blood pressure. Acco
   geom_histogram(fill = &quot;dodgerblue&quot;) +
   ggtitle(&quot;Cholestoral levels&quot;,subtitle = &quot;serum cholestoral in mg/dl&quot;)+
   geom_errorbarh(aes(xmin = 125, xmax = 200, y = 20),height = 2) +
-  annotate(&quot;text&quot;,label = &quot;&#39;normal&#39; range&quot;, x = 162.5, y = 22)</code></pre>
+  annotate(&quot;text&quot;,label = &quot;healthy&quot;, x = 162.5, y = 22)</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 The normal range for cholesterol levels according to <a href="https://www.medicinenet.com/what_is_the_normal_range_for_cholesterol_levels/article.htm">medicinenet.com</a> is 125 to 200 mg/dL for men and women over age 20. Most of the observations fall outside of this range. There are very high outliers within the dataset with levels above 400 mg/dL.</p>
+<pre class="r"><code>heart %&gt;% 
+  
+  ggplot(aes(chol, fill = paste(output))) +
+  geom_histogram() +
+  ggtitle(&quot;Cholestoral levels&quot;,subtitle = &quot;serum cholestoral in mg/dl, faceted by evidence of heart disease&quot;)+
+  geom_errorbarh(aes(xmin = 125, xmax = 200, y = 5),height = 2) +
+  annotate(&quot;text&quot;,label = &quot;healthy&quot;, x = 162.5, y = 7)+
+  facet_grid(~output)+
+  scale_fill_manual(values = c(&quot;dodgerblue&quot;,&quot;red&quot;),aesthetics = c(&quot;fill&quot;))+
+  theme(legend.position = &#39;none&#39;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+###</p>
 </div>
 </div>
 <div id="fitting-a-model-with-predictive-power" class="section level1">
@@ -236,25 +261,25 @@ best_lambda &lt;- heart_model$lambda.min</code></pre>
 <div id="minimising-mse-for-an-appropriate-lambda-and-coefficient-matrix" class="section level3">
 <h3>Minimising MSE for an appropriate <span class="math inline">\(\lambda\)</span> and coefficient matrix</h3>
 <pre class="r"><code>plot(heart_model)</code></pre>
-<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <pre class="r"><code>best_model &lt;- glmnet(x, y, alpha = 1, lambda = best_lambda)
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        s0
-## (Intercept)  7.809654e-01
-## age         -1.562930e-03
-## sex         -1.469284e-01
-## cp           1.118597e-01
-## trtbps      -2.122455e-03
-## chol        -9.974303e-05
-## fbs          4.325654e-02
-## restecg      4.015318e-02
-## thalachh     2.469388e-03
-## exng        -1.247495e-01
-## oldpeak     -4.507179e-02
-## slp          1.355036e-01
-## caa         -1.285306e-01
-## thall       -1.129364e-01</code></pre>
+## (Intercept)  8.928775e-01
+## age         -7.409290e-04
+## sex         -1.806742e-01
+## cp           1.014655e-01
+## trtbps      -1.321380e-03
+## chol        -8.366678e-05
+## fbs          .           
+## restecg      2.899684e-02
+## thalachh     1.015524e-03
+## exng        -1.663666e-01
+## oldpeak     -5.869563e-02
+## slp          1.186177e-01
+## caa         -9.136374e-02
+## thall       -1.066336e-01</code></pre>
 <p>There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -273,8 +298,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.7852579</code></pre>
-<p>The R-squared turns out to be 0.7853. That is, the best model was able to explain 78.53% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.8063517</code></pre>
+<p>The R-squared turns out to be 0.8064. That is, the best model was able to explain 80.64% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -284,49 +309,36 @@ rsq</code></pre>
 
 confusion_matrix &lt;- full_results %&gt;% 
   mutate(correct_prediction = ifelse(output == round(prediction,0),&quot;CORRECT&quot;,&quot;INCORRECT&quot;),
-         prediction_adj = round(prediction,0))
-
-
-library(caret)</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## 
-## Attaching package: &#39;caret&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:purrr&#39;:
-## 
-##     lift</code></pre>
-<pre class="r"><code>library(InformationValue)</code></pre>
-<pre><code>## Warning: package &#39;InformationValue&#39; was built under R version 4.0.5</code></pre>
-<pre><code>## 
-## Attaching package: &#39;InformationValue&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:caret&#39;:
-## 
-##     confusionMatrix, precision, sensitivity, specificity</code></pre>
+         prediction_adj = round(prediction,0))</code></pre>
+<pre class="r"><code># These packages include useful ML tidying functions
+library(caret) 
+library(InformationValue)</code></pre>
 <pre class="r"><code>optimal &lt;- optimalCutoff(actuals = confusion_matrix$output, predictedScores = confusion_matrix$prediction)
 
-# The InformationValue::optimalCutoff function predicts a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.  
+# The InformationValue::optimalCutoff function attempts to predict a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.
 
 optimal</code></pre>
-<pre><code>## [1] 0.4516788</code></pre>
-<pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>##    0  1
-## 0 36  4
-## 1  9 42</code></pre>
+<pre><code>## [1] 0.3933512</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 78
-## 2          INCORRECT 13</code></pre>
-<p>The lasso regression is correct for 85.71% of the testing observations.</p>
+## 1            CORRECT 77
+## 2          INCORRECT 14</code></pre>
+<p>The lasso regression is correct for 84.62% of the testing observations.</p>
 </div>
 <div id="confusion-matrix-metrics" class="section level2">
 <h2>Confusion matrix metrics</h2>
+<pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
+<pre><code>##    0  1
+## 0 27  3
+## 1 11 50</code></pre>
 <pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.9130435</code></pre>
+<pre><code>## [1] 0.9433962</code></pre>
 <pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.8</code></pre>
+<pre><code>## [1] 0.7105263</code></pre>
 <pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.1429</code></pre>
-<p>The model has a misclassification rate of 14.29% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
+<pre><code>## [1] 0.1538</code></pre>
+<p>The model has a misclassification rate of 15.38% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
 </div>
 </div>
 
