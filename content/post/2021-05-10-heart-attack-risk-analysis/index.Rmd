@@ -169,7 +169,7 @@ x <- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])
 ## Fitting the Lasso Regression
 The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty ($\lambda$) to drop certain weakly significant variables from the model. 
 
-
+$$\sum\limits_{i = 1}^{N}(y_i - \hat{y} _i)^2 = \sum\limits_{i = 1}^{N}\left (y_i - \sum\limits_{j = 0}^{p}(w_j \times x_{i, j})\right)^2 + \lambda \sum\limits_{j = 0}^{p}\mid{w_j}\mid{}$$
  
 
 ```{r}

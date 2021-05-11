@@ -161,6 +161,7 @@ x &lt;- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])</code></
 <div id="fitting-the-lasso-regression" class="section level2">
 <h2>Fitting the Lasso Regression</h2>
 <p>The reason for choosing this type of model is because non-multicollinearity (predictor variables correlate with each other) is an assumption of an Ordinary Least Squares (OLS) regression. The lasso regression attempts to tackle this problem. The lasso regression includes a shrinkage penalty (<span class="math inline">\(\lambda\)</span>) to drop certain weakly significant variables from the model.</p>
+<p><span class="math display">\[\sum\limits_{i = 1}^{N}(y_i - \hat{y} _i)^2 = \sum\limits_{i = 1}^{N}\left (y_i - \sum\limits_{j = 0}^{p}(w_j \times x_{i, j})\right)^2 + \lambda \sum\limits_{j = 0}^{p}\mid{w_j}\mid{}\]</span></p>
 <pre class="r"><code>library(glmnet)</code></pre>
 <pre><code>## Warning: package &#39;glmnet&#39; was built under R version 4.0.4</code></pre>
 <pre><code>## Loading required package: Matrix</code></pre>
@@ -175,7 +176,7 @@ x &lt;- data.matrix(heart_train[, c(colnames(heart)[1:ncol(heart)-1])])</code></
 best_lambda &lt;- heart_model$lambda.min
 
 best_lambda</code></pre>
-<pre><code>## [1] 0.008128132</code></pre>
+<pre><code>## [1] 0.008836644</code></pre>
 <div id="minimising-mse-for-an-appropriate-lambda-and-coefficient-matrix" class="section level3">
 <h3>Minimising MSE for an appropriate <span class="math inline">\(\lambda\)</span> and coefficient matrix</h3>
 <pre class="r"><code>plot(heart_model)</code></pre>
@@ -184,20 +185,20 @@ best_lambda</code></pre>
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        s0
-## (Intercept)  6.572810e-01
+## (Intercept)  0.7759009861
 ## age          .           
-## sex         -1.694499e-01
-## cp           9.905776e-02
-## trtbps      -1.626772e-03
-## chol        -2.186341e-06
-## fbs         -3.767239e-03
-## restecg      3.831429e-02
-## thalachh     3.174655e-03
-## exng        -1.692852e-01
-## oldpeak     -6.034406e-02
-## slp          4.891514e-02
-## caa         -1.008546e-01
-## thall       -1.055907e-01</code></pre>
+## sex         -0.1782239828
+## cp           0.0834324421
+## trtbps      -0.0014576596
+## chol        -0.0003439428
+## fbs          .           
+## restecg      0.0170450688
+## thalachh     0.0029970515
+## exng        -0.2046319643
+## oldpeak     -0.0554380635
+## slp          0.0494919941
+## caa         -0.1356793515
+## thall       -0.0981750395</code></pre>
 <p>The fbs (fasting blood sugar) coefficient has been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -216,8 +217,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.804014</code></pre>
-<p>The R-squared turns out to be 0.804. That is, the best model was able to explain 80.4% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.7441731</code></pre>
+<p>The R-squared turns out to be 0.7442. That is, the best model was able to explain 74.42% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -230,8 +231,8 @@ confusion_matrix &lt;- full_results %&gt;%
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 78
-## 2          INCORRECT 13</code></pre>
-<p>The lasso regression is correct for 85.71% of the testing observations.</p>
+## 1            CORRECT 69
+## 2          INCORRECT 22</code></pre>
+<p>The lasso regression is correct for 75.82% of the testing observations.</p>
 </div>
 </div>
