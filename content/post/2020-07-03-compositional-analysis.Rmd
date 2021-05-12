@@ -168,14 +168,17 @@ BY JOHN AITCHISON
 
 
 ```{r}
-
 library(compositions)
 library(caret)
 library(glmnet)
 hard <- read_csv("hardness.csv")
+#hard %>% arrange(-hardness)
+```
 
-#hard[,1:ncol(hard)-1]
 
+```{r}
+#v <- tibble(data.frame(Al = c(16.6666,40), Co = c(16.6666,20), Cr = c(16.6666,19), Cu = c(16.6666,1), Fe = c(16.66667,19), Ni =c(16.6666,1), hardness = 0))
+#v
 # Filtering out zero values for logratio transformations
 hard_ <- hard %>% 
   filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
@@ -194,7 +197,7 @@ hard.ilr <- x %>%
 hard.alr <- x %>% 
   alr()
 
-
+predict(hard.clr.lm,clr(v))
 
 hard.clr.lm <- lm(y ~ ., cbind(y,hard.clr) %>% data.frame())
 hard.ilr.lm <- lm(y ~ ., cbind(y,hard.ilr) %>% data.frame())
@@ -206,24 +209,36 @@ hard.ilr.glm <- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambd
 library(mgcv)
 dataset <- cbind(data.frame(hardness = y),hard.clr) %>% data.frame()
 dataset
-hard.clr.gam <- gam(hardness ~ Al * Al+Co + Cr + Cu + Fe + Ni, data = dataset)
+hard.clr.gam <- gam(hardness ~ Al +Co + Cr + Cu + Fe + Ni, data = dataset)
 
 
+
+
+#hard_ <- rbind(v, hard_)
 
 
 predictions.full <- data.frame(hard_) %>% 
-  mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard.clr),
+  mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard_),
          prediction.ilr.lm = predict(hard.ilr.lm, newx = hard.ilr),
-         prediction.alr.lm = predict(hard.alr.lm, newx = hard.alr),
+         #prediction.alr.lm = predict(hard.alr.lm, newx = hard.alr),
          prediction.ilr.glm = predict(hard.ilr.glm, best_lambda = hard.ilr.glm.model$lambda.min, newx = hard.ilr),
-         prediction.clr.gam = predict(hard.clr.gam, newx = hard.clr))
+         prediction.clr.gam = predict(hard.clr.gam, newx = hard.clr),
+         pre = predict(hard.clr.lm, newx = row()))
+
+
+
+```
+
+
+```{r}
+predictions.full %>% colnames
 
 predictions.full %>% 
   arrange(hardness) %>% 
   mutate(row_name = row_number()) %>% 
-  pivot_longer(c(hardness, prediction.alr.lm, prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% 
-  ggplot(aes(row_name, value, lty = variable))+
-  geom_line()+
+  pivot_longer(c(hardness, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% #prediction.alr.lm
+  ggplot(aes(row_name, value, colour = variable), size = 3)+
+  geom_line(size = 2)+
   labs(title = "Hardness prediction",
        subtitle = "Comparing hardness prediction.alr.lm and actual hardness",
        y = "hardness",
@@ -232,7 +247,12 @@ predictions.full %>%
     round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
   ))+
   theme_bw()
+```
 
+
+```{r}
+
+ 
 
 # Linear regression on ILR logratio transformation  
 RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness)
@@ -245,6 +265,11 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 
 
 
-
 ```
+
+```{r}
+predictions.full %>% 
+  arrange(desc(prediction.clr.gam))
+```
+
 
