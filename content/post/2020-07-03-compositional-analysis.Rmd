@@ -197,7 +197,7 @@ hard.ilr <- x %>%
 hard.alr <- x %>% 
   alr()
 
-predict(hard.clr.lm,clr(v))
+#predict(hard.clr.lm,clr(v))
 
 hard.clr.lm <- lm(y ~ ., cbind(y,hard.clr) %>% data.frame())
 hard.ilr.lm <- lm(y ~ ., cbind(y,hard.ilr) %>% data.frame())
@@ -246,7 +246,7 @@ predictions.full %>%
   annotate("text", y = 200, x = 25,label = paste("RMSE = ",
     round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
   ))+
-  theme_bw()
+  theme_bw() 
 ```
 
 

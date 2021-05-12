@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">2 min read</span>
+    <span class="article-duration">8 min read</span>
     
 
     <h1 class="article-title">Metallurgical data</h1>
@@ -195,7 +195,243 @@ data %&gt;%
   theme(legend.position = &quot;none&quot;)+
   ggrepel::geom_text_repel()+
   theme_classic()</code></pre>
-<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+### Predictive modelling</p>
+<p>Compositional data can be transformed to satisfy linearity by using logratio transformations. Additive, isometric, and centre logratio transformations are available.</p>
+<p>These transformation functions are available within the ‘compositions’ R package. Ratio transformations have issues with zero-value elements.</p>
+<p>PRINCIPLES OF COMPOSITIONAL DATA ANALYSIS
+BY JOHN AITCHISON</p>
+<pre class="r"><code>library(compositions)
+library(caret)
+library(glmnet)
+hard &lt;- read_csv(&quot;hardness.csv&quot;)
+#hard %&gt;% arrange(-hardness)</code></pre>
+<pre class="r"><code>#v &lt;- tibble(data.frame(Al = c(16.6666,40), Co = c(16.6666,20), Cr = c(16.6666,19), Cu = c(16.6666,1), Fe = c(16.66667,19), Ni =c(16.6666,1), hardness = 0))
+#v
+# Filtering out zero values for logratio transformations
+hard_ &lt;- hard %&gt;% 
+  filter(Al &gt; 0, Co &gt; 0, Cr &gt; 0, Cu &gt; 0, Fe &gt; 0, Ni &gt; 0)
+
+# Setting x, y
+y &lt;- hard_$hardness
+x &lt;- hard_[,1:ncol(hard)-1]
+
+
+
+
+hard.clr &lt;- x %&gt;% 
+  clr()
+hard.ilr &lt;- x %&gt;% 
+  ilr()
+hard.alr &lt;- x %&gt;% 
+  alr()
+
+#predict(hard.clr.lm,clr(v))
+
+hard.clr.lm &lt;- lm(y ~ ., cbind(y,hard.clr) %&gt;% data.frame())
+hard.ilr.lm &lt;- lm(y ~ ., cbind(y,hard.ilr) %&gt;% data.frame())
+hard.alr.lm &lt;- lm(y ~ ., cbind(y,hard.alr) %&gt;% data.frame())
+
+hard.ilr.glm.model &lt;- cv.glmnet(hard.ilr, y, alpha = 1)
+hard.ilr.glm &lt;- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambda.min)
+
+library(mgcv)
+dataset &lt;- cbind(data.frame(hardness = y),hard.clr) %&gt;% data.frame()
+dataset</code></pre>
+<pre><code>##    hardness            Al            Co            Cr          Cu            Fe
+## 1       418  1.155245e-01  1.155245e-01  1.155245e-01  0.11552453 -5.776227e-01
+## 2       423  1.155245e-01  1.155245e-01  1.155245e-01  0.11552453  1.155245e-01
+## 3       185 -9.989131e-01  1.997826e-01  1.997826e-01  0.19978262  1.997826e-01
+## 4       273 -1.835340e-01  3.670680e-02  3.670680e-02  0.03670680  3.670680e-02
+## 5       475  2.158100e-01 -4.316199e-02 -4.316199e-02 -0.04316199 -4.316199e-02
+## 6       558  4.910810e-01 -9.821621e-02 -9.821621e-02 -0.09821621 -9.821621e-02
+## 7       510  3.378876e-01 -6.757752e-02 -6.757752e-02 -0.06757752 -6.757752e-02
+## 8       603  6.938264e-01 -1.387653e-01 -1.387653e-01 -0.13876529 -1.387653e-01
+## 9       625  7.648278e-01 -1.529656e-01 -1.529656e-01 -0.15296556 -1.529656e-01
+## 10      655  8.594101e-01 -1.718820e-01 -1.718820e-01 -0.17188202 -1.718820e-01
+## 11      735  9.155102e-01 -1.831020e-01 -1.831020e-01 -0.18310205 -1.831020e-01
+## 12      358  4.928102e-02  4.928102e-02  4.928102e-02 -0.64987219  4.928102e-02
+## 13      586  2.310491e-01  2.310491e-01  2.310491e-01 -0.46209812 -4.620981e-01
+## 14      601  4.928102e-02  4.928102e-02  4.527481e-01 -0.64987219  4.928102e-02
+## 15      295 -4.440892e-16  6.931472e-01 -4.440892e-16 -0.69314718 -4.440892e-16
+## 16      310  4.440892e-16  4.440892e-16  4.440892e-16 -0.69314718  4.440892e-16
+## 17      451  4.928102e-02  4.527481e-01  4.928102e-02 -0.64987219  4.928102e-02
+## 18      546  2.310491e-01  2.310491e-01 -4.620981e-01 -0.46209812  2.310491e-01
+## 19      607 -4.440892e-16 -4.440892e-16  6.931472e-01 -0.69314718 -4.440892e-16
+## 20      537  4.928102e-02  4.928102e-02  4.928102e-02 -0.64987219  4.527481e-01
+## 21      514  4.440892e-16  4.440892e-16  4.440892e-16 -0.69314718  6.931472e-01
+## 22      604  2.310491e-01  2.310491e-01  2.310491e-01 -0.46209812  2.310491e-01
+## 23      609  6.931472e-01 -4.440892e-16 -4.440892e-16 -0.69314718 -4.440892e-16
+## 24      551  2.310491e-01 -4.620981e-01  2.310491e-01 -0.46209812  2.310491e-01
+## 25      280 -6.130636e-01  1.407082e-01  1.407082e-01 -0.61306357  1.407082e-01
+## 26      580  3.789744e-01 -4.846965e-02  3.789744e-01 -0.67707831 -4.846965e-02
+## 27      207 -5.776227e-01  1.155245e-01  1.155245e-01  0.11552453  1.155245e-01
+## 28      576  5.776227e-01 -1.155245e-01 -1.155245e-01 -0.11552453 -1.155245e-01
+## 29      602  4.527481e-01  4.928102e-02  4.928102e-02 -0.64987219  4.928102e-02
+## 30      764  1.357076e+00 -6.123648e-01  1.092383e+00 -0.61236479 -6.123648e-01
+## 31      591  1.198404e+00  9.979176e-02 -6.003730e-01 -0.60037299 -6.003730e-01
+## 32      701  1.198404e+00  5.029231e-01 -6.003730e-01 -0.60037299 -6.003730e-01
+## 33      768  1.078154e+00 -2.296177e-02 -7.086183e-01 -0.02296177  3.850065e-01
+## 34      702  1.262084e+00  1.634715e-01 -5.296756e-01 -0.52967564  1.634715e-01
+## 35      720  1.148898e+00  5.028620e-02  5.028620e-02 -0.64987855 -6.498786e-01
+## 36      694  1.148898e+00 -6.498786e-01  5.028620e-02 -0.64987855  5.028620e-02
+##               Ni
+## 1   1.155245e-01
+## 2  -5.776227e-01
+## 3   1.997826e-01
+## 4   3.670680e-02
+## 5  -4.316199e-02
+## 6  -9.821621e-02
+## 7  -6.757752e-02
+## 8  -1.387653e-01
+## 9  -1.529656e-01
+## 10 -1.718820e-01
+## 11 -1.831020e-01
+## 12  4.527481e-01
+## 13  2.310491e-01
+## 14  4.928102e-02
+## 15 -4.440892e-16
+## 16  6.931472e-01
+## 17  4.928102e-02
+## 18  2.310491e-01
+## 19 -4.440892e-16
+## 20  4.928102e-02
+## 21  4.440892e-16
+## 22 -4.620981e-01
+## 23 -4.440892e-16
+## 24  2.310491e-01
+## 25  8.040024e-01
+## 26  1.606887e-02
+## 27  1.155245e-01
+## 28 -1.155245e-01
+## 29  4.928102e-02
+## 30 -6.123648e-01
+## 31  5.029231e-01
+## 32  9.979176e-02
+## 33 -7.086183e-01
+## 34 -5.296756e-01
+## 35  5.028620e-02
+## 36  5.028620e-02</code></pre>
+<pre class="r"><code>hard.clr.gam &lt;- gam(hardness ~ Al +Co + Cr + Cu + Fe + Ni, data = dataset)
+
+
+
+
+#hard_ &lt;- rbind(v, hard_)
+
+
+predictions.full &lt;- data.frame(hard_) %&gt;% 
+  mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard_),
+         prediction.ilr.lm = predict(hard.ilr.lm, newx = hard.ilr),
+         #prediction.alr.lm = predict(hard.alr.lm, newx = hard.alr),
+         prediction.ilr.glm = predict(hard.ilr.glm, best_lambda = hard.ilr.glm.model$lambda.min, newx = hard.ilr),
+         prediction.clr.gam = predict(hard.clr.gam, newx = hard.clr),
+         pre = predict(hard.clr.lm, newx = row()))</code></pre>
+<pre class="r"><code>predictions.full %&gt;% colnames</code></pre>
+<pre><code>##  [1] &quot;Al&quot;                 &quot;Co&quot;                 &quot;Cr&quot;                
+##  [4] &quot;Cu&quot;                 &quot;Fe&quot;                 &quot;Ni&quot;                
+##  [7] &quot;hardness&quot;           &quot;prediction.clr.lm&quot;  &quot;prediction.ilr.lm&quot; 
+## [10] &quot;prediction.ilr.glm&quot; &quot;prediction.clr.gam&quot; &quot;pre&quot;</code></pre>
+<pre class="r"><code>predictions.full %&gt;% 
+  arrange(hardness) %&gt;% 
+  mutate(row_name = row_number()) %&gt;% 
+  pivot_longer(c(hardness, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = &quot;variable&quot;,values_to = &quot;value&quot;) %&gt;% #prediction.alr.lm
+  ggplot(aes(row_name, value, colour = variable), size = 3)+
+  geom_line(size = 2)+
+  labs(title = &quot;Hardness prediction&quot;,
+       subtitle = &quot;Comparing hardness prediction.alr.lm and actual hardness&quot;,
+       y = &quot;hardness&quot;,
+       x = &quot;rank ordered by ascending hardness&quot;)+
+  annotate(&quot;text&quot;, y = 200, x = 25,label = paste(&quot;RMSE = &quot;,
+    round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
+  ))+
+  theme_bw() </code></pre>
+<p><img src="/post/2020-07-03-compositional-analysis_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code># Linear regression on ILR logratio transformation  
+RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness)</code></pre>
+<pre><code>## [1] 63.40838</code></pre>
+<pre class="r"><code># Lasso regression on ILR logratio transformation
+RMSE(predictions.full$prediction.ilr.glm, predictions.full$hardness)</code></pre>
+<pre><code>## [1] 65.40847</code></pre>
+<pre class="r"><code># generalised additive model
+RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)</code></pre>
+<pre><code>## [1] 63.40838</code></pre>
+<pre class="r"><code>predictions.full %&gt;% 
+  arrange(desc(prediction.clr.gam))</code></pre>
+<pre><code>##      Al   Co   Cr   Cu   Fe   Ni hardness prediction.clr.lm prediction.ilr.lm
+## 1  43.0  6.0 33.0  6.0  6.0  6.0      764          862.2669          862.2669
+## 2  46.2 15.4  7.7  7.7 15.4  7.7      702          776.0906          776.0906
+## 3  42.9  7.1 14.3  7.1 14.3 14.3      694          753.5305          753.5305
+## 4  40.0 13.3  6.7 13.3 20.0  6.7      768          722.8038          722.8038
+## 5  42.9 14.3 14.3  7.1  7.1 14.3      720          694.3048          694.3048
+## 6  42.9 21.4  7.1  7.1  7.1 14.3      701          659.1580          659.1580
+## 7  37.5 12.5 12.5 12.5 12.5 12.5      735          649.1772          649.1772
+## 8  42.9 14.3  7.1  7.1  7.1 21.4      591          637.9353          637.9353
+## 9  35.9 12.8 12.8 12.8 12.8 12.8      655          635.1538          635.1538
+## 10 30.8 15.4 15.4  7.7 15.4 15.4      609          629.9691          629.9691
+## 11 33.3 13.3 13.3 13.3 13.3 13.3      625          611.5110          611.5110
+## 12 31.5 13.7 13.7 13.7 13.7 13.7      603          593.7628          593.7628
+## 13 25.0 16.7 16.7  8.3 16.7 16.7      602          570.1916          570.1916
+## 14 23.0 15.0 23.0  8.0 15.0 16.0      580          569.5498          569.5498
+## 15 28.6 14.3 14.3 14.3 14.3 14.3      576          564.7153          564.7153
+## 16 20.0 20.0 20.0 10.0 20.0 10.0      604          560.1246          560.1246
+## 17 26.5 14.7 14.7 14.7 14.7 14.7      558          543.0824          543.0824
+## 18 20.0 10.0 20.0 10.0 20.0 20.0      551          523.6341          523.6341
+## 19 15.4 15.4 15.4  7.7 30.8 15.4      514          506.1590          506.1590
+## 20 23.1 15.4 15.4 15.4 15.4 15.4      510          504.7886          504.7886
+## 21 15.4 15.4 30.8  7.7 15.4 15.4      607          498.4650          498.4650
+## 22 16.7 16.7 16.7  8.3 25.0 16.7      537          498.1242          498.1242
+## 23 18.2 18.2 18.2 18.2 18.2  9.1      423          494.8708          494.8708
+## 24 16.7 16.7 25.0  8.3 16.7 16.7      601          493.6458          493.6458
+## 25 20.6 15.9 15.9 15.9 15.9 15.9      475          474.2728          474.2728
+## 26 20.0 20.0 10.0 10.0 20.0 20.0      546          472.6960          472.6960
+## 27 20.0 20.0 20.0 10.0 10.0 20.0      586          465.0021          465.0021
+## 28 16.7 25.0 16.7  8.3 16.7 16.7      451          463.9957          463.9957
+## 29 15.4 30.8 15.4  7.7 15.4 15.4      295          447.5269          447.5269
+## 30 16.7 16.7 16.7  8.3 16.7 25.0      358          442.7553          442.7553
+## 31 15.4 15.4 15.4  7.7 15.4 30.8      310          411.0364          411.0364
+## 32 18.2 18.2 18.2 18.2  9.1 18.2      418          399.7482          399.7482
+## 33 13.8 17.2 17.2 17.2 17.2 17.2      273          374.4486          374.4486
+## 34  9.1 18.2 18.2 18.2 18.2 18.2      207          275.9381          275.9381
+## 35  8.0 17.0 17.0  8.0 17.0 33.0      280          262.9370          262.9370
+## 36  5.7 18.9 18.9 18.9 18.9 18.9      185          170.6279          170.6279
+##          s0 prediction.clr.gam      pre
+## 1  845.8575           862.2669 862.2669
+## 2  736.4350           776.0906 776.0906
+## 3  745.0895           753.5305 753.5305
+## 4  693.7227           722.8038 722.8038
+## 5  682.4577           694.3048 694.3048
+## 6  637.9623           659.1580 659.1580
+## 7  644.1064           649.1772 649.1772
+## 8  633.6796           637.9353 637.9353
+## 9  631.3629           635.1538 635.1538
+## 10 616.8817           629.9691 629.9691
+## 11 609.8781           611.5110 611.5110
+## 12 593.7497           593.7628 593.7628
+## 13 562.4756           570.1916 570.1916
+## 14 565.8452           569.5498 569.5498
+## 15 567.3534           564.7153 564.7153
+## 16 543.4782           560.1246 560.1246
+## 17 547.6951           543.0824 543.0824
+## 18 536.1144           523.6341 523.6341
+## 19 497.2330           506.1590 506.1590
+## 20 512.8964           504.7886 504.7886
+## 21 500.6779           498.4650 498.4650
+## 22 492.8304           498.1242 498.1242
+## 23 493.9500           494.8708 494.8708
+## 24 494.8356           493.6458 493.6458
+## 25 485.1658           474.2728 474.2728
+## 26 470.6655           472.6960 472.6960
+## 27 474.1104           465.0021 465.0021
+## 28 456.7391           463.9957 463.9957
+## 29 435.2290           447.5269 447.5269
+## 30 452.4528           442.7553 442.7553
+## 31 427.8651           411.0364 411.0364
+## 32 424.5821           399.7482 399.7482
+## 33 394.4527           374.4486 374.4486
+## 34 304.9334           275.9381 275.9381
+## 35 292.0007           262.9370 262.9370
+## 36 209.2351           170.6279 170.6279</code></pre>
 
     </div>
   </article>
@@ -232,6 +468,9 @@ data %&gt;%
 
 
     
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 
     
   </body>
