@@ -157,4 +157,94 @@ data %>%
 
 
 ```
+### Predictive modelling
+
+Compositional data can be transformed to satisfy linearity by using logratio transformations. Additive, isometric, and centre logratio transformations are available. 
+
+These transformation functions are available within the 'compositions' R package. Ratio transformations have issues with zero-value elements.
+
+PRINCIPLES OF COMPOSITIONAL DATA ANALYSIS
+BY JOHN AITCHISON
+
+
+```{r}
+
+library(compositions)
+library(caret)
+library(glmnet)
+hard <- read_csv("hardness.csv")
+
+#hard[,1:ncol(hard)-1]
+
+# Filtering out zero values for logratio transformations
+hard_ <- hard %>% 
+  filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
+
+# Setting x, y
+y <- hard_$hardness
+x <- hard_[,1:ncol(hard)-1]
+
+
+
+
+hard.clr <- x %>% 
+  clr()
+hard.ilr <- x %>% 
+  ilr()
+hard.alr <- x %>% 
+  alr()
+
+
+
+hard.clr.lm <- lm(y ~ ., cbind(y,hard.clr) %>% data.frame())
+hard.ilr.lm <- lm(y ~ ., cbind(y,hard.ilr) %>% data.frame())
+hard.alr.lm <- lm(y ~ ., cbind(y,hard.alr) %>% data.frame())
+
+hard.ilr.glm.model <- cv.glmnet(hard.ilr, y, alpha = 1)
+hard.ilr.glm <- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambda.min)
+
+library(mgcv)
+dataset <- cbind(data.frame(hardness = y),hard.clr) %>% data.frame()
+dataset
+hard.clr.gam <- gam(hardness ~ Al * Al+Co + Cr + Cu + Fe + Ni, data = dataset)
+
+
+
+
+predictions.full <- data.frame(hard_) %>% 
+  mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard.clr),
+         prediction.ilr.lm = predict(hard.ilr.lm, newx = hard.ilr),
+         prediction.alr.lm = predict(hard.alr.lm, newx = hard.alr),
+         prediction.ilr.glm = predict(hard.ilr.glm, best_lambda = hard.ilr.glm.model$lambda.min, newx = hard.ilr),
+         prediction.clr.gam = predict(hard.clr.gam, newx = hard.clr))
+
+predictions.full %>% 
+  arrange(hardness) %>% 
+  mutate(row_name = row_number()) %>% 
+  pivot_longer(c(hardness, prediction.alr.lm, prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% 
+  ggplot(aes(row_name, value, lty = variable))+
+  geom_line()+
+  labs(title = "Hardness prediction",
+       subtitle = "Comparing hardness prediction.alr.lm and actual hardness",
+       y = "hardness",
+       x = "rank ordered by ascending hardness")+
+  annotate("text", y = 200, x = 25,label = paste("RMSE = ",
+    round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
+  ))+
+  theme_bw()
+
+
+# Linear regression on ILR logratio transformation  
+RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness)
+
+# Lasso regression on ILR logratio transformation
+RMSE(predictions.full$prediction.ilr.glm, predictions.full$hardness)
+
+# generalised additive model
+RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
+
+
+
+
+```
 
