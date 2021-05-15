@@ -209,7 +209,7 @@ hard.ilr.glm <- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambd
 library(mgcv)
 dataset <- cbind(data.frame(hardness = y),hard.clr) %>% data.frame()
 dataset
-hard.clr.gam <- gam(hardness ~ Al +Co + Cr + Cu + Fe + Ni, data = dataset)
+hard.clr.gam <- gam(hardness ~ Al+ Co + Co + Cr + Cu + Fe + Ni, data = dataset)
 
 
 
@@ -271,5 +271,22 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 predictions.full %>% 
   arrange(desc(prediction.clr.gam))
 ```
+
+```{r}
+library(MASS)
+
+y
+
+x
+
+library(Compositional)
+
+y
+mod1 <- comp.reg(y, cbind(y,x))
+?comp.reg
+
+mod2 <- comp.reg(y, x, type = "spatial")
+```
+
 
 
