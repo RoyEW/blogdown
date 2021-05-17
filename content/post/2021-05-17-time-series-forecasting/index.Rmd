@@ -149,3 +149,14 @@ cbind(times.predictions, day = 1:nrow(times.predictions)+999) %>%
 ```
 
 
+
+# Forecasting cryptocurrency
+
+```{r}
+btc <- read_csv("btc.csv")
+btc_model <- btc$`Closing Price (USD)` %>% auto.arima(trace = TRUE,stationary = FALSE)
+
+
+forecast(btc_model) %>% plot()
+```
+
