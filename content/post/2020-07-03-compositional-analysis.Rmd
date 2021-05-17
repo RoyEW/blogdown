@@ -160,7 +160,9 @@ data %>%
 
 # Predictive modelling
 
-Compositional data can be transformed to satisfy linearity by using logratio transformations. Additive, isometric, and centre logratio transformations are available. 
+Compositional data can be transformed to satisfy linearity by using logratio transformations for representation in a Euclidean space. Additive, isometric, and centre logratio transformations are available.  
+
+The transformations give the same coefficients for the multi-variate regressions so we will stick with the additive logratio defined as: $$alr(x) = \left [\log\frac{x_1}{x_n},\ldots,\log\frac{x_{n-1}}{x_n}\right]$$
 
 These transformation functions are available within the 'compositions' R package. Ratio transformations have issues with zero-value elements.
 
@@ -171,6 +173,7 @@ BY JOHN AITCHISON
 ```{r}
 library(compositions)
 library(caret)
+
 library(glmnet)
 hard <- read_csv("hardness.csv")
 #hard %>% arrange(-hardness)
@@ -178,8 +181,7 @@ hard <- read_csv("hardness.csv")
 
 
 ```{r}
-#v <- tibble(data.frame(Al = c(16.6666,40), Co = c(16.6666,20), Cr = c(16.6666,19), Cu = c(16.6666,1), Fe = c(16.66667,19), Ni =c(16.6666,1), hardness = 0))
-#v
+
 # Filtering out zero values for logratio transformations
 hard_ <- hard %>% 
   filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
@@ -187,9 +189,6 @@ hard_ <- hard %>%
 # Setting x, y
 y <- hard_$hardness
 x <- hard_[,1:ncol(hard)-1]
-
-
-
 
 hard.clr <- x %>% 
   clr()
@@ -212,12 +211,6 @@ dataset <- cbind(data.frame(hardness = y),hard.clr) %>% data.frame()
 dataset
 hard.clr.gam <- gam(hardness ~ Al+ Co + Co + Cr + Cu + Fe + Ni, data = dataset)
 
-
-
-
-#hard_ <- rbind(v, hard_)
-
-
 predictions.full <- data.frame(hard_) %>% 
   mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard_),
          prediction.ilr.lm = predict(hard.ilr.lm, newx = hard.ilr),
@@ -232,12 +225,12 @@ predictions.full <- data.frame(hard_) %>%
 
 
 ```{r}
-predictions.full %>% colnames
+# predictions.full %>% colnames
 
 predictions.full %>% 
   arrange(hardness) %>% 
   mutate(row_name = row_number()) %>% 
-  pivot_longer(c(hardness, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% #prediction.alr.lm
+  pivot_longer(c(hardness, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% 
   ggplot(aes(row_name, value, colour = variable), size = 3)+
   geom_line(size = 2)+
   labs(title = "Hardness prediction",
@@ -264,14 +257,17 @@ RMSE(predictions.full$prediction.ilr.glm, predictions.full$hardness)
 # generalised additive model
 RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 
-
+library(robCompositions)
+aDist(x = hard_[,1:ncol(hard)-1])
 
 ```
 
-```{r}
-predictions.full %>% 
-  arrange(desc(prediction.clr.gam))
-```
+
+# Principal component analysis for compositional data vectors
+https://link.springer.com/article/10.1007/s00180-015-0570-1
+
+
+
 
 
 
