@@ -258,6 +258,9 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 # aDist(x = hard_[,1:ncol(hard)-1])
 #Compositional::alfa.ridge(as.matrix(y), as.matrix(x),a = 0.01, lambda = 1)
 
+
+
+
 ```
 
 
