@@ -234,10 +234,13 @@ predictions.full %>%
        subtitle = "Comparing hardness prediction.alr.lm and actual hardness",
        y = "hardness",
        x = "rank ordered by ascending hardness")+
-  annotate("text", y = 200, x = 25,label = paste("RMSE = ",
-    round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
-  ))+
-  theme_bw() 
+  #annotate("text", y = 200, x = 25,label = paste("RMSE = ",
+   # round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
+  #))+
+  theme_bw()+
+  theme(legend.position = c(0.8,0.2),
+        legend.background = element_rect(fill = "white", color = "black"))
+   
 ```
 
 
