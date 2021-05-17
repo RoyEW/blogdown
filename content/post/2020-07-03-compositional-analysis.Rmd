@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
 
 #library(robustbase)
 #library(energy)
-#library(gtools)
+#library(gtools)  
 library(compositions)
 library(readr)
 library(tidyverse)
