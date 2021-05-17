@@ -144,7 +144,7 @@ cbind(times.predictions, day = 1:nrow(times.predictions)+999) %>%
   labs(title = "Forecasting asset price with the Arima model",
        subtitle = "A 60 day forecast - 95% and 80% confidence intervals",
        y = "price")
-  
+   
 
 ```
 
