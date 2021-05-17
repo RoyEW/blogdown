@@ -172,6 +172,7 @@ BY JOHN AITCHISON
 
 ```{r}
 library(compositions)
+
 library(caret)
 
 library(glmnet)
