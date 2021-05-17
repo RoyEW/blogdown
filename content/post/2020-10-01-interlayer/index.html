@@ -7,23 +7,20 @@ categories: []
 tags: []
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 
 <pre class="r"><code>library(tidyverse)
 library(gganimate)
-library(readxl)
-
-interlayer_ &lt;- read_excel(file.path(&quot;data&quot;,&quot;interlayer.xlsx&quot;))
+library(readxl)</code></pre>
+<pre class="r"><code>interlayer_ &lt;- read_excel(file.path(&quot;interlayer.xlsx&quot;))
 
 interlayer &lt;- interlayer_ %&gt;% 
   pivot_longer(cols = c(colnames(interlayer_)[2],colnames(interlayer_)[9:15]),names_to = c(&quot;composition&quot;),values_to=c(&quot;CTE&quot;))
 
 new &lt;- interlayer %&gt;% filter(composition %in% c(&quot;Zr&quot;,&quot;Cr&quot;)) %&gt;%
-  rename(&quot;comp&quot;=&quot;composition&quot;)
-
-
-p &lt;- interlayer %&gt;% 
+  rename(&quot;comp&quot;=&quot;composition&quot;)</code></pre>
+<pre class="r"><code>p &lt;- interlayer %&gt;% 
   filter(!composition %in% c(&quot;Zr&quot;,&quot;Cr&quot;)) %&gt;% 
   ggplot(aes(Temp,CTE,colour = composition))+
   geom_text(aes(label = ifelse(Temp == 1600,composition,&quot;&quot;)),hjust = 0, nudge_y = 0.2,nudge_x = 20)+
@@ -38,11 +35,9 @@ p &lt;- interlayer %&gt;%
   lims(x=c(0,2100),y=c(0,18))+
   annotate(&quot;text&quot;,x=300+273.15,y=1,angle=90,label=&quot;PWR Operation Range&quot;,size=3,hjust=0.15)+
   geom_vline(aes(xintercept=273.15+290),lty=2)+
-   geom_vline(aes(xintercept=273.15+325),lty=2)
-
-  
-p</code></pre>
-<p><img src="/post/2020-10-01-interlayer_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+   geom_vline(aes(xintercept=273.15+325),lty=2)</code></pre>
+<pre class="r"><code>p</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>anim &lt;- p + transition_states(composition,
                     transition_length = 10,
                     state_length = 1)+
@@ -50,4 +45,4 @@ p</code></pre>
           subtitle = &#39;Showing {closest_state}&#39;)+
    ease_aes(&#39;cubic-in-out&#39;)
 animate(anim)</code></pre>
-<p><img src="/post/2020-10-01-interlayer_files/figure-html/unnamed-chunk-1-1.gif" /><!-- --></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.gif" /><!-- --></p>

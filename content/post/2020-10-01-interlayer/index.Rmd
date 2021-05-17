@@ -16,16 +16,23 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
 library(tidyverse)
 library(gganimate)
 library(readxl)
+```
 
-interlayer_ <- read_excel(file.path("data","interlayer.xlsx"))
+
+```{r}
+interlayer_ <- read_excel(file.path("interlayer.xlsx"))
 
 interlayer <- interlayer_ %>% 
   pivot_longer(cols = c(colnames(interlayer_)[2],colnames(interlayer_)[9:15]),names_to = c("composition"),values_to=c("CTE"))
 
 new <- interlayer %>% filter(composition %in% c("Zr","Cr")) %>%
   rename("comp"="composition")
+```
 
 
+
+
+```{r}
 p <- interlayer %>% 
   filter(!composition %in% c("Zr","Cr")) %>% 
   ggplot(aes(Temp,CTE,colour = composition))+
@@ -42,9 +49,15 @@ p <- interlayer %>%
   annotate("text",x=300+273.15,y=1,angle=90,label="PWR Operation Range",size=3,hjust=0.15)+
   geom_vline(aes(xintercept=273.15+290),lty=2)+
    geom_vline(aes(xintercept=273.15+325),lty=2)
+```
 
-  
+
+```{r}
 p
+```
+
+
+```{r}
 anim <- p + transition_states(composition,
                     transition_length = 10,
                     state_length = 1)+

@@ -7,7 +7,7 @@ categories: []
 tags: []
 ---
 
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 
 <pre class="r"><code>library(tidyverse)
@@ -24,7 +24,7 @@ library(tidyr)</code></pre>
 <p><span class="math display">\[Confidence = \frac{freq(X, Y)}{freq(X)}\]</span></p>
 <p><span class="math display">\[Lift = \frac{Support}{Supp(X)\times Supp(Y)}\]</span></p>
 <p>APRIORI Algorithm</p>
-<pre class="r"><code>transactions &lt;- read.csv(file.path(&quot;data&quot;,&quot;basket.csv&quot;))
+<pre class="r"><code>transactions &lt;- read.csv(file.path(&quot;basket.csv&quot;))
 
 df &lt;- transactions %&gt;%
   group_by(Member_number, Date) %&gt;%
@@ -650,9 +650,9 @@ colnames(transaction_object)</code></pre>
 ## [1051] &quot;9=white bread&quot;               &quot;9=whole milk&quot;               
 ## [1053] &quot;10=curd&quot;                     &quot;11=newspapers&quot;</code></pre>
 <pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;absolute&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
-<p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>itemFrequencyPlot(transaction_object,topN=30,type=&quot;relative&quot;,col=brewer.pal(8,&#39;Pastel1&#39;), main=&quot;Absolute Item Frequency Plot&quot;)</code></pre>
-<p><img src="/post/2020-10-07-market-basket-analysis_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 <pre class="r"><code>rules &lt;- apriori(transaction_object, parameter = list(supp=0.0001, conf=0.15,minlen=2))</code></pre>
 <pre><code>## Apriori
 ## 

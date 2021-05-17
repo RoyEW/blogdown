@@ -73,7 +73,7 @@
 
     <div class="article-content">
       
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/2020/07/16/climate-change-data/index_files/header-attrs/header-attrs.js"></script>
 
 
 <div id="climate-change-data" class="section level1">
@@ -81,7 +81,6 @@
 <p>data sourced from the World Bank using WDI R package api.</p>
 <pre class="r"><code>library(Quandl)</code></pre>
 <pre><code>## Loading required package: xts</code></pre>
-<pre><code>## Warning: package &#39;xts&#39; was built under R version 4.0.3</code></pre>
 <pre><code>## Loading required package: zoo</code></pre>
 <pre><code>## Warning: package &#39;zoo&#39; was built under R version 4.0.4</code></pre>
 <pre><code>## 
@@ -89,23 +88,20 @@
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     as.Date, as.Date.numeric</code></pre>
-<pre class="r"><code>library(wbstats)</code></pre>
-<pre><code>## Warning: package &#39;wbstats&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(rWBclimate)
+<pre class="r"><code>library(wbstats)
+library(rWBclimate)
 library(WDI)</code></pre>
-<pre><code>## Warning: package &#39;WDI&#39; was built under R version 4.0.3</code></pre>
+<pre><code>## Warning: package &#39;WDI&#39; was built under R version 4.0.5</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ------------------------------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.0.5</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
 <pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
-## v tibble  3.0.6     v dplyr   1.0.4
+## v tibble  3.1.2     v dplyr   1.0.6
 ## v tidyr   1.1.3     v stringr 1.4.0
 ## v readr   1.4.0     v forcats 0.5.1</code></pre>
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## Warning: package &#39;tibble&#39; was built under R version 4.0.3</code></pre>
 <pre><code>## Warning: package &#39;tidyr&#39; was built under R version 4.0.4</code></pre>
-<pre><code>## Warning: package &#39;readr&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## Warning: package &#39;forcats&#39; was built under R version 4.0.3</code></pre>
-<pre><code>## -- Conflicts ---------------------------------------------------------------------------------- tidyverse_conflicts() --
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 4.0.5</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::first()  masks xts::first()
 ## x dplyr::lag()    masks stats::lag()
@@ -127,7 +123,7 @@ dat %&gt;%
        y = &quot;CO2 and Equiv. emissions&quot;)+
   theme(axis.text.x  = element_text(),axis.text.y  = element_text(),legend.position = &quot;bottom&quot;)</code></pre>
 <pre><code>## Warning: Removed 64 row(s) containing missing values (geom_path).</code></pre>
-<p><img src="/post/2020-07-16-climate-change-data_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="/2020/07/16/climate-change-data/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <pre class="r"><code>data &lt;- dat %&gt;% 
   group_by(year) %&gt;% 
   summarise(total_emissions = sum(EN.ATM.GHGT.KT.CE)) %&gt;% 
@@ -148,7 +144,7 @@ data %&gt;%
         legend.position=&quot;none&quot;)+
   scale_y_continuous(labels=scales::percent_format())</code></pre>
 <pre><code>## Warning: Removed 9 rows containing missing values (geom_rect).</code></pre>
-<p><img src="/post/2020-07-16-climate-change-data_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<p><img src="/2020/07/16/climate-change-data/index_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
 </div>
 
     </div>

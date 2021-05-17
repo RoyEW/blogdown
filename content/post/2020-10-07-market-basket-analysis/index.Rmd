@@ -37,7 +37,7 @@ $$Lift = \frac{Support}{Supp(X)\times Supp(Y)}$$
 APRIORI Algorithm
 
 ```{r}
-transactions <- read.csv(file.path("data","basket.csv"))
+transactions <- read.csv(file.path("basket.csv"))
 
 df <- transactions %>%
   group_by(Member_number, Date) %>%

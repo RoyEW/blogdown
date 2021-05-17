@@ -19,7 +19,6 @@ library(lubridate)
 
 ``` 
 
-#test1
 
 ```{python echo=TRUE, results = 'hide'}
 import pandas as pd
@@ -83,7 +82,7 @@ for state, state_results in all_results.items():
         records.append(data_point)
 
 time_series_df = pd.DataFrame.from_records(records)
-time_series_df.to_csv('data/nyt_ts.csv', encoding='utf-8')
+#time_series_df.to_csv('data/nyt_ts.csv', encoding='utf-8')
 ```
 
 ```{r}
