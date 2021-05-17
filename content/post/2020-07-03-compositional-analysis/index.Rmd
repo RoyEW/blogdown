@@ -243,7 +243,7 @@ predictions.full %>%
 
 ```{r}
 
- 
+  
 
 # Linear regression on ILR logratio transformation  
 RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness)
@@ -256,7 +256,7 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 
 # library(robCompositions)
 # aDist(x = hard_[,1:ncol(hard)-1])
-
+#Compositional::alfa.ridge(as.matrix(y), as.matrix(x),a = 0.01, lambda = 1)
 
 ```
 
