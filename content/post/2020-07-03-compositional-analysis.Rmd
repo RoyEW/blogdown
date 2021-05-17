@@ -157,7 +157,8 @@ data %>%
 
 
 ```
-### Predictive modelling
+
+# Predictive modelling
 
 Compositional data can be transformed to satisfy linearity by using logratio transformations. Additive, isometric, and centre logratio transformations are available. 
 
