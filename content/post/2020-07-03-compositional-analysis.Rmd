@@ -1,5 +1,5 @@
 ---
-title: Metallurgical data
+title: Metallurgical data and compositional analysis
 author: ~
 date: '2020-07-03'
 slug: compositional-analysis
@@ -225,7 +225,7 @@ predictions.full <- data.frame(hard_) %>%
          prediction.clr.gam = predict(hard.clr.gam, newx = hard.clr),
          pre = predict(hard.clr.lm, newx = row()))
 
-
+ 
 
 ```
 
@@ -270,22 +270,6 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 ```{r}
 predictions.full %>% 
   arrange(desc(prediction.clr.gam))
-```
-
-```{r}
-library(MASS)
-
-y
-
-x
-
-library(Compositional)
-
-y
-mod1 <- comp.reg(y, cbind(y,x))
-?comp.reg
-
-mod2 <- comp.reg(y, x, type = "spatial")
 ```
 
 
