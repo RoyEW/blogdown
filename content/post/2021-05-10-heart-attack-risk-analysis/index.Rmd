@@ -112,7 +112,7 @@ heart %>%
   count(sex)
 ```
 
-There are ~twice the amount of men featured in the dataset than women.
+There are around twice the amount of men featured in the dataset compared to women.
 
 ## Chest pain distribution
 
