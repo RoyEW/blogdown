@@ -7,6 +7,10 @@ categories: []
 tags: [Rcpp]
 ---
 
+```{r setup, include=FALSE, message=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message = FALSE)
+```
+
 
 ```{r warning=FALSE, include=FALSE}
 library(Rcpp)
