@@ -1,5 +1,5 @@
 ---
-title: Metallurgical, compositional analysis
+title: Metallurgical compositional analysis
 author: ~
 date: '2020-07-03'
 slug: compositional-analysis
@@ -13,15 +13,10 @@ knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
 ```
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
-
-#library(robustbase)
-#library(energy)
-#library(gtools)  
 library(compositions)
 library(readr)
 library(tidyverse)
 library(neuralnet)
-
 library(caret)
 library(caretEnsemble)
 library(httr)
@@ -259,13 +254,14 @@ RMSE(predictions.full$prediction.ilr.glm, predictions.full$hardness)
 # generalised additive model
 RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 
-library(robCompositions)
-aDist(x = hard_[,1:ncol(hard)-1])
+# library(robCompositions)
+# aDist(x = hard_[,1:ncol(hard)-1])
+
 
 ```
 
 
-# Principal component analysis for compositional data vectors
+# Principal component analysis for comp ositional data vectors
 https://link.springer.com/article/10.1007/s00180-015-0570-1
 
 

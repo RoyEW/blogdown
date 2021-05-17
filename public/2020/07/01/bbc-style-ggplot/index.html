@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Hugo 0.73.0" />
+<meta name="generator" content="Hugo 0.83.1" />
 
 
 <title>Election2019 - Roy Blogdown</title>
@@ -73,15 +73,7 @@
 
     <div class="article-content">
       
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
-<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="/rmarkdown-libs/plotly-binding/plotly.js"></script>
-<script src="/rmarkdown-libs/typedarray/typedarray.min.js"></script>
-<script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
-<link href="/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
-<link href="/rmarkdown-libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="/rmarkdown-libs/plotly-main/plotly-latest.min.js"></script>
+<script src="/2020/07/01/bbc-style-ggplot/index_files/header-attrs/header-attrs.js"></script>
 
 
 <pre class="r"><code>library(tidyverse)
@@ -106,7 +98,7 @@ election %&gt;%
   scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="voting-mix-of-the-least-populated-constituencies" class="section level3">
 <h3>Voting mix of the least populated constituencies</h3>
@@ -120,7 +112,7 @@ election %&gt;%
   scale_fill_manual(values=party_colours)+
   coord_flip()+
   bbc_style()</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="where-are-the-conservative-strongholds" class="section level3">
 <h3>Where are the Conservative strongholds?</h3>
@@ -135,13 +127,11 @@ election %&gt;%
   scale_y_continuous(label=scales::percent_format()) +
   coord_flip()+
   bbc_style()</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="brexit-party-significance" class="section level3">
 <h3>Brexit Party significance</h3>
 <pre class="r"><code>election %&gt;% 
-  view()
-election %&gt;% 
   mutate(constituency_name=fct_reorder(constituency_name, -con_p)) %&gt;% 
   arrange(con_p) %&gt;% 
   gather(Party, Proportion, con_p, lab_p, snp_p, brexit_p, ld_p) %&gt;% 
@@ -156,28 +146,28 @@ election %&gt;%
   )+
  bbc_style()+
   theme(axis.text.x = element_blank())</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code>election %&gt;% 
   ggplot(aes(con_p)) +
   geom_histogram(fill=party_colours[2])+
   bbc_style()</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>election %&gt;% 
   ggplot(aes(lab_p))+
   geom_histogram(fill=party_colours[3])+
   bbc_style()</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
 <pre class="r"><code>election %&gt;% 
   ggplot(aes(brexit_p))+
   geom_histogram(fill=party_colours[1])+
   bbc_style()</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-3.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-8-3.png" width="672" /></p>
 <pre class="r"><code>election %&gt;%
   filter(!brexit_p==0) %&gt;% 
   ggplot(aes(brexit_p))+
   geom_histogram(fill=party_colours[1])+
   bbc_style()</code></pre>
-<p><img src="/post/2020-07-01-bbc-style-ggplot_files/figure-html/unnamed-chunk-8-4.png" width="672" /></p>
+<p><img src="/2020/07/01/bbc-style-ggplot/index_files/figure-html/unnamed-chunk-8-4.png" width="672" /></p>
 <pre class="r"><code>election_noscotland &lt;- election %&gt;% 
   filter(!country_name==&quot;Scotland&quot;)
   

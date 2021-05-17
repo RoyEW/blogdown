@@ -6,11 +6,7 @@
     <description>Recent content on Roy Blogdown</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 May 2021 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 10 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Heart attack risk analysis</title>
       <link>/2021/05/10/heart-attack-risk-analysis/</link>
@@ -146,7 +142,7 @@ This site was built using the blogdown package. The theme was forked from @jruth
     </item>
     
     <item>
-      <title>Metallurgical data</title>
+      <title>Metallurgical compositional analysis</title>
       <link>/2020/07/03/compositional-analysis/</link>
       <pubDate>Fri, 03 Jul 2020 00:00:00 +0000</pubDate>
       

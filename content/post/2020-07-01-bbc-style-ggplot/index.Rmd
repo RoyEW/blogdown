@@ -25,30 +25,30 @@ time_to_seconds <- function(x){
 100*(x-floor(x))+floor(x)*60  
 }
 
-data_raw <- read.csv('data.csv')
+#data_raw <- read.csv('data.csv')
 
-data <- data_raw %>% 
-  select(date,roy_time,jack_time) %>% 
-  mutate(roy_time = roy_time / 60,
-         jack_time = jack_time / 60) %>% 
-  pivot_longer(c(roy_time,jack_time), names_to="person",values_to = "time")
+# data <- data_raw %>% 
+#   select(date,roy_time,jack_time) %>% 
+#   mutate(roy_time = roy_time / 60,
+#          jack_time = jack_time / 60) %>% 
+#   pivot_longer(c(roy_time,jack_time), names_to="person",values_to = "time")
 
 
 ```
 
 ```{r echo=FALSE, include = FALSE}
-p <- data %>% 
-  ggplot(aes(date,time,colour=person, group = person))+
-  geom_line(size=2)+
-  scale_color_discrete(name='Rebel',labels=c('Jack','Roy'))+
-  labs(
-    title='Jack & Roy running times 1.6 mile',
-    x="",
-    y="Time in minutes"
-  )+
-  scale_y_continuous(labels=scales::label_number_auto())
+# p <- data %>% 
+#   ggplot(aes(date,time,colour=person, group = person))+
+#   geom_line(size=2)+
+#   scale_color_discrete(name='Rebel',labels=c('Jack','Roy'))+
+#   labs(
+#     title='Jack & Roy running times 1.6 mile',
+#     x="",
+#     y="Time in minutes"
+#   )+
+#   scale_y_continuous(labels=scales::label_number_auto())
 
-ggplotly(p)
+#ggplotly(p)
 ```
 
 
@@ -117,8 +117,6 @@ election %>%
 
 ```{r, message=FALSE, warning=FALSE}
 
-election %>% 
-  view()
 election %>% 
   mutate(constituency_name=fct_reorder(constituency_name, -con_p)) %>% 
   arrange(con_p) %>% 
