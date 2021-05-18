@@ -25,33 +25,35 @@ times &lt;- RGENERATE::generate(FUN = rnorm, n = 1000, K = 3,names = c(&quot;ass
 times %&gt;% 
   ggplot(aes(day, price))+
   geom_line()+theme_minimal() +
-  geom_smooth(method = &#39;lm&#39;, lty = 2, colour = &#39;red&#39;, se = F)</code></pre>
+  geom_smooth(method = &#39;lm&#39;, lty = 2, colour = &#39;red&#39;, se = F)+
+  labs(title = &quot;Dynamically created time series&quot;,
+       subtitle = &quot;Created using the RGENERATE pakage&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <div id="arima-modelling-assumptions" class="section level1">
 <h1>ARIMA modelling assumptions</h1>
 <p><span class="math display">\[X_t = c + \epsilon_t + \sum_{i=1}^p\beta_iX_{t-i}+\sum_{i=1}^q\theta_i\epsilon_{t-i}\]</span></p>
 <ol style="list-style-type: decimal">
-<li><p>An Arima model is a regression combining an autoregression with integration and a moving average.</p></li>
-<li><p>For example, an ARIMA(3, 5) model refers to a model with 3 autoregressive terms like <span class="math inline">\(X_t = \beta_1X_{t-1}+\ldots+\beta_3X_{t-3}+\ldots\)</span>, and 5 moving average terms <span class="math inline">\(X_t=\ldots+\theta_{1} \epsilon_{t-1}+\ldots+\theta_5\epsilon_{t-5}\)</span></p></li>
+<li><p>An ARIMA model is a regression combining an autoregression with integration and a moving average.</p></li>
+<li><p>For example, an ARIMA(3, 2, 5) model refers to a model with 3 autoregressive terms like <span class="math inline">\(X_t = \beta_1X_{t-1}+\ldots+\beta_3X_{t-3}+\ldots\)</span>, 2 orders of differencing to remove non-stationarity, and 5 moving average terms <span class="math inline">\(X_t=\ldots+\theta_{1} \epsilon_{t-1}+\ldots+\theta_5\epsilon_{t-5}\)</span></p></li>
 <li><p>We should be able to test to see which is the optimal number of terms to use for our model to aid in predictive power.</p></li>
-<li><p>The Arima model assumes that the data is univariate, that is it assumes there is only one explanatory variable, that being the previous consecutive price point.</p></li>
-<li><p>Assumes the data is stationary, that is the error term <span class="math inline">\(\epsilon_t\)</span> is normally distributed and considered to be ‘white-noise’.</p></li>
+<li><p>The ARIMA model assumes that the data is univariate, that is it assumes there is only one explanatory variable, that being the previous consecutive price point.</p></li>
+<li><p>It also assumes the data to be stationary, that is the error term <span class="math inline">\(\epsilon_t\)</span> is normally distributed and considered to be ‘white-noise’.</p></li>
 </ol>
 <div id="augmented-dickey-fuller-test" class="section level3">
 <h3>Augmented Dickey-Fuller test</h3>
-<p>The DF test checks to see if the times series is stationary. It is possible to simply plot the residuals of the data and then ‘eyeball’ it to see if the error terms largely tend towards zero and are normally distributed, that is <span class="math inline">\(\epsilon_t\)</span> ~ <span class="math inline">\(N(0, \sigma^2)\)</span>. Otherwise…</p>
-<p><span class="math display">\[\Delta y_t=c+\beta t + \gamma y_{t-1} + \sum_{i = 1}^{p}\delta\Delta y_{t-i} + e_t\]</span> where <span class="math inline">\(c =\)</span> regression constant. <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\gamma\)</span>, <span class="math inline">\(\delta_i\)</span> are regression coefficients. <span class="math inline">\(p =\)</span> number of logs. The Dickey-Fuller tests for significance of the <span class="math inline">\(\gamma\)</span> coefficient with the null hypothesis <span class="math inline">\(H_0 : \gamma = 1\)</span>, the lag coefficient is significant therefore the times series is non-stationary against <span class="math inline">\(H_1:\gamma \neq1\)</span>, insignificant lag variable coefficient therefore the model exhibits stationarity.</p>
+<p>The Dickey-Fuller test checks to see if the time series is stationary. It is possible to simply plot the residuals of the data and then ‘eyeball’ it to see if the error terms largely tend towards zero and are normally distributed, that is <span class="math inline">\(\epsilon_t\)</span> ~ <span class="math inline">\(\\N(0, \sigma^2)\)</span>. Otherwise…</p>
+<p><span class="math display">\[\Delta y_t=c+\beta t + \gamma y_{t-1} + \sum_{i = 1}^{p}\delta\Delta y_{t-i} + e_t\]</span> where <span class="math inline">\(c =\)</span> regression constant. <span class="math inline">\(\beta\)</span>, <span class="math inline">\(\gamma\)</span>, <span class="math inline">\(\delta_i\)</span> are regression coefficients. <span class="math inline">\(p =\)</span> number of lagged terms. The Dickey-Fuller test tests for significance of the <span class="math inline">\(\gamma\)</span> coefficient with the null hypothesis <span class="math inline">\(H_0 : \gamma = 1\)</span>, meaning that the lag coefficient is significant therefore the time series is non-stationary against <span class="math inline">\(H_1:\gamma \neq1\)</span>, meaning that the lag variable coefficient is insignificant and that the model exhibits stationarity.</p>
 <pre class="r"><code>(adf_output &lt;- adf.test(times$price))</code></pre>
 <pre><code>## 
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$price
-## Dickey-Fuller = -2.5274, Lag order = 9, p-value = 0.3551
+## Dickey-Fuller = -4.0025, Lag order = 9, p-value = 0.01
 ## alternative hypothesis: stationary</code></pre>
 <pre class="r"><code>adf_output$p.value</code></pre>
-<pre><code>## [1] 0.3550807</code></pre>
+<pre><code>## [1] 0.01</code></pre>
 <pre class="r"><code>adf_output$significant &lt;- ifelse(adf_output$p.value&lt;0.05,&quot;significant&quot;,&quot;insignificant&quot;)</code></pre>
-<p>The p value of 0.36 is insignificant which allows us to infer that our times series data exhibits non-stationarity as the lag variable has a significant coefficient. We are unable to reject the null hypothesis that the coefficient is equal to 1.</p>
+<p>The p value of 0.01 is significant which allows us to infer that our time series data exhibits stationarity as there is enough evidence (p &lt; 0.05) to suggest that there is no significant existance of a unit root. We are able to reject the null hypothesis that the coefficient is equal to 1.</p>
 <p>In the case of non-stationarity, there are a few options to coerce stationarity such as taking the log or the square roots of the data to stabalise non-constant variance, calculating the residuals from another fitted model, or simply taking another difference of our series data, that is <span class="math inline">\(\Delta^2\)</span>.</p>
 <p>This can be demonstrated as follows</p>
 <pre class="r"><code>times &lt;- times %&gt;% 
@@ -71,10 +73,10 @@ times %&gt;% ggplot(aes(day, diff_price)) + geom_line()+
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$diff_price
-## Dickey-Fuller = -9.4168, Lag order = 9, p-value = 0.01
+## Dickey-Fuller = -10.374, Lag order = 9, p-value = 0.01
 ## alternative hypothesis: stationary</code></pre>
 <p>Many other unit root tests exist such as the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test.</p>
-<p>Alternatively, seasonality can be removed from the times series data using the in-built R stats functions.</p>
+<p>Alternatively, seasonality can be removed from the time series data using the in-built R stats functions.</p>
 <pre class="r"><code>times.decomposed &lt;- ts(times$price, start = c(2000,1), frequency = 365) %&gt;% 
   decompose()
 times.season.adj &lt;- times$price - times.decomposed$seasonal
@@ -88,33 +90,40 @@ plot(times.season.adj.test)</code></pre>
 <div id="fitting-the-model" class="section level1">
 <h1>Fitting the model</h1>
 <p>There are options to choose from for how we estimate the accuracy of our model. Namely, ML = Maximum Likelihood estimation, AIC = <a href="https://www.scribbr.com/statistics/akaike-information-criterion/">Akaike Information Criterion</a>,</p>
-<pre class="r"><code>acf(times$price, lag.max=20)</code></pre>
+<pre class="r"><code>acf(times$price, lag.max=70)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>fitARIMA &lt;- arima(times$price, order=c(1,1,1),seasonal = list(order = c(1,0,0), period = 12),method=&quot;ML&quot;)
 
 
 confint(fitARIMA)</code></pre>
-<pre><code>##           2.5 %       97.5 %
-## ar1  -1.2008589 -0.314176316
-## ma1   0.2576798  1.191242751
-## sar1 -0.1274062 -0.001596729</code></pre>
+<pre><code>##            2.5 %     97.5 %
+## ar1  -0.07645088 1.20232713
+## ma1  -1.18864592 0.11130889
+## sar1 -0.04885247 0.07635585</code></pre>
 <p>Instead of going through each iteration of Arima(x, y, z) and selecting the best model, we can use the auto.arima() function in R from the forecasts package.</p>
 <pre class="r"><code>times.arima_auto_model &lt;- auto.arima(times$price, trace = TRUE)</code></pre>
 <pre><code>## 
 ##  Fitting models using approximations to speed things up...
 ## 
-##  ARIMA(2,1,2) with drift         : 2907.451
-##  ARIMA(0,1,0) with drift         : 2901.307
-##  ARIMA(1,1,0) with drift         : 2902.754
-##  ARIMA(0,1,1) with drift         : 2902.447
-##  ARIMA(0,1,0)                    : 2899.367
-##  ARIMA(1,1,1) with drift         : 2904.657
+##  ARIMA(2,1,2) with drift         : 2772.901
+##  ARIMA(0,1,0) with drift         : 2770.718
+##  ARIMA(1,1,0) with drift         : 2769.283
+##  ARIMA(0,1,1) with drift         : 2772.702
+##  ARIMA(0,1,0)                    : 2769.48
+##  ARIMA(2,1,0) with drift         : 2769.627
+##  ARIMA(1,1,1) with drift         : 2770.438
+##  ARIMA(2,1,1) with drift         : 2771.503
+##  ARIMA(1,1,0)                    : 2767.922
+##  ARIMA(2,1,0)                    : 2768.187
+##  ARIMA(1,1,1)                    : 2768.964
+##  ARIMA(0,1,1)                    : 2771.452
+##  ARIMA(2,1,1)                    : 2770.032
 ## 
 ##  Now re-fitting the best model(s) without approximations...
 ## 
-##  ARIMA(0,1,0)                    : 2899.432
+##  ARIMA(1,1,0)                    : 2771.383
 ## 
-##  Best model: ARIMA(0,1,0)</code></pre>
+##  Best model: ARIMA(1,1,0)</code></pre>
 </div>
 <div id="forecasting-with-the-arima-model" class="section level1">
 <h1>Forecasting with the Arima model</h1>
@@ -131,8 +140,8 @@ times.predictions %&gt;% plot()</code></pre>
 
 cbind(times.predictions, day = 1:nrow(times.predictions)+999) %&gt;% 
   ggplot(aes(day, times.predictions$`Point Forecast`))+
-  geom_ribbon(aes(ymin = `Lo 95`, ymax = `Hi 95`), alpha = 0.5, colour = &quot;black&quot;, fill = &quot;orange&quot;)+
-  geom_ribbon(aes(ymin = `Lo 80`, ymax = `Hi 80`), alpha = 0.5, colour = &quot;black&quot;, fill = &quot;red&quot;)+
+  geom_ribbon(aes(ymin = `Lo 95`, ymax = `Hi 95`), alpha = 0.2, colour = &quot;black&quot;, fill = &quot;dodgerblue&quot;)+
+  geom_ribbon(aes(ymin = `Lo 80`, ymax = `Hi 80`), alpha = 0.2, colour = &quot;black&quot;, fill = &quot;blue&quot;)+
   theme_minimal()+
   geom_line(lty = 2)+
   labs(title = &quot;Forecasting asset price with the Arima model&quot;,
@@ -140,41 +149,70 @@ cbind(times.predictions, day = 1:nrow(times.predictions)+999) %&gt;%
        y = &quot;price&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
 </div>
-<div id="forecasting-cryptocurrency" class="section level1">
-<h1>Forecasting cryptocurrency</h1>
-<pre class="r"><code>btc &lt;- read_csv(&quot;btc.csv&quot;)
-btc_model &lt;- btc$`Closing Price (USD)` %&gt;% auto.arima(trace = TRUE,stationary = FALSE)</code></pre>
+<div id="forecasting-real-world-price-data" class="section level1">
+<h1>Forecasting real-world price data</h1>
+<div id="tesla" class="section level3">
+<h3>Tesla</h3>
+<pre class="r"><code>#btc &lt;- read_csv(&quot;btc.csv&quot;)
+
+quantmod::getSymbols(&quot;TSLA&quot;)</code></pre>
+<pre><code>## [1] &quot;TSLA&quot;</code></pre>
+<pre class="r"><code>tsla_model &lt;- TSLA$TSLA.Close %&gt;% auto.arima(trace = TRUE, stationary = FALSE)</code></pre>
 <pre><code>## 
 ##  Fitting models using approximations to speed things up...
 ## 
-##  ARIMA(2,1,2) with drift         : 6218.993
-##  ARIMA(0,1,0) with drift         : 6223.849
-##  ARIMA(1,1,0) with drift         : 6226.679
-##  ARIMA(0,1,1) with drift         : 6225.699
-##  ARIMA(0,1,0)                    : 6223.932
-##  ARIMA(1,1,2) with drift         : 6227.295
-##  ARIMA(2,1,1) with drift         : 6228.917
-##  ARIMA(3,1,2) with drift         : Inf
-##  ARIMA(2,1,3) with drift         : 6230.327
-##  ARIMA(1,1,1) with drift         : 6228.628
-##  ARIMA(1,1,3) with drift         : 6227.262
-##  ARIMA(3,1,1) with drift         : 6229.15
-##  ARIMA(3,1,3) with drift         : Inf
-##  ARIMA(2,1,2)                    : 6218.992
-##  ARIMA(1,1,2)                    : 6226.708
-##  ARIMA(2,1,1)                    : 6228.355
-##  ARIMA(3,1,2)                    : Inf
-##  ARIMA(2,1,3)                    : 6229.805
-##  ARIMA(1,1,1)                    : 6228.796
-##  ARIMA(1,1,3)                    : 6226.733
-##  ARIMA(3,1,1)                    : 6228.572
-##  ARIMA(3,1,3)                    : Inf
+##  ARIMA(2,1,2) with drift         : Inf
+##  ARIMA(0,1,0) with drift         : 18728.21
+##  ARIMA(1,1,0) with drift         : 18716.03
+##  ARIMA(0,1,1) with drift         : 18714.63
+##  ARIMA(0,1,0)                    : 18728.39
+##  ARIMA(1,1,1) with drift         : 18717.63
+##  ARIMA(0,1,2) with drift         : 18716.61
+##  ARIMA(1,1,2) with drift         : 18717.89
+##  ARIMA(0,1,1)                    : 18715.21
 ## 
 ##  Now re-fitting the best model(s) without approximations...
 ## 
-##  ARIMA(2,1,2)                    : 6231.993
+##  ARIMA(0,1,1) with drift         : 18718.64
 ## 
-##  Best model: ARIMA(2,1,2)</code></pre>
-<pre class="r"><code>forecast(btc_model) %&gt;% plot()</code></pre>
+##  Best model: ARIMA(0,1,1) with drift</code></pre>
+<pre class="r"><code>tsla_forecast &lt;- forecast::forecast(object = TSLA$TSLA.Close, model = tsla_model, h = 60)
+
+
+
+forecast(tsla_model, h = 70) %&gt;% plot()</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="amazon" class="section level3">
+<h3>Amazon</h3>
+<pre class="r"><code>quantmod::getSymbols(&quot;AMZN&quot;)</code></pre>
+<pre><code>## [1] &quot;AMZN&quot;</code></pre>
+<pre class="r"><code>AMZN_model &lt;- log(AMZN$AMZN.Close) %&gt;% auto.arima(trace = TRUE, stationary = FALSE)</code></pre>
+<pre><code>## 
+##  Fitting models using approximations to speed things up...
+## 
+##  ARIMA(2,1,2) with drift         : -16759.58
+##  ARIMA(0,1,0) with drift         : -16757.37
+##  ARIMA(1,1,0) with drift         : -16757.1
+##  ARIMA(0,1,1) with drift         : -16758.36
+##  ARIMA(0,1,0)                    : -16749.8
+##  ARIMA(1,1,2) with drift         : -16761.87
+##  ARIMA(0,1,2) with drift         : -16764.87
+##  ARIMA(0,1,3) with drift         : -16762.86
+##  ARIMA(1,1,1) with drift         : -16760.67
+##  ARIMA(1,1,3) with drift         : Inf
+##  ARIMA(0,1,2)                    : -16755.66
+## 
+##  Now re-fitting the best model(s) without approximations...
+## 
+##  ARIMA(0,1,2) with drift         : -16772.33
+## 
+##  Best model: ARIMA(0,1,2) with drift</code></pre>
+<pre class="r"><code>AMZN_forecast &lt;- forecast::forecast(object = AMZN$AMZN.Close, model = AMZN_model, h = 70)
+
+
+
+forecast(AMZN_model, h = 70) %&gt;% plot()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
 </div>
