@@ -75,9 +75,10 @@ raw_dd <- read.table(text=content(GET("https://gist.githubusercontent.com/MrFlic
          ElementName=ifelse(ElementName=="Flourine","Fluorine",ElementName))
 data <- read_xlsx("melting_points.xlsx", sheet = 'Sheet2')
 colnames(raw_dd) <- c(colnames(raw_dd)[1:7],"element",colnames(raw_dd)[9:13])
+```
 
- 
 
+```{r}
 dd <- raw_dd %>%
   left_join(data, by = "element") %>%
   mutate(CTE_ppm=CTE*1000000,
@@ -86,11 +87,10 @@ dd <- raw_dd %>%
          scaled_cte=ifelse(scaled_cte>8,8,scaled_cte),
          scaled_cte=ifelse(scaled_cte<4.5,4.4,scaled_cte),
          new_structure=ifelse(crystal_structure %in% c("Body-centered Cubic","Face-centered Cubic","Simple Hexagonal"),crystal_structure,NA))
+```
 
- 
 
- 
-
+```{r}
 dd %>%
   ggplot(aes(Column,-Row)) +
   geom_tile(aes(fill=crystal_structure), color="black") +
@@ -100,14 +100,9 @@ dd %>%
     fill = "Crystal Structure"
   ) +
   annotate("text", x = 7, y = 0.2, label = "Periodic Table of the elements", size = 5)
+```
 
- 
-
-dd %>%
-  count(crystal_structure)
-
- 
-
+```{r}
 (p<-dd %>%
   filter(!is.na(symbol)) %>%
   #filter(!crystal_structure %in% c("Base-centered Monoclinic","Centered Tetragonal")) %>%
@@ -135,7 +130,6 @@ dd %>%
 f1 <- function(x){
   return(1/(16.6*3*(x+273)))
 }
-
 
 library(plotly)
 library(ggrepel)
@@ -226,9 +220,6 @@ predictions.full <- data.frame(hard_) %>%
          prediction.ilr.glm = predict(hard.ilr.glm, best_lambda = hard.ilr.glm.model$lambda.min, newx = hard.ilr),
          prediction.clr.gam = predict(hard.clr.gam, newx = hard.clr),
          pre = predict(hard.clr.lm, newx = row()))
-
- 
-
 ```
 
 
