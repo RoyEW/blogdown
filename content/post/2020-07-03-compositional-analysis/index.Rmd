@@ -238,7 +238,7 @@ predictions.full <- data.frame(hard_) %>%
 predictions.full %>% 
   arrange(hardness) %>% 
   mutate(row_name = row_number()) %>% 
-  pivot_longer(c(hardness, pre, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% 
+  pivot_longer(c(hardness, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% 
   ggplot(aes(row_name, value, colour = variable, shape = variable))+
   geom_point(alpha = 0.8)+
   labs(title = "Hardness prediction",
@@ -282,14 +282,7 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 https://link.springer.com/article/10.1007/s00180-015-0570-1
 
 
-```{r}
-predictions.full <- data.frame(hard) %>% 
-  mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard))
 
-preds <- predict(hard.alr.lm, newdata = hard)
-
-
-```
 
 
 

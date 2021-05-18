@@ -114,12 +114,12 @@ times %&gt;%
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$price
-## Dickey-Fuller = -0.65151, Lag order = 9, p-value = 0.9749
+## Dickey-Fuller = -1.8237, Lag order = 9, p-value = 0.6529
 ## alternative hypothesis: stationary</code></pre>
 <pre class="r"><code>adf_output$p.value</code></pre>
-<pre><code>## [1] 0.9748694</code></pre>
+<pre><code>## [1] 0.6529392</code></pre>
 <pre class="r"><code>adf_output$significant &lt;- ifelse(adf_output$p.value&lt;0.05,&quot;significant&quot;,&quot;insignificant&quot;)</code></pre>
-<p>The p value of 0.97 is insignificant which allows us to infer that our time series data exhibits non-stationarity as the lag variable has a significant coefficient. We are unable to reject the null hypothesis that the coefficient is equal to 1.</p>
+<p>The p value of 0.65 is insignificant which allows us to infer that our time series data exhibits non-stationarity as the lag variable has a significant coefficient. We are unable to reject the null hypothesis that the coefficient is equal to 1.</p>
 <p>In the case of non-stationarity, there are a few options to coerce stationarity such as taking the log or the square roots of the data to stabalise non-constant variance, calculating the residuals from another fitted model, or simply taking another difference of our series data, that is <span class="math inline">\(\Delta^2\)</span>.</p>
 <p>This can be demonstrated as follows</p>
 <pre class="r"><code>times &lt;- times %&gt;% 
@@ -139,7 +139,7 @@ times %&gt;% ggplot(aes(day, diff_price)) + geom_line()+
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$diff_price
-## Dickey-Fuller = -10.038, Lag order = 9, p-value = 0.01
+## Dickey-Fuller = -9.3514, Lag order = 9, p-value = 0.01
 ## alternative hypothesis: stationary</code></pre>
 <p>Many other unit root tests exist such as the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test.</p>
 <p>Alternatively, seasonality can be removed from the time series data using the in-built R stats functions.</p>
@@ -162,36 +162,31 @@ plot(times.season.adj.test)</code></pre>
 
 
 confint(fitARIMA)</code></pre>
-<pre><code>##            2.5 %      97.5 %
-## ar1   0.38920633  1.26400150
-## ma1  -1.26647673 -0.32173956
-## sar1 -0.08549534  0.04241445</code></pre>
+<pre><code>##            2.5 %     97.5 %
+## ar1  -1.18294340 0.60921856
+## ma1  -0.55966665 1.20731866
+## sar1 -0.08512952 0.04003791</code></pre>
 <p>Instead of going through each iteration of Arima(x, y, z) and selecting the best model, we can use the auto.arima() function in R from the forecasts package.</p>
-<pre class="r"><code>times.arima_auto_model &lt;- auto.arima(times$price, trace = TRUE)</code></pre>
+<pre class="r"><code>times.arima_auto_model &lt;- auto.arima(times$price %&gt;% log(), trace = TRUE)</code></pre>
 <pre><code>## 
 ##  Fitting models using approximations to speed things up...
 ## 
-##  ARIMA(2,2,2)                    : Inf
-##  ARIMA(0,2,0)                    : 3531.685
-##  ARIMA(1,2,0)                    : 3220.97
-##  ARIMA(0,2,1)                    : 2878.692
-##  ARIMA(1,2,1)                    : 2915.122
-##  ARIMA(0,2,2)                    : 2880.662
-##  ARIMA(1,2,2)                    : 2896.184
+##  ARIMA(2,1,2) with drift         : -8488.162
+##  ARIMA(0,1,0) with drift         : -8493.016
+##  ARIMA(1,1,0) with drift         : -8491.763
+##  ARIMA(0,1,1) with drift         : -8492.049
+##  ARIMA(0,1,0)                    : -8494.409
+##  ARIMA(1,1,1) with drift         : -8490.24
 ## 
 ##  Now re-fitting the best model(s) without approximations...
 ## 
-##  ARIMA(0,2,1)                    : Inf
-##  ARIMA(0,2,2)                    : Inf
-##  ARIMA(1,2,2)                    : Inf
-##  ARIMA(1,2,1)                    : Inf
-##  ARIMA(1,2,0)                    : 3222.561
+##  ARIMA(0,1,0)                    : -8505.771
 ## 
-##  Best model: ARIMA(1,2,0)</code></pre>
+##  Best model: ARIMA(0,1,0)</code></pre>
 </div>
 <div id="forecasting-with-the-arima-model" class="section level1">
 <h1>Forecasting with the Arima model</h1>
-<pre class="r"><code>times.predictions &lt;- forecast::forecast(object = times$price, model = times.arima_auto_model, h = 60)
+<pre class="r"><code>times.predictions &lt;- forecast::forecast(object = times$price %&gt;% log(), model = times.arima_auto_model, h = 30)
 
 
 

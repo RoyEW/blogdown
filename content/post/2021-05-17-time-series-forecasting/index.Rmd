@@ -118,14 +118,14 @@ confint(fitARIMA)
 Instead of going through each iteration of Arima(x, y, z) and selecting the best model, we can use the auto.arima() function in R from the forecasts package.
 
 ```{r}
-times.arima_auto_model <- auto.arima(times$price, trace = TRUE)
+times.arima_auto_model <- auto.arima(times$price %>% log(), trace = TRUE)
 ```
 
 
 # Forecasting with the Arima model
 
 ```{r}
-times.predictions <- forecast::forecast(object = times$price, model = times.arima_auto_model, h = 60)
+times.predictions <- forecast::forecast(object = times$price %>% log(), model = times.arima_auto_model, h = 30)
 
 
 
