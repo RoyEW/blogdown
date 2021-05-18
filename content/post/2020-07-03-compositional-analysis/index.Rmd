@@ -178,11 +178,22 @@ hard <- read_csv("hardness.csv")
 
 
 ```{r}
-
 # Filtering out zero values for logratio transformations
 hard_ <- hard %>% 
+  # mutate(Al = ifelse(Al == 0, 5, Al),
+  #        Co = ifelse(Co == 0, 5, Co),
+  #        Cr = ifelse(Cr == 0, 5, Cr),
+  #        Cu = ifelse(Cu == 0, 5, Cu),
+  #        Fe = ifelse(Fe == 0, 5, Fe),
+  #        Ni = ifelse(Ni == 0, 5, Ni))
   filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
 
+
+
+```
+
+
+```{r}
 # Setting x, y
 y <- hard_$hardness
 x <- hard_[,1:ncol(hard)-1]
@@ -205,7 +216,7 @@ hard.ilr.glm <- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambd
 
 library(mgcv)
 dataset <- cbind(data.frame(hardness = y),hard.clr) %>% data.frame()
-dataset
+
 hard.clr.gam <- gam(hardness ~ Al+ Co + Co + Cr + Cu + Fe + Ni, data = dataset)
 
 predictions.full <- data.frame(hard_) %>% 
@@ -227,9 +238,9 @@ predictions.full <- data.frame(hard_) %>%
 predictions.full %>% 
   arrange(hardness) %>% 
   mutate(row_name = row_number()) %>% 
-  pivot_longer(c(hardness, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% 
-  ggplot(aes(row_name, value, colour = variable), size = 3)+
-  geom_line(size = 2)+
+  pivot_longer(c(hardness, pre, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = "variable",values_to = "value") %>% 
+  ggplot(aes(row_name, value, colour = variable, shape = variable))+
+  geom_point(alpha = 0.8)+
   labs(title = "Hardness prediction",
        subtitle = "Comparing hardness prediction.alr.lm and actual hardness",
        y = "hardness",
@@ -271,6 +282,14 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 https://link.springer.com/article/10.1007/s00180-015-0570-1
 
 
+```{r}
+predictions.full <- data.frame(hard) %>% 
+  mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard))
+
+preds <- predict(hard.alr.lm, newdata = hard)
+
+
+```
 
 
 

@@ -112,12 +112,12 @@ times %&gt;%
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$price
-## Dickey-Fuller = -3.9095, Lag order = 9, p-value = 0.01352
+## Dickey-Fuller = -2.5274, Lag order = 9, p-value = 0.3551
 ## alternative hypothesis: stationary</code></pre>
 <pre class="r"><code>adf_output$p.value</code></pre>
-<pre><code>## [1] 0.01351999</code></pre>
+<pre><code>## [1] 0.3550807</code></pre>
 <pre class="r"><code>adf_output$significant &lt;- ifelse(adf_output$p.value&lt;0.05,&quot;significant&quot;,&quot;insignificant&quot;)</code></pre>
-<p>The p value of 0.01 is significant which allows us to infer that our times series data exhibits stationarity as there is enough evidence (p &lt; 0.05) to suggest that there is no significant existance of a unit root. We are able to reject the null hypothesis that the coefficient is equal to 1.</p>
+<p>The p value of 0.36 is insignificant which allows us to infer that our times series data exhibits non-stationarity as the lag variable has a significant coefficient. We are unable to reject the null hypothesis that the coefficient is equal to 1.</p>
 <p>In the case of non-stationarity, there are a few options to coerce stationarity such as taking the log or the square roots of the data to stabalise non-constant variance, calculating the residuals from another fitted model, or simply taking another difference of our series data, that is <span class="math inline">\(\Delta^2\)</span>.</p>
 <p>This can be demonstrated as follows</p>
 <pre class="r"><code>times &lt;- times %&gt;% 
@@ -137,7 +137,7 @@ times %&gt;% ggplot(aes(day, diff_price)) + geom_line()+
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$diff_price
-## Dickey-Fuller = -8.9237, Lag order = 9, p-value = 0.01
+## Dickey-Fuller = -9.4168, Lag order = 9, p-value = 0.01
 ## alternative hypothesis: stationary</code></pre>
 <p>Many other unit root tests exist such as the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test.</p>
 <p>Alternatively, seasonality can be removed from the times series data using the in-built R stats functions.</p>
@@ -160,25 +160,25 @@ plot(times.season.adj.test)</code></pre>
 
 
 confint(fitARIMA)</code></pre>
-<pre><code>##           2.5 %     97.5 %
-## ar1  -0.4653172 0.93276587
-## ma1  -0.9681104 0.40989583
-## sar1 -0.0772654 0.04721254</code></pre>
+<pre><code>##           2.5 %       97.5 %
+## ar1  -1.2008589 -0.314176316
+## ma1   0.2576798  1.191242751
+## sar1 -0.1274062 -0.001596729</code></pre>
 <p>Instead of going through each iteration of Arima(x, y, z) and selecting the best model, we can use the auto.arima() function in R from the forecasts package.</p>
 <pre class="r"><code>times.arima_auto_model &lt;- auto.arima(times$price, trace = TRUE)</code></pre>
 <pre><code>## 
 ##  Fitting models using approximations to speed things up...
 ## 
-##  ARIMA(2,1,2) with drift         : 2816.447
-##  ARIMA(0,1,0) with drift         : 2813.104
-##  ARIMA(1,1,0) with drift         : 2811.19
-##  ARIMA(0,1,1) with drift         : 2813.324
-##  ARIMA(0,1,0)                    : 2811.109
-##  ARIMA(1,1,1) with drift         : 2811.782
+##  ARIMA(2,1,2) with drift         : 2907.451
+##  ARIMA(0,1,0) with drift         : 2901.307
+##  ARIMA(1,1,0) with drift         : 2902.754
+##  ARIMA(0,1,1) with drift         : 2902.447
+##  ARIMA(0,1,0)                    : 2899.367
+##  ARIMA(1,1,1) with drift         : 2904.657
 ## 
 ##  Now re-fitting the best model(s) without approximations...
 ## 
-##  ARIMA(0,1,0)                    : 2811.086
+##  ARIMA(0,1,0)                    : 2899.432
 ## 
 ##  Best model: ARIMA(0,1,0)</code></pre>
 </div>
