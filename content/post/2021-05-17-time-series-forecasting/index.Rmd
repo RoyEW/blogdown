@@ -162,7 +162,7 @@ cbind(times.predictions, day = 1:nrow(times.predictions)+999) %>%
 quantmod::getSymbols("TSLA")
 
 
-tsla_model <- TSLA$TSLA.Close %>% auto.arima(trace = TRUE, stationary = FALSE)
+tsla_model <- log(TSLA$TSLA.Close) %>% auto.arima(trace = TRUE, stationary = FALSE)
 
 
 tsla_forecast <- forecast::forecast(object = TSLA$TSLA.Close, model = tsla_model, h = 60)
@@ -170,6 +170,8 @@ tsla_forecast <- forecast::forecast(object = TSLA$TSLA.Close, model = tsla_model
 
 
 forecast(tsla_model, h = 70) %>% plot()
+
+
 ```
 
 
@@ -183,7 +185,6 @@ AMZN_model <- log(AMZN$AMZN.Close) %>% auto.arima(trace = TRUE, stationary = FAL
 
 
 AMZN_forecast <- forecast::forecast(object = AMZN$AMZN.Close, model = AMZN_model, h = 70)
-
 
 
 forecast(AMZN_model, h = 70) %>% plot()
