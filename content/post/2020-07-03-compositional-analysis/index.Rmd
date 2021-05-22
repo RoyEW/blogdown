@@ -1,12 +1,11 @@
 ---
 title: Metallurgical compositional analysis
-author: ~
-date: '2020-07-03'
+author: ''
+date: '2021-03-03'
 slug: compositional-analysis
 categories: []
 tags: []
 ---
-
 
 ```{r setup, include=FALSE, message=FALSE,warning=FALSE}
 knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
@@ -14,7 +13,9 @@ knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(compositions)
+
 library(readr)
+library(mgcv)
 library(tidyverse)
 library(neuralnet)
 library(caret)
@@ -174,14 +175,13 @@ hard <- read_csv("hardness.csv")
 ```{r}
 # Filtering out zero values for logratio transformations
 hard_ <- hard %>% 
+  filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
   # mutate(Al = ifelse(Al == 0, 5, Al),
   #        Co = ifelse(Co == 0, 5, Co),
   #        Cr = ifelse(Cr == 0, 5, Cr),
   #        Cu = ifelse(Cu == 0, 5, Cu),
   #        Fe = ifelse(Fe == 0, 5, Fe),
   #        Ni = ifelse(Ni == 0, 5, Ni))
-  filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
-
 
 
 ```
@@ -189,30 +189,46 @@ hard_ <- hard %>%
 
 ```{r}
 # Setting x, y
+
+
 y <- hard_$hardness
 x <- hard_[,1:ncol(hard)-1]
+```
 
+
+```{r}
 hard.clr <- x %>% 
   clr()
 hard.ilr <- x %>% 
   ilr()
 hard.alr <- x %>% 
   alr()
+```
 
+
+```{r}
 #predict(hard.clr.lm,clr(v))
 
 hard.clr.lm <- lm(y ~ ., cbind(y,hard.clr) %>% data.frame())
 hard.ilr.lm <- lm(y ~ ., cbind(y,hard.ilr) %>% data.frame())
 hard.alr.lm <- lm(y ~ ., cbind(y,hard.alr) %>% data.frame())
+```
 
+
+```{r}
 hard.ilr.glm.model <- cv.glmnet(hard.ilr, y, alpha = 1)
 hard.ilr.glm <- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambda.min)
+```
 
-library(mgcv)
+
+```{r}
 dataset <- cbind(data.frame(hardness = y),hard.clr) %>% data.frame()
 
 hard.clr.gam <- gam(hardness ~ Al+ Co + Co + Cr + Cu + Fe + Ni, data = dataset)
+```
 
+
+```{r}
 predictions.full <- data.frame(hard_) %>% 
   mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard_),
          prediction.ilr.lm = predict(hard.ilr.lm, newx = hard.ilr),
@@ -269,7 +285,7 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 ```
 
 
-# Principal component analysis for comp ositional data vectors
+# Principal component analysis for compositional data vectors
 https://link.springer.com/article/10.1007/s00180-015-0570-1
 
 
