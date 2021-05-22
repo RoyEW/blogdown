@@ -174,13 +174,13 @@ hard <- read_csv("hardness.csv")
 ```{r}
 # Filtering out zero values for logratio transformations
 hard_ <- hard %>% 
-  filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
-  # mutate(Al = ifelse(Al == 0, 5, Al),
-  #        Co = ifelse(Co == 0, 5, Co),
-  #        Cr = ifelse(Cr == 0, 5, Cr),
-  #        Cu = ifelse(Cu == 0, 5, Cu),
-  #        Fe = ifelse(Fe == 0, 5, Fe),
-  #        Ni = ifelse(Ni == 0, 5, Ni))
+  #filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
+   mutate(Al = ifelse(Al == 0, 1, Al),
+          Co = ifelse(Co == 0, 1, Co),
+          Cr = ifelse(Cr == 0, 1, Cr),
+          Cu = ifelse(Cu == 0, 1, Cu),
+          Fe = ifelse(Fe == 0, 1, Fe),
+          Ni = ifelse(Ni == 0, 1, Ni))
 
 
 ```
@@ -202,6 +202,7 @@ hard.ilr <- x %>%
   ilr()
 hard.alr <- x %>% 
   alr()
+
 ```
 
 
@@ -248,7 +249,7 @@ predictions.full %>%
   ggplot(aes(row_name, value, colour = variable, shape = variable))+
   geom_point(alpha = 0.8)+
   labs(title = "Hardness prediction",
-       subtitle = "Comparing hardness prediction.alr.lm and actual hardness",
+       subtitle = "Comparing hardness prediction.clr.lm and actual hardness",
        y = "hardness",
        x = "rank ordered by ascending hardness")+
   #annotate("text", y = 200, x = 25,label = paste("RMSE = ",
@@ -256,7 +257,9 @@ predictions.full %>%
   #))+
   theme_bw()+
   theme(legend.position = c(0.8,0.2),
-        legend.background = element_rect(fill = "white", color = "black"))
+        legend.background = element_rect(fill = "white", color = "black"))+
+  scale_color_discrete(name = paste("RMSE = ", round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)))+
+  scale_shape_discrete(name = paste("RMSE = ", round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)))
    
 ```
 
@@ -286,6 +289,136 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)
 
 # Principal component analysis for compositional data vectors
 https://link.springer.com/article/10.1007/s00180-015-0570-1
+
+
+# Artificial Neural Network (ANN) approach
+
+
+```{r}
+scale01 <- function(x){
+  (x - min(x)) / (max(x) - min(x))
+}
+
+
+scale02 <- function(y){
+  y * (max(hard_$hardness) - min(hard_$hardness)) + min(hard_$hardness)
+}
+
+
+
+hard_ann <- cbind(hard_$hardness,as.tibble(hard.clr)) %>% 
+  mutate_all(scale01) %>% rename("hardness" = "hard_$hardness")
+
+
+set.seed(123)
+hard_ann_train <- sample_frac(tbl = hard_ann, replace = FALSE, size = 0.80)
+hard_ann_test <- anti_join(hard_ann, hard_ann_train)
+```
+
+
+```{r}
+hard_ann_model1 <- neuralnet(hardness ~ Al + Co + 
+                         Cr + Cu + Fe +
+                         Ni, data = hard_ann_train)
+```
+
+
+```{r}
+hard_ann_model2 <- neuralnet(hardness ~ Al + Co + 
+                         Cr + Cu + Fe +
+                         Ni, data = hard_ann_train,
+                         hidden = c(4, 1), 
+                         act.fct = 'logistic',
+                         rep = 10)
+
+```
+
+
+
+```{r}
+hard_ann_test_output1 <- compute(hard_ann_model1, hard_ann_test[, 2:7])$net.result
+hard_ann_test_output2 <- compute(hard_ann_model2, hard_ann_test[, 2:7])$net.result
+
+
+hard_ann_sse1 <- sum((hard_ann_test_output1 - hard_ann_test[, 1])^2)/2
+hard_ann_sse2 <- sum((hard_ann_test_output2 - hard_ann_test[, 1])^2)/2
+
+
+hard_ann_sse1
+hard_ann_sse2 # model 2 is more accurate
+
+
+
+
+dat <- cbind(p = hard_ann_test_output2, hard_ann_test) %>%
+  arrange(hardness) %>%
+  mutate(row = row_number()) %>% 
+  mutate(prediction = scale02(p),
+         hardness = scale02(hardness))
+
+
+dat
+dat %>% 
+  pivot_longer(c("prediction","hardness")) %>% 
+  mutate(row = as.integer((row_number()-1)/2)) %>% 
+  ggplot(aes(row, value, colour = name, shape = name)) + 
+  geom_point()+
+  scale_color_discrete(name = paste("RMSE = ", round(RMSE(dat$prediction,dat$hardness),2)))+
+  scale_shape_discrete(name = paste("RMSE = ", round(RMSE(dat$prediction,dat$hardness),2)))+
+  labs(title = "Unseen data observations ANN",
+       subtitle = "Comparing hardness artificial neural network regression and actual hardness on unseen data")+
+  theme_bw()+
+  theme(legend.position = c(0.8,0.2),
+        legend.background = element_rect(fill = "white", color = "black"))
+
+
+
+```
+
+```{r}
+hard_ann_results <- compute(hard_ann_model2, hard_ann[, 2:7])$net.result
+```
+
+
+```{r}
+dat <- cbind(predictions = hard_ann_results, hard_ann) %>% 
+  mutate("ANN prediction" = scale02(predictions),
+         hardness = scale02(hardness)) %>% 
+  arrange(hardness) %>% 
+  pivot_longer(c("ANN prediction","hardness"), values_to = "val", names_to = "var") %>% 
+  mutate(row = as.integer((row_number()-1)/2))
+
+
+
+
+g <- cbind(data.frame(p = hard_ann_results) %>% mutate(p = scale02(p)),hard_ann) %>% 
+  mutate(hardness = scale02(hardness))
+
+dat %>% 
+  ggplot(aes(row, val, shape = var, colour = var)) +
+  geom_point()+
+  scale_color_discrete(type = c("dodgerblue", "red"),name = paste("RMSE = ",round(RMSE(g$p, g$hardness),2)))+
+  scale_shape_discrete(name = paste("RMSE = ",round(RMSE(g$p, g$hardness),2)))+
+  labs(title = "Hardness prediction",
+       subtitle = "Comparing hardness artificial neural network regression and actual hardness",
+       y = "HV hardness",
+       x = "rank ordered by ascending hardness")+
+  #annotate("text", y = 200, x = 25,label = paste("RMSE = ",
+  #  round(RMSE(hard$hardness, dat$predictions),2)
+  #))+
+  theme_bw()+
+  theme(legend.position = c(0.8,0.2),
+        legend.background = element_rect(fill = "white", color = "black"))
+  
+
+
+
+
+
+
+
+```
+
 
 
 
