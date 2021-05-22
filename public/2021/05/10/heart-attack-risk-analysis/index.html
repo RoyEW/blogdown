@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">9 min read</span>
+    <span class="article-duration">8 min read</span>
     
 
     <h1 class="article-title">Heart attack risk analysis</h1>
@@ -127,7 +127,7 @@ heart &lt;- read_csv(&quot;heart.csv&quot;)</code></pre>
   count(output)</code></pre>
 <pre><code>## # A tibble: 2 x 2
 ##   output     n
-## *  &lt;dbl&gt; &lt;int&gt;
+##    &lt;dbl&gt; &lt;int&gt;
 ## 1      0   138
 ## 2      1   165</code></pre>
 <p>The dataset represents 54.46% of people who suffer with heart disease.</p>
@@ -171,10 +171,10 @@ ggplot(h, aes(Var1, Var2)) + geom_tile(aes(fill = log(abs(value)))) +
   count(sex)</code></pre>
 <pre><code>## # A tibble: 2 x 2
 ##     sex     n
-## * &lt;dbl&gt; &lt;int&gt;
+##   &lt;dbl&gt; &lt;int&gt;
 ## 1     0    96
 ## 2     1   207</code></pre>
-<p>There are ~twice the amount of men featured in the dataset than women.</p>
+<p>There are around twice the amount of men featured in the dataset compared to women.</p>
 </div>
 <div id="chest-pain-distribution" class="section level2">
 <h2>Chest pain distribution</h2>
@@ -182,7 +182,6 @@ ggplot(h, aes(Var1, Var2)) + geom_tile(aes(fill = log(abs(value)))) +
   ggplot(aes(cp))+
   geom_histogram(fill = &quot;dodgerblue&quot;)+
   ggtitle(&quot;Chest pain&quot;, subtitle = &quot;chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 0 = asymptomatic)&quot;)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="resting-blood-pressure" class="section level2">
@@ -193,7 +192,6 @@ ggplot(h, aes(Var1, Var2)) + geom_tile(aes(fill = log(abs(value)))) +
   ggtitle(&quot;Resting blood pressure&quot;, subtitle = &quot;resting blood pressure (in mm Hg on admission to the hospital)&quot;)+
   geom_errorbarh(aes(xmin = 90, xmax = 120, y = 20),height = 4)+
   annotate(&quot;text&quot;,label = &quot;NHS &#39;normal&#39; range&quot;, x = 105, y = 22)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 There are a few observations with very high outlier resting blood pressure. According to the <a href="https://www.nhs.uk/common-health-questions/lifestyle/what-is-blood-pressure/">NHS</a>, a normal range for resting blood pressure in between 90 and 120.</p>
 <pre class="r"><code>heart %&gt;% 
@@ -213,7 +211,6 @@ There are a few observations with very high outlier resting blood pressure. Acco
   ggtitle(&quot;Cholestoral levels&quot;,subtitle = &quot;serum cholestoral in mg/dl&quot;)+
   geom_errorbarh(aes(xmin = 125, xmax = 200, y = 20),height = 2) +
   annotate(&quot;text&quot;,label = &quot;healthy&quot;, x = 162.5, y = 22)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 The normal range for cholesterol levels according to <a href="https://www.medicinenet.com/what_is_the_normal_range_for_cholesterol_levels/article.htm">medicinenet.com</a> is 125 to 200 mg/dL for men and women over age 20. Most of the observations fall outside of this range. There are very high outliers within the dataset with levels above 400 mg/dL.</p>
 <pre class="r"><code>heart %&gt;% 
@@ -226,7 +223,6 @@ The normal range for cholesterol levels according to <a href="https://www.medici
   facet_grid(~output)+
   scale_fill_manual(values = c(&quot;dodgerblue&quot;,&quot;red&quot;),aesthetics = c(&quot;fill&quot;))+
   theme(legend.position = &#39;none&#39;)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/2021/05/10/heart-attack-risk-analysis/index_files/figure-html/unnamed-chunk-15-1.png" width="672" />
 ###</p>
 </div>
@@ -266,20 +262,20 @@ best_lambda &lt;- heart_model$lambda.min</code></pre>
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        s0
-## (Intercept)  0.6790323311
-## age          0.0036737740
-## sex         -0.1890494695
-## cp           0.1066980214
-## trtbps      -0.0025960920
-## chol        -0.0005837905
-## fbs          0.0118020098
-## restecg      0.1046794730
-## thalachh     0.0027177952
-## exng        -0.1083388520
-## oldpeak     -0.0384771801
-## slp          0.1587621190
-## caa         -0.1344611391
-## thall       -0.1415510670</code></pre>
+## (Intercept)  0.9914063475
+## age         -0.0006328921
+## sex         -0.1918642036
+## cp           0.1339555867
+## trtbps      -0.0021522466
+## chol        -0.0006727790
+## fbs         -0.0064845701
+## restecg      0.0331260270
+## thalachh     0.0028476474
+## exng        -0.1063276628
+## oldpeak     -0.0773014415
+## slp          0.0942738734
+## caa         -0.0793569979
+## thall       -0.1538089741</code></pre>
 <p>There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -298,8 +294,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.7460854</code></pre>
-<p>The R-squared turns out to be 0.7461. That is, the best model was able to explain 74.61% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.742463</code></pre>
+<p>The R-squared turns out to be 0.7425. That is, the best model was able to explain 74.25% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -318,27 +314,27 @@ library(InformationValue)</code></pre>
 # The InformationValue::optimalCutoff function attempts to predict a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.
 
 optimal</code></pre>
-<pre><code>## [1] 0.4288106</code></pre>
+<pre><code>## [1] 0.3909936</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 75
-## 2          INCORRECT 16</code></pre>
-<p>The lasso regression is correct for 82.42% of the testing observations.</p>
+## 1            CORRECT 73
+## 2          INCORRECT 18</code></pre>
+<p>The lasso regression is correct for 80.22% of the testing observations.</p>
 </div>
 <div id="confusion-matrix-metrics" class="section level2">
 <h2>Confusion matrix metrics</h2>
 <pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
 <pre><code>##    0  1
-## 0 30  4
-## 1 12 45</code></pre>
+## 0 27  4
+## 1 14 46</code></pre>
 <pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.9183673</code></pre>
+<pre><code>## [1] 0.92</code></pre>
 <pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.7142857</code></pre>
+<pre><code>## [1] 0.6585366</code></pre>
 <pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.1758</code></pre>
-<p>The model has a misclassification rate of 17.58% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
+<pre><code>## [1] 0.1978</code></pre>
+<p>The model has a misclassification rate of 19.78% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
 </div>
 </div>
 

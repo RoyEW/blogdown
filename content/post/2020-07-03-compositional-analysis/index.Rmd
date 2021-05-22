@@ -1,7 +1,7 @@
 ---
-title: Metallurgical compositional analysis
+title: 'Metallurgical compositional analysis'
 author: ''
-date: '2021-03-03'
+date: '2020-07-03'
 slug: compositional-analysis
 categories: []
 tags: []
@@ -13,7 +13,6 @@ knitr::opts_chunk$set(echo = T,warning = FALSE, message = FALSE)
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(compositions)
-
 library(readr)
 library(mgcv)
 library(tidyverse)

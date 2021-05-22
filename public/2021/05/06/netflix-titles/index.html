@@ -257,10 +257,9 @@
   labs(x = &quot;% of titles that are R/TV-MA&quot;)</code></pre>
 <p><img src="/2021/05/06/netflix-titles/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>library(tidytext)</code></pre>
-<pre><code>## Warning: package &#39;tidytext&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(snakecase)</code></pre>
-<pre><code>## Warning: package &#39;snakecase&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(tidylo)</code></pre>
+<pre><code>## Warning: package &#39;tidytext&#39; was built under R version 4.0.5</code></pre>
+<pre class="r"><code>library(snakecase)
+library(tidylo)</code></pre>
 <pre><code>## Warning: package &#39;tidylo&#39; was built under R version 4.0.5</code></pre>
 <pre class="r"><code>words_unnested &lt;- netflix_titles %&gt;%
   unnest_tokens(word, description) %&gt;%
@@ -355,7 +354,7 @@ words_unnested %&gt;%
 ##     expand, pack, unpack</code></pre>
 <pre><code>## Loaded glmnet 4.1-1</code></pre>
 <pre class="r"><code>library(broom)</code></pre>
-<pre><code>## Warning: package &#39;broom&#39; was built under R version 4.0.4</code></pre>
+<pre><code>## Warning: package &#39;broom&#39; was built under R version 4.0.5</code></pre>
 <pre class="r"><code>other_features &lt;- netflix_titles %&gt;%
   select(title, director, cast, genre = listed_in, country) %&gt;%
   gather(feature_type, feature, director, cast, genre, country) %&gt;%

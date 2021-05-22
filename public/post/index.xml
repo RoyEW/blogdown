@@ -16,5 +16,149 @@
       <description>library(crypto)library(RGENERATE)library(quantmod)library(lubridate)library(tseries)library(tidyverse)library(forecast)times &amp;lt;- RGENERATE::generate(FUN = rnorm, n = 1000, K = 3,names = c(&amp;quot;asset1&amp;quot;)) %&amp;gt;% mutate(price = cumsum(asset1)+300) %&amp;gt;%mutate(day = row_number())times %&amp;gt;% ggplot(aes(day, price))+geom_line()+theme_minimal() +geom_smooth(method = &amp;#39;lm&amp;#39;, lty = 2, colour = &amp;#39;red&amp;#39;, se = F)+labs(title = &amp;quot;Dynamically created time series&amp;quot;,subtitle = &amp;quot;Created using the RGENERATE pakage&amp;quot;)ARIMA modelling assumptions\[X_t = c + \epsilon_t + \sum_{i=1}^p\beta_iX_{t-i}+\sum_{i=1}^q\theta_i\epsilon_{t-i}\]</description>
     </item>
     
+    <item>
+      <title>Heart attack risk analysis</title>
+      <link>/2021/05/10/heart-attack-risk-analysis/</link>
+      <pubDate>Mon, 10 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/05/10/heart-attack-risk-analysis/</guid>
+      <description>library(tidyverse)library(readr)library(broom)theme_set(theme_minimal())heart &amp;lt;- read_csv(&amp;quot;heart.csv&amp;quot;)The dataset can be found on kaggle
+glimpse(heart)## Rows: 303## Columns: 14## $ age &amp;lt;dbl&amp;gt; 63, 37, 41, 56, 57, 57, 56, 44, 52, 57, 54, 48, 49, 64, 58, 5~## $ sex &amp;lt;dbl&amp;gt; 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1~## $ cp &amp;lt;dbl&amp;gt; 3, 2, 1, 1, 0, 0, 1, 1, 2, 2, 0, 2, 1, 3, 3, 2, 2, 3, 0, 3, 0~## $ trtbps &amp;lt;dbl&amp;gt; 145, 130, 130, 120, 120, 140, 140, 120, 172, 150, 140, 130, 1~## $ chol &amp;lt;dbl&amp;gt; 233, 250, 204, 236, 354, 192, 294, 263, 199, 168, 239, 275, 2~## $ fbs &amp;lt;dbl&amp;gt; 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0~## $ restecg &amp;lt;dbl&amp;gt; 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1~## $ thalachh &amp;lt;dbl&amp;gt; 150, 187, 172, 178, 163, 148, 153, 173, 162, 174, 160, 139, 1~## $ exng &amp;lt;dbl&amp;gt; 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0~## $ oldpeak &amp;lt;dbl&amp;gt; 2.</description>
+    </item>
+    
+    <item>
+      <title>Netflix titles</title>
+      <link>/2021/05/06/netflix-titles/</link>
+      <pubDate>Thu, 06 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/05/06/netflix-titles/</guid>
+      <description>Load the weekly DataDownload the weekly data and make available in the tt object.
+library(lubridate)## Warning: package &amp;#39;lubridate&amp;#39; was built under R version 4.0.4## ## Attaching package: &amp;#39;lubridate&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## date, intersect, setdiff, uniontt &amp;lt;- tt_load(&amp;quot;2021-04-20&amp;quot;)## --- Compiling #TidyTuesday Information for 2021-04-20 ----## --- There is 1 file available ---## --- Starting Download ---## ## Downloading file 1 of 1: `netflix_titles.</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43; integration with Rcpp</title>
+      <link>/2021/03/23/rcpp-integration/</link>
+      <pubDate>Tue, 23 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/03/23/rcpp-integration/</guid>
+      <description>Benchmarking a computationally demanding function in R and C++The Fibonacci sequence mathematically defined as \[F_n = \begin{cases}n, &amp;amp; n\le 2\\F_{n-1} + F_{n-2}, &amp;amp; n&amp;gt;2\end{cases}\]
+R implementationf &amp;lt;- function(n){if (n &amp;lt; 2) return(n)return(f(n - 1)+f(n - 2))}sapply(1:10, f)## [1] 1 1 2 3 5 8 13 21 34 55Rscores &amp;lt;- benchmark(f(10),f(15), f(20), f(25), f(30))[,1:4]Rscores## test replications elapsed relative## 1 f(10) 100 0.</description>
+    </item>
+    
+    <item>
+      <title>Visual network</title>
+      <link>/2021/03/15/visual-network/</link>
+      <pubDate>Mon, 15 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/03/15/visual-network/</guid>
+      <description>library(visNetwork)library(widgetframe)## Loading required package: htmlwidgetsHierarchical network exampleUsing Font Awesome integrationnodes &amp;lt;- data.frame(id = 1:7,group = c(&amp;quot;A&amp;quot;, &amp;quot;A&amp;quot;, &amp;quot;A&amp;quot;,&amp;quot;B&amp;quot;,&amp;quot;B&amp;quot;,&amp;quot;B&amp;quot;,&amp;quot;B&amp;quot;))edges &amp;lt;- data.frame(from = c(1,2,2,2,3,3),to = c(2,3,4,5,6,7))figure &amp;lt;- visNetwork(nodes, edges, width = &amp;quot;100%&amp;quot;) %&amp;gt;%visGroups(groupname = &amp;quot;A&amp;quot;, shape = &amp;quot;icon&amp;quot;, icon = list(code = &amp;quot;f0c0&amp;quot;, size = 75)) %&amp;gt;% visGroups(groupname = &amp;quot;B&amp;quot;, shape = &amp;quot;icon&amp;quot;, icon = list(code = &amp;quot;f007&amp;quot;, color = &amp;quot;red&amp;quot;)) %&amp;gt;%visEdges(arrows = &amp;quot;from&amp;quot;) %&amp;gt;% visHierarchicalLayout() %&amp;gt;% addFontAwesome()htmlwidgets::saveWidget(figure, file = &amp;quot;figure.</description>
+    </item>
+    
+    <item>
+      <title>Thermal Expansion Calculator with RShiny</title>
+      <link>/2020/12/27/thermal-expansion-calculator-with-rshiny/</link>
+      <pubDate>Sun, 27 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/12/27/thermal-expansion-calculator-with-rshiny/</guid>
+      <description>https://jackwilson.shinyapps.io/cterom/
+A CTE calculator and design hub for high entropy alloys.
+App UI code template for future modularised apps:
+# Leave this function for adding external resourcesgolem_add_external_resources(),# Define this page as a dashboard page to signal we&amp;#39;re using the dashboard page formatshinydashboardPlus::dashboardPagePlus(skin = &amp;quot;green&amp;quot;,header = shinydashboardPlus::dashboardHeaderPlus(title = &amp;quot;CTE Calculator&amp;quot;,enable_rightsidebar = FALSE),# Create our navigation menu that links to each of the tabs we definedsidebar = shinydashboard::dashboardSidebar(shinydashboard::sidebarMenu(# Setting id makes input$tabs give the tabName of currently-selected tabid = &amp;quot;tabs&amp;quot;,shinydashboard::menuItem(&amp;quot;Calculator&amp;quot;, tabName = &amp;quot;dashboard&amp;quot;, icon = icon(&amp;quot;atom&amp;quot;)),#shinydashboard::menuItem(&amp;quot;Tab&amp;quot;, icon = icon(&amp;quot;radiation&amp;quot;), tabName = &amp;quot;secondn&amp;quot;),#shinydashboard::menuItem(&amp;quot;Tab&amp;quot;, icon = icon(&amp;quot;comment-alt&amp;quot;), tabName = &amp;quot;thirdn&amp;quot;),shinydashboard::menuItem(&amp;quot;Jack &amp;amp; Roy Wilson&amp;quot;, icon = icon(&amp;quot;cog&amp;quot;),badgeColor = &amp;quot;red&amp;quot;,badgeLabel = &amp;quot;DEV&amp;quot;,tabName = &amp;quot;dev&amp;quot;))),# Show the appropriate tab&amp;#39;s content in the main body of our dashboard when we select itbody = shinydashboard::dashboardBody(shinydashboard::tabItems(shinydashboard::tabItem(&amp;quot;dashboard&amp;quot;, mod_Home_ui(&amp;quot;Home_ui_1&amp;quot;)),shinydashboard::tabItem(&amp;quot;secondn&amp;quot;, mod_second_ui(&amp;quot;second_ui_1&amp;quot;)),shinydashboard::tabItem(&amp;quot;thirdn&amp;quot;, mod_third_ui(&amp;quot;third_ui_1&amp;quot;)),shinydashboard::tabItem(&amp;quot;dev&amp;quot;, mod_dev_ui(&amp;quot;dev_ui_1&amp;quot;))) ),rightsidebar = NULL,title = &amp;quot;TEC Calculator&amp;quot;))</description>
+    </item>
+    
+    <item>
+      <title>US Election</title>
+      <link>/2020/11/11/scrape/</link>
+      <pubDate>Wed, 11 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/11/11/scrape/</guid>
+      <description>test of some sort
+library(reticulate)library(tidyverse)library(lubridate)import pandas as pdimport pprintimport requestsdef collapse_results_by_party(results_by_candidate, candidates):results_by_party = {}for candidate, count in results_by_candidate.items():party = candidates[candidate][&amp;#39;party&amp;#39;]results_by_party[party] = results_by_party.get(party, 0) + countreturn results_by_partystates = [&amp;#39;Alaska&amp;#39;, &amp;#39;Alabama&amp;#39;, &amp;#39;Arkansas&amp;#39;, &amp;#39;Arizona&amp;#39;, &amp;#39;California&amp;#39;, &amp;#39;Colorado&amp;#39;,&amp;#39;Connecticut&amp;#39;, &amp;#39;Delaware&amp;#39;, &amp;#39;Florida&amp;#39;, &amp;#39;Georgia&amp;#39;,&amp;#39;Hawaii&amp;#39;, &amp;#39;Iowa&amp;#39;, &amp;#39;Idaho&amp;#39;, &amp;#39;Illinois&amp;#39;, &amp;#39;Indiana&amp;#39;, &amp;#39;Kansas&amp;#39;, &amp;#39;Kentucky&amp;#39;,&amp;#39;Louisiana&amp;#39;, &amp;#39;Massachusetts&amp;#39;, &amp;#39;Maryland&amp;#39;, &amp;#39;Maine&amp;#39;, &amp;#39;Michigan&amp;#39;,&amp;#39;Minnesota&amp;#39;, &amp;#39;Missouri&amp;#39;, &amp;#39;Mississippi&amp;#39;, &amp;#39;Montana&amp;#39;, &amp;#39;North Carolina&amp;#39;,&amp;#39;North Dakota&amp;#39;, &amp;#39;Nebraska&amp;#39;, &amp;#39;New Hampshire&amp;#39;, &amp;#39;New Jersey&amp;#39;, &amp;#39;New Mexico&amp;#39;,&amp;#39;Nevada&amp;#39;, &amp;#39;New York&amp;#39;, &amp;#39;Ohio&amp;#39;, &amp;#39;Oklahoma&amp;#39;, &amp;#39;Oregon&amp;#39;, &amp;#39;Pennsylvania&amp;#39;,&amp;#39;Rhode Island&amp;#39;, &amp;#39;South Carolina&amp;#39;, &amp;#39;South Dakota&amp;#39;, &amp;#39;Tennessee&amp;#39;, &amp;#39;Texas&amp;#39;,&amp;#39;Utah&amp;#39;, &amp;#39;Virginia&amp;#39;, &amp;#39;Vermont&amp;#39;, &amp;#39;Washington&amp;#39;, &amp;#39;Wisconsin&amp;#39;,&amp;#39;West Virginia&amp;#39;, &amp;#39;Wyoming&amp;#39;,]all_results = {}for state in states:print(&amp;#39;Downloading {}&amp;#39;.</description>
+    </item>
+    
+    <item>
+      <title>Market Basket Analysis</title>
+      <link>/2020/10/07/market-basket-analysis/</link>
+      <pubDate>Wed, 07 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/10/07/market-basket-analysis/</guid>
+      <description>library(tidyverse)library(arulesViz)library(lubridate)library(arules)library(RColorBrewer)library(stringr)library(tidyr)Data sourced from Kaggle https://www.kaggle.com/heeraldedhia/groceries-dataset?select=Groceries_dataset.csv
+Association rules
+\(Rule: X \implies Y\)
+\[Support = \frac{freq(X, Y)}{N}\]
+\[Confidence = \frac{freq(X, Y)}{freq(X)}\]
+\[Lift = \frac{Support}{Supp(X)\times Supp(Y)}\]
+APRIORI Algorithm
+transactions &amp;lt;- read.csv(file.path(&amp;quot;basket.csv&amp;quot;))df &amp;lt;- transactions %&amp;gt;%group_by(Member_number, Date) %&amp;gt;%summarise(items = str_c(itemDescription, collapse = &amp;quot;,&amp;quot;)) %&amp;gt;% mutate(n=str_count(items,&amp;quot;,&amp;quot;)+1)max(df$n)## [1] 11transactions %&amp;gt;% count(itemDescription, sort = TRUE) %&amp;gt;% head(5)## itemDescription n## 1 whole milk 2502## 2 other vegetables 1898## 3 rolls/buns 1716## 4 soda 1514## 5 yogurt 1334transactions %&amp;gt;% count(itemDescription, sort = TRUE) %&amp;gt;% tail(5)## itemDescription n## 163 toilet cleaner 5## 164 bags 4## 165 baby cosmetics 3## 166 kitchen utensil 1## 167 preservation products 1Utidying the dataset for use with the APRIORI algorithm in the “arules” package.</description>
+    </item>
+    
+    <item>
+      <title>Energy sector</title>
+      <link>/2020/10/01/energyhhi/</link>
+      <pubDate>Thu, 01 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/10/01/energyhhi/</guid>
+      <description>UK energy market competitivenessHerfindahl-Hirschman IndexRegulators use the HHI Index using the 50 largest companies in a particular industry to determine if that industry should be considered competitive or as close to being a monopoly.
+A market with an HHI of less than 1,500 is considered to be a competitive marketplace, an HHI of 1,500 to 2,500 to be a moderately concentrated marketplace, and an HHI of 2,500 or greater to be a highly concentrated marketplace.</description>
+    </item>
+    
+    <item>
+      <title>Interlayer</title>
+      <link>/2020/10/01/interlayer/</link>
+      <pubDate>Thu, 01 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/10/01/interlayer/</guid>
+      <description>library(tidyverse)library(gganimate)library(readxl)interlayer_ &amp;lt;- read_excel(file.path(&amp;quot;interlayer.xlsx&amp;quot;))interlayer &amp;lt;- interlayer_ %&amp;gt;% pivot_longer(cols = c(colnames(interlayer_)[2],colnames(interlayer_)[9:15]),names_to = c(&amp;quot;composition&amp;quot;),values_to=c(&amp;quot;CTE&amp;quot;))new &amp;lt;- interlayer %&amp;gt;% filter(composition %in% c(&amp;quot;Zr&amp;quot;,&amp;quot;Cr&amp;quot;)) %&amp;gt;%rename(&amp;quot;comp&amp;quot;=&amp;quot;composition&amp;quot;)p &amp;lt;- interlayer %&amp;gt;% filter(!composition %in% c(&amp;quot;Zr&amp;quot;,&amp;quot;Cr&amp;quot;)) %&amp;gt;% ggplot(aes(Temp,CTE,colour = composition))+geom_text(aes(label = ifelse(Temp == 1600,composition,&amp;quot;&amp;quot;)),hjust = 0, nudge_y = 0.2,nudge_x = 20)+geom_text(data = new,aes(colour = comp,label = ifelse(Temp == 1600,comp,&amp;quot;&amp;quot;)),hjust = 0, nudge_y = 0.2,nudge_x = 20)+theme_minimal()+labs(title=&amp;quot;HEA CTE&amp;quot;,x=&amp;quot;Temperature (K)&amp;quot;,y=expression(paste(alpha, &amp;quot; ppm &amp;quot;, &amp;quot;(&amp;quot;,K^-1,&amp;quot;)&amp;quot;)))+geom_line(size = 2)+geom_line(size = 2,data = new,aes(Temp, CTE, colour = comp))+theme(legend.</description>
+    </item>
+    
+    <item>
+      <title>Oscillations</title>
+      <link>/2020/08/04/oscillations/</link>
+      <pubDate>Tue, 04 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/08/04/oscillations/</guid>
+      <description>library(readxl)library(tidyverse)oscillations_raw &amp;lt;- read_excel(&amp;quot;oscillations.xlsx&amp;quot;, sheet = 3)osc &amp;lt;- oscillations_rawosc %&amp;gt;% pivot_longer(cols =colnames(osc)[2:5], names_to = &amp;quot;variable&amp;quot;, values_to = &amp;quot;value&amp;quot;) %&amp;gt;% mutate(group = case_when(str_detect(variable,&amp;quot;PMASS1500&amp;quot;) ~ &amp;quot;PMASS1500&amp;quot;,TRUE ~ &amp;quot;PMASS500&amp;quot;)) %&amp;gt;% ggplot(aes(step, value, colour = variable))+labs(colour = &amp;quot;&amp;quot;)+facet_grid(~ group) +theme(legend.position = &amp;quot;bottom&amp;quot;)+geom_line()</description>
+    </item>
+    
+    <item>
+      <title>Climate change data</title>
+      <link>/2020/07/16/climate-change-data/</link>
+      <pubDate>Thu, 16 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/16/climate-change-data/</guid>
+      <description>Climate change datadata sourced from the World Bank using WDI R package api.
+library(Quandl)## Loading required package: xts## Loading required package: zoo## Warning: package &amp;#39;zoo&amp;#39; was built under R version 4.0.4## ## Attaching package: &amp;#39;zoo&amp;#39;## The following objects are masked from &amp;#39;package:base&amp;#39;:## ## as.Date, as.Date.numericlibrary(wbstats)library(rWBclimate)library(WDI)## Warning: package &amp;#39;WDI&amp;#39; was built under R version 4.0.5library(tidyverse)## Warning: package &amp;#39;tidyverse&amp;#39; was built under R version 4.</description>
+    </item>
+    
+    <item>
+      <title>Metallurgical compositional analysis</title>
+      <link>/2020/07/03/compositional-analysis/</link>
+      <pubDate>Fri, 03 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/03/compositional-analysis/</guid>
+      <description>divide01 &amp;lt;- function(x){return(x/100)}data &amp;lt;- read.csv(&amp;quot;hardness.csv&amp;quot;) %&amp;gt;% mutate(Al=divide01(Al),Co=divide01(Co),Cr=divide01(Cr),Cu=divide01(Cu),Fe=divide01(Fe),Ni=divide01(Ni))data_ordered &amp;lt;- read.csv(&amp;quot;hardness.csv&amp;quot;) %&amp;gt;% mutate(Al=divide01(Al),Co=divide01(Co),Cr=divide01(Cr),Cu=divide01(Cu),Fe=divide01(Fe),Ni=divide01(Ni)) %&amp;gt;% arrange(desc(hardness))closed &amp;lt;- clo(data, parts = 1:6,total=100)cx &amp;lt;- acomp(data, c(&amp;quot;Al&amp;quot;,&amp;quot;Co&amp;quot;,&amp;quot;Cr&amp;quot;))plot(cx)xc &amp;lt;- acomp(data, c(&amp;quot;Al&amp;quot;,&amp;quot;Co&amp;quot;,&amp;quot;Cr&amp;quot;,&amp;quot;Cu&amp;quot;,&amp;quot;Fe&amp;quot;,&amp;quot;Ni&amp;quot;))xc_ordered &amp;lt;- acomp(data_ordered, c(&amp;quot;Al&amp;quot;,&amp;quot;Co&amp;quot;,&amp;quot;Cr&amp;quot;,&amp;quot;Cu&amp;quot;,&amp;quot;Fe&amp;quot;,&amp;quot;Ni&amp;quot;))plot(xc)barplot.acomp(xc)Order of hardness desc
+barplot.acomp(xc_ordered)Possibly drop copper and nickel
+library(httr)raw_dd &amp;lt;- read.table(text=content(GET(&amp;quot;https://gist.githubusercontent.com/MrFlick/c1183c911bc5398105d4/raw/715868fba2d0d17a61a8081de17c468bbc525ab1/elements.txt&amp;quot;)), sep=&amp;quot;,&amp;quot;, header=TRUE) %&amp;gt;%mutate(ElementName=ifelse(ElementName==&amp;quot;Sulfer&amp;quot;,&amp;quot;Sulfur&amp;quot;,ElementName),ElementName=ifelse(ElementName==&amp;quot;Phosphorous&amp;quot;,&amp;quot;Phosphorus&amp;quot;,ElementName),ElementName=ifelse(ElementName==&amp;quot;Flourine&amp;quot;,&amp;quot;Fluorine&amp;quot;,ElementName))data &amp;lt;- read_xlsx(&amp;quot;melting_points.</description>
+    </item>
+    
+    <item>
+      <title>Election2019</title>
+      <link>/2020/07/01/bbc-style-ggplot/</link>
+      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/01/bbc-style-ggplot/</guid>
+      <description>library(tidyverse)#setwd(&amp;quot;~/University/R/election2019&amp;quot;)library(readr)election &amp;lt;- read_csv(&amp;quot;HoC-2019GE-results-by-constituency.csv&amp;quot;) %&amp;gt;% mutate(con_p=con/valid_votes,lab_p=lab/valid_votes,brexit_p=brexit/valid_votes,ld_p=ld/valid_votes,snp_p=snp/valid_votes)Voting mix of the most populated constituenciesparty_colours &amp;lt;- c(&amp;quot;purple&amp;quot;, &amp;quot;dodgerblue&amp;quot;, &amp;quot;red&amp;quot;,&amp;quot;orange&amp;quot;,&amp;quot;yellow&amp;quot;)election %&amp;gt;% arrange(desc(valid_votes)) %&amp;gt;% mutate(constituency_name=fct_reorder(constituency_name,con_p)) %&amp;gt;% head(30) %&amp;gt;% gather(key=&amp;quot;Party&amp;quot;, value=&amp;quot;Number&amp;quot;, con, lab, ld, snp, brexit) %&amp;gt;% ggplot(aes(constituency_name,Number,fill=Party))+geom_col()+scale_fill_manual(values=party_colours)+coord_flip()+bbc_style()Voting mix of the least populated constituencieselection %&amp;gt;% arrange(valid_votes) %&amp;gt;% mutate(constituency_name=fct_reorder(constituency_name,valid_votes)) %&amp;gt;% head(30) %&amp;gt;% gather(key=&amp;quot;Party&amp;quot;, value=&amp;quot;Number&amp;quot;, con, lab, ld, snp, brexit) %&amp;gt;% ggplot(aes(constituency_name,Number,fill=Party))+geom_col()+scale_fill_manual(values=party_colours)+coord_flip()+bbc_style()Where are the Conservative strongholds?</description>
+    </item>
+    
+    <item>
+      <title>Recent grads</title>
+      <link>/2020/07/01/recent-grads/</link>
+      <pubDate>Wed, 01 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/07/01/recent-grads/</guid>
+      <description>Exploatory data analysismajors_processed %&amp;gt;%count(Major_category, sort = T)## # A tibble: 16 x 2## Major_category n## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt;## 1 Engineering 29## 2 Education 16## 3 Humanities &amp;amp; Liberal Arts 15## 4 Biology &amp;amp; Life Science 14## 5 Business 13## 6 Health 12## 7 Computers &amp;amp; Mathematics 11## 8 Agriculture &amp;amp; Natural Resources 10## 9 Physical Sciences 10## 10 Psychology &amp;amp; Social Work 9## 11 Social Science 9## 12 Arts 8## 13 Industrial Arts &amp;amp; Consumer Services 7## 14 Law &amp;amp; Public Policy 5## 15 Communications &amp;amp; Journalism 4## 16 Interdisciplinary 1by_major_category &amp;lt;- majors_processed %&amp;gt;% filter(!</description>
+    </item>
+    
   </channel>
 </rss>

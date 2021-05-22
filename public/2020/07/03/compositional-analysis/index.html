@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">6 min read</span>
+    <span class="article-duration">4 min read</span>
     
 
     <h1 class="article-title">Metallurgical compositional analysis</h1>
@@ -116,24 +116,16 @@ raw_dd &lt;- read.table(text=content(GET(&quot;https://gist.githubusercontent.co
          ElementName=ifelse(ElementName==&quot;Phosphorous&quot;,&quot;Phosphorus&quot;,ElementName),
          ElementName=ifelse(ElementName==&quot;Flourine&quot;,&quot;Fluorine&quot;,ElementName))
 data &lt;- read_xlsx(&quot;melting_points.xlsx&quot;, sheet = &#39;Sheet2&#39;)
-colnames(raw_dd) &lt;- c(colnames(raw_dd)[1:7],&quot;element&quot;,colnames(raw_dd)[9:13])
-
- 
-
-dd &lt;- raw_dd %&gt;%
+colnames(raw_dd) &lt;- c(colnames(raw_dd)[1:7],&quot;element&quot;,colnames(raw_dd)[9:13])</code></pre>
+<pre class="r"><code>dd &lt;- raw_dd %&gt;%
   left_join(data, by = &quot;element&quot;) %&gt;%
   mutate(CTE_ppm=CTE*1000000,
          CTE_ppm=as.numeric(CTE_ppm),
          scaled_cte=CTE_ppm,
          scaled_cte=ifelse(scaled_cte&gt;8,8,scaled_cte),
          scaled_cte=ifelse(scaled_cte&lt;4.5,4.4,scaled_cte),
-         new_structure=ifelse(crystal_structure %in% c(&quot;Body-centered Cubic&quot;,&quot;Face-centered Cubic&quot;,&quot;Simple Hexagonal&quot;),crystal_structure,NA))
-
- 
-
- 
-
-dd %&gt;%
+         new_structure=ifelse(crystal_structure %in% c(&quot;Body-centered Cubic&quot;,&quot;Face-centered Cubic&quot;,&quot;Simple Hexagonal&quot;),crystal_structure,NA))</code></pre>
+<pre class="r"><code>dd %&gt;%
   ggplot(aes(Column,-Row)) +
   geom_tile(aes(fill=crystal_structure), color=&quot;black&quot;) +
   geom_text(aes(Column, -Row,label= symbol))+
@@ -142,24 +134,7 @@ dd %&gt;%
     fill = &quot;Crystal Structure&quot;
   ) +
   annotate(&quot;text&quot;, x = 7, y = 0.2, label = &quot;Periodic Table of the elements&quot;, size = 5)</code></pre>
-<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>dd %&gt;%
-  count(crystal_structure)</code></pre>
-<pre><code>##             crystal_structure  n
-## 1    Base-centered Monoclinic  3
-## 2           Base Orthorhombic  5
-## 3         Body-centered Cubic 15
-## 4         Centered Tetragonal  3
-## 5         Face-centered Cubic 20
-## 6  Face-centered Orthorhombic  1
-## 7                Simple Cubic  1
-## 8            Simple Hexagonal 33
-## 9           Simple Monoclinic  2
-## 10        Simple Orthorhombic  1
-## 11           Simple Triclinic  1
-## 12            Simple Trigonal  6
-## 13        Tetrahedral Packing  1
-## 14                       &lt;NA&gt; 26</code></pre>
+<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>(p&lt;-dd %&gt;%
   filter(!is.na(symbol)) %&gt;%
   #filter(!crystal_structure %in% c(&quot;Base-centered Monoclinic&quot;,&quot;Centered Tetragonal&quot;)) %&gt;%
@@ -176,11 +151,10 @@ dd %&gt;%
   theme_void()+
   theme(legend.position=&quot;bottom&quot;)+
   scale_colour_discrete(na.translate = F)</code></pre>
-<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <pre class="r"><code>f1 &lt;- function(x){
   return(1/(16.6*3*(x+273)))
 }
-
 
 library(plotly)
 library(ggrepel)
@@ -195,7 +169,7 @@ data %&gt;%
   theme(legend.position = &quot;none&quot;)+
   ggrepel::geom_text_repel()+
   theme_classic()</code></pre>
-<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <div id="predictive-modelling" class="section level1">
 <h1>Predictive modelling</h1>
 <p>Compositional data can be transformed to satisfy linearity by using logratio transformations for representation in a Euclidean space. Additive, isometric, and centre logratio transformations are available.</p>
@@ -213,107 +187,34 @@ hard &lt;- read_csv(&quot;hardness.csv&quot;)
 <pre class="r"><code># Filtering out zero values for logratio transformations
 hard_ &lt;- hard %&gt;% 
   filter(Al &gt; 0, Co &gt; 0, Cr &gt; 0, Cu &gt; 0, Fe &gt; 0, Ni &gt; 0)
+  # mutate(Al = ifelse(Al == 0, 5, Al),
+  #        Co = ifelse(Co == 0, 5, Co),
+  #        Cr = ifelse(Cr == 0, 5, Cr),
+  #        Cu = ifelse(Cu == 0, 5, Cu),
+  #        Fe = ifelse(Fe == 0, 5, Fe),
+  #        Ni = ifelse(Ni == 0, 5, Ni))</code></pre>
+<pre class="r"><code># Setting x, y
 
-# Setting x, y
+
 y &lt;- hard_$hardness
-x &lt;- hard_[,1:ncol(hard)-1]
-
-hard.clr &lt;- x %&gt;% 
+x &lt;- hard_[,1:ncol(hard)-1]</code></pre>
+<pre class="r"><code>hard.clr &lt;- x %&gt;% 
   clr()
 hard.ilr &lt;- x %&gt;% 
   ilr()
 hard.alr &lt;- x %&gt;% 
-  alr()
-
-#predict(hard.clr.lm,clr(v))
+  alr()</code></pre>
+<pre class="r"><code>#predict(hard.clr.lm,clr(v))
 
 hard.clr.lm &lt;- lm(y ~ ., cbind(y,hard.clr) %&gt;% data.frame())
 hard.ilr.lm &lt;- lm(y ~ ., cbind(y,hard.ilr) %&gt;% data.frame())
-hard.alr.lm &lt;- lm(y ~ ., cbind(y,hard.alr) %&gt;% data.frame())
+hard.alr.lm &lt;- lm(y ~ ., cbind(y,hard.alr) %&gt;% data.frame())</code></pre>
+<pre class="r"><code>hard.ilr.glm.model &lt;- cv.glmnet(hard.ilr, y, alpha = 1)
+hard.ilr.glm &lt;- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambda.min)</code></pre>
+<pre class="r"><code>dataset &lt;- cbind(data.frame(hardness = y),hard.clr) %&gt;% data.frame()
 
-hard.ilr.glm.model &lt;- cv.glmnet(hard.ilr, y, alpha = 1)
-hard.ilr.glm &lt;- glmnet(hard.ilr, y, alpha = 1, lambda = hard.ilr.glm.model$lambda.min)
-
-library(mgcv)
-dataset &lt;- cbind(data.frame(hardness = y),hard.clr) %&gt;% data.frame()
-dataset</code></pre>
-<pre><code>##    hardness            Al            Co            Cr          Cu            Fe
-## 1       418  1.155245e-01  1.155245e-01  1.155245e-01  0.11552453 -5.776227e-01
-## 2       423  1.155245e-01  1.155245e-01  1.155245e-01  0.11552453  1.155245e-01
-## 3       185 -9.989131e-01  1.997826e-01  1.997826e-01  0.19978262  1.997826e-01
-## 4       273 -1.835340e-01  3.670680e-02  3.670680e-02  0.03670680  3.670680e-02
-## 5       475  2.158100e-01 -4.316199e-02 -4.316199e-02 -0.04316199 -4.316199e-02
-## 6       558  4.910810e-01 -9.821621e-02 -9.821621e-02 -0.09821621 -9.821621e-02
-## 7       510  3.378876e-01 -6.757752e-02 -6.757752e-02 -0.06757752 -6.757752e-02
-## 8       603  6.938264e-01 -1.387653e-01 -1.387653e-01 -0.13876529 -1.387653e-01
-## 9       625  7.648278e-01 -1.529656e-01 -1.529656e-01 -0.15296556 -1.529656e-01
-## 10      655  8.594101e-01 -1.718820e-01 -1.718820e-01 -0.17188202 -1.718820e-01
-## 11      735  9.155102e-01 -1.831020e-01 -1.831020e-01 -0.18310205 -1.831020e-01
-## 12      358  4.928102e-02  4.928102e-02  4.928102e-02 -0.64987219  4.928102e-02
-## 13      586  2.310491e-01  2.310491e-01  2.310491e-01 -0.46209812 -4.620981e-01
-## 14      601  4.928102e-02  4.928102e-02  4.527481e-01 -0.64987219  4.928102e-02
-## 15      295 -4.440892e-16  6.931472e-01 -4.440892e-16 -0.69314718 -4.440892e-16
-## 16      310  4.440892e-16  4.440892e-16  4.440892e-16 -0.69314718  4.440892e-16
-## 17      451  4.928102e-02  4.527481e-01  4.928102e-02 -0.64987219  4.928102e-02
-## 18      546  2.310491e-01  2.310491e-01 -4.620981e-01 -0.46209812  2.310491e-01
-## 19      607 -4.440892e-16 -4.440892e-16  6.931472e-01 -0.69314718 -4.440892e-16
-## 20      537  4.928102e-02  4.928102e-02  4.928102e-02 -0.64987219  4.527481e-01
-## 21      514  4.440892e-16  4.440892e-16  4.440892e-16 -0.69314718  6.931472e-01
-## 22      604  2.310491e-01  2.310491e-01  2.310491e-01 -0.46209812  2.310491e-01
-## 23      609  6.931472e-01 -4.440892e-16 -4.440892e-16 -0.69314718 -4.440892e-16
-## 24      551  2.310491e-01 -4.620981e-01  2.310491e-01 -0.46209812  2.310491e-01
-## 25      280 -6.130636e-01  1.407082e-01  1.407082e-01 -0.61306357  1.407082e-01
-## 26      580  3.789744e-01 -4.846965e-02  3.789744e-01 -0.67707831 -4.846965e-02
-## 27      207 -5.776227e-01  1.155245e-01  1.155245e-01  0.11552453  1.155245e-01
-## 28      576  5.776227e-01 -1.155245e-01 -1.155245e-01 -0.11552453 -1.155245e-01
-## 29      602  4.527481e-01  4.928102e-02  4.928102e-02 -0.64987219  4.928102e-02
-## 30      764  1.357076e+00 -6.123648e-01  1.092383e+00 -0.61236479 -6.123648e-01
-## 31      591  1.198404e+00  9.979176e-02 -6.003730e-01 -0.60037299 -6.003730e-01
-## 32      701  1.198404e+00  5.029231e-01 -6.003730e-01 -0.60037299 -6.003730e-01
-## 33      768  1.078154e+00 -2.296177e-02 -7.086183e-01 -0.02296177  3.850065e-01
-## 34      702  1.262084e+00  1.634715e-01 -5.296756e-01 -0.52967564  1.634715e-01
-## 35      720  1.148898e+00  5.028620e-02  5.028620e-02 -0.64987855 -6.498786e-01
-## 36      694  1.148898e+00 -6.498786e-01  5.028620e-02 -0.64987855  5.028620e-02
-##               Ni
-## 1   1.155245e-01
-## 2  -5.776227e-01
-## 3   1.997826e-01
-## 4   3.670680e-02
-## 5  -4.316199e-02
-## 6  -9.821621e-02
-## 7  -6.757752e-02
-## 8  -1.387653e-01
-## 9  -1.529656e-01
-## 10 -1.718820e-01
-## 11 -1.831020e-01
-## 12  4.527481e-01
-## 13  2.310491e-01
-## 14  4.928102e-02
-## 15 -4.440892e-16
-## 16  6.931472e-01
-## 17  4.928102e-02
-## 18  2.310491e-01
-## 19 -4.440892e-16
-## 20  4.928102e-02
-## 21  4.440892e-16
-## 22 -4.620981e-01
-## 23 -4.440892e-16
-## 24  2.310491e-01
-## 25  8.040024e-01
-## 26  1.606887e-02
-## 27  1.155245e-01
-## 28 -1.155245e-01
-## 29  4.928102e-02
-## 30 -6.123648e-01
-## 31  5.029231e-01
-## 32  9.979176e-02
-## 33 -7.086183e-01
-## 34 -5.296756e-01
-## 35  5.028620e-02
-## 36  5.028620e-02</code></pre>
-<pre class="r"><code>hard.clr.gam &lt;- gam(hardness ~ Al+ Co + Co + Cr + Cu + Fe + Ni, data = dataset)
-
-predictions.full &lt;- data.frame(hard_) %&gt;% 
+hard.clr.gam &lt;- gam(hardness ~ Al+ Co + Co + Cr + Cu + Fe + Ni, data = dataset)</code></pre>
+<pre class="r"><code>predictions.full &lt;- data.frame(hard_) %&gt;% 
   mutate(prediction.clr.lm = predict(hard.clr.lm, newx = hard_),
          prediction.ilr.lm = predict(hard.ilr.lm, newx = hard.ilr),
          #prediction.alr.lm = predict(hard.alr.lm, newx = hard.alr),
@@ -326,17 +227,19 @@ predictions.full %&gt;%
   arrange(hardness) %&gt;% 
   mutate(row_name = row_number()) %&gt;% 
   pivot_longer(c(hardness, prediction.clr.lm,prediction.ilr.glm, prediction.clr.gam), names_to = &quot;variable&quot;,values_to = &quot;value&quot;) %&gt;% 
-  ggplot(aes(row_name, value, colour = variable), size = 3)+
-  geom_line(size = 2)+
+  ggplot(aes(row_name, value, colour = variable, shape = variable))+
+  geom_point(alpha = 0.8)+
   labs(title = &quot;Hardness prediction&quot;,
        subtitle = &quot;Comparing hardness prediction.alr.lm and actual hardness&quot;,
        y = &quot;hardness&quot;,
        x = &quot;rank ordered by ascending hardness&quot;)+
-  annotate(&quot;text&quot;, y = 200, x = 25,label = paste(&quot;RMSE = &quot;,
-    round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
-  ))+
-  theme_bw() </code></pre>
-<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+  #annotate(&quot;text&quot;, y = 200, x = 25,label = paste(&quot;RMSE = &quot;,
+   # round(RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness),2)
+  #))+
+  theme_bw()+
+  theme(legend.position = c(0.8,0.2),
+        legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;))</code></pre>
+<p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code># Linear regression on ILR logratio transformation  
 RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness)</code></pre>
 <pre><code>## [1] 63.40838</code></pre>
@@ -350,8 +253,8 @@ RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)</code></pre
 # aDist(x = hard_[,1:ncol(hard)-1])
 #Compositional::alfa.ridge(as.matrix(y), as.matrix(x),a = 0.01, lambda = 1)</code></pre>
 </div>
-<div id="principal-component-analysis-for-comp-ositional-data-vectors" class="section level1">
-<h1>Principal component analysis for comp ositional data vectors</h1>
+<div id="principal-component-analysis-for-compositional-data-vectors" class="section level1">
+<h1>Principal component analysis for compositional data vectors</h1>
 <p><a href="https://link.springer.com/article/10.1007/s00180-015-0570-1" class="uri">https://link.springer.com/article/10.1007/s00180-015-0570-1</a></p>
 </div>
 
