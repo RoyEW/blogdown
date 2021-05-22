@@ -206,11 +206,11 @@ scale02 &lt;- function(y){
 
 
 
-hard_ann &lt;- cbind(hard_$hardness,as.tibble(hard.clr)) %&gt;% 
+hard_ann &lt;- cbind(hard_$hardness,as_tibble(hard.clr)) %&gt;% 
   mutate_all(scale01) %&gt;% rename(&quot;hardness&quot; = &quot;hard_$hardness&quot;)
 
 
-set.seed(111)
+set.seed(1)
 hard_ann_train &lt;- sample_frac(tbl = hard_ann, replace = FALSE, size = 0.80)
 hard_ann_test &lt;- anti_join(hard_ann, hard_ann_train)</code></pre>
 <pre class="r"><code>hard_ann_model1 &lt;- neuralnet(hardness ~ Al + Co + 
@@ -231,9 +231,9 @@ hard_ann_sse2 &lt;- sum((hard_ann_test_output2 - hard_ann_test[, 1])^2)/2
 
 
 hard_ann_sse1</code></pre>
-<pre><code>## [1] 0.04433977</code></pre>
+<pre><code>## [1] 0.01869546</code></pre>
 <pre class="r"><code>hard_ann_sse2 # model 2 is more accurate</code></pre>
-<pre><code>## [1] 0.02979382</code></pre>
+<pre><code>## [1] 0.01810635</code></pre>
 <pre class="r"><code>dat &lt;- cbind(p = hard_ann_test_output2, hard_ann_test) %&gt;%
   arrange(hardness) %&gt;%
   mutate(row = row_number()) %&gt;% 

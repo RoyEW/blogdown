@@ -307,11 +307,11 @@ scale02 <- function(y){
 
 
 
-hard_ann <- cbind(hard_$hardness,as.tibble(hard.clr)) %>% 
+hard_ann <- cbind(hard_$hardness,as_tibble(hard.clr)) %>% 
   mutate_all(scale01) %>% rename("hardness" = "hard_$hardness")
 
 
-set.seed(111)
+set.seed(1)
 hard_ann_train <- sample_frac(tbl = hard_ann, replace = FALSE, size = 0.80)
 hard_ann_test <- anti_join(hard_ann, hard_ann_train)
 ```
