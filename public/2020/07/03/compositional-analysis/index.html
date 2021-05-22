@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">7 min read</span>
+    <span class="article-duration">5 min read</span>
     
 
     <h1 class="article-title">Metallurgical compositional analysis</h1>
@@ -186,13 +186,13 @@ hard &lt;- read_csv(&quot;hardness.csv&quot;)
 #hard %&gt;% arrange(-hardness)</code></pre>
 <pre class="r"><code># Filtering out zero values for logratio transformations
 hard_ &lt;- hard %&gt;% 
-  #filter(Al &gt; 0, Co &gt; 0, Cr &gt; 0, Cu &gt; 0, Fe &gt; 0, Ni &gt; 0)
-   mutate(Al = ifelse(Al == 0, 1, Al),
-          Co = ifelse(Co == 0, 1, Co),
-          Cr = ifelse(Cr == 0, 1, Cr),
-          Cu = ifelse(Cu == 0, 1, Cu),
-          Fe = ifelse(Fe == 0, 1, Fe),
-          Ni = ifelse(Ni == 0, 1, Ni))</code></pre>
+  filter(Al &gt; 0, Co &gt; 0, Cr &gt; 0, Cu &gt; 0, Fe &gt; 0, Ni &gt; 0)
+  #mutate(Al = ifelse(Al == 0, 1, Al),
+  #        Co = ifelse(Co == 0, 1, Co),
+  #        Cr = ifelse(Cr == 0, 1, Cr),
+  #        Cu = ifelse(Cu == 0, 1, Cu),
+  #        Fe = ifelse(Fe == 0, 1, Fe),
+  #        Ni = ifelse(Ni == 0, 1, Ni))</code></pre>
 <pre class="r"><code># Setting x, y
 
 
@@ -244,13 +244,13 @@ predictions.full %&gt;%
 <p><img src="/2020/07/03/compositional-analysis/index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code># Linear regression on ILR logratio transformation  
 RMSE(predictions.full$prediction.clr.lm, predictions.full$hardness)</code></pre>
-<pre><code>## [1] 87.3938</code></pre>
+<pre><code>## [1] 63.40838</code></pre>
 <pre class="r"><code># Lasso regression on ILR logratio transformation
 RMSE(predictions.full$prediction.ilr.glm, predictions.full$hardness)</code></pre>
-<pre><code>## [1] 87.44176</code></pre>
+<pre><code>## [1] 64.58476</code></pre>
 <pre class="r"><code># generalised additive model
 RMSE(predictions.full$prediction.clr.gam, predictions.full$hardness)</code></pre>
-<pre><code>## [1] 87.3938</code></pre>
+<pre><code>## [1] 63.40838</code></pre>
 <pre class="r"><code># library(robCompositions)
 # aDist(x = hard_[,1:ncol(hard)-1])
 #Compositional::alfa.ridge(as.matrix(y), as.matrix(x),a = 0.01, lambda = 1)</code></pre>
@@ -276,7 +276,7 @@ hard_ann &lt;- cbind(hard_$hardness,as.tibble(hard.clr)) %&gt;%
   mutate_all(scale01) %&gt;% rename(&quot;hardness&quot; = &quot;hard_$hardness&quot;)
 
 
-set.seed(123)
+set.seed(111)
 hard_ann_train &lt;- sample_frac(tbl = hard_ann, replace = FALSE, size = 0.80)
 hard_ann_test &lt;- anti_join(hard_ann, hard_ann_train)</code></pre>
 <pre class="r"><code>hard_ann_model1 &lt;- neuralnet(hardness ~ Al + Co + 
@@ -297,9 +297,9 @@ hard_ann_sse2 &lt;- sum((hard_ann_test_output2 - hard_ann_test[, 1])^2)/2
 
 
 hard_ann_sse1</code></pre>
-<pre><code>## [1] 0.1559645</code></pre>
+<pre><code>## [1] 0.04433977</code></pre>
 <pre class="r"><code>hard_ann_sse2 # model 2 is more accurate</code></pre>
-<pre><code>## [1] 0.1558748</code></pre>
+<pre><code>## [1] 0.02979382</code></pre>
 <pre class="r"><code>dat &lt;- cbind(p = hard_ann_test_output2, hard_ann_test) %&gt;%
   arrange(hardness) %&gt;%
   mutate(row = row_number()) %&gt;% 
@@ -307,72 +307,8 @@ hard_ann_sse1</code></pre>
          hardness = scale02(hardness))
 
 
-dat</code></pre>
-<pre><code>##             p hardness          Al          Co          Cr           Cu
-## 1  0.08025127      110 0.459383079 0.822207735 0.674673178 0.0268815946
-## 2  0.08225840      153 0.028256877 0.830248992 0.357670890 0.9202565621
-## 3  0.08122400      157 0.008654047 0.720523903 0.591235196 0.7986361393
-## 4  0.05125158      168 0.437042556 0.799088811 0.655702647 0.0314371313
-## 5  0.06492592      170 0.091751450 0.939381313 0.770821471 0.1046872672
-## 6  0.08289677      171 0.001464359 0.774618372 0.635623112 0.8585950083
-## 7  0.18531365      207 0.471148738 0.660194372 0.541731021 0.7317662643
-## 8  0.36297614      290 0.629478674 0.013659784 0.604838861 0.8170118686
-## 9  0.40227888      315 0.655852328 0.011723956 0.599664076 0.8100218085
-## 10 0.45400940      338 0.665032372 0.774900154 0.635854332 0.0019831455
-## 11 0.43288219      339 0.679843819 0.010339998 0.594879031 0.8035582045
-## 12 0.53028570      370 0.718614305 0.002246823 0.606999183 0.8199300158
-## 13 0.56587768      418 0.641344621 0.660194372 0.541731021 0.7317662643
-## 14 0.64710868      423 0.641344621 0.660194372 0.541731021 0.7317662643
-## 15 0.68785006      430 0.876433709 0.902192960 0.072700350 0.0982030962
-## 16 0.68833110      479 0.771742101 0.747683865 0.613521654 0.0008959313
-## 17 0.78668798      482 0.849937686 0.726024390 0.595748692 0.0077060817
-## 18 0.67092907      545 0.768211123 0.615591497 0.005922995 0.8765193696
-## 19 0.55904764      546 0.779477613 0.008771169 0.574314370 0.7757796123
-## 20 0.78296022      548 0.773580528 0.796316823 0.653428056 0.0103665837
-## 21 0.58569235      550 0.806543872 0.435884783 0.681271536 0.0322407460
-## 22 0.70816058      558 0.733559049 0.606169810 0.497400469 0.6718848818
-## 23 0.69315897      587 0.773580528 0.796316823 0.653428056 0.0103665837
-## 24 0.56432395      601 0.625079139 0.643450831 0.611672335 0.5173335157
-## 25 0.75574472      603 0.783341307 0.595920729 0.488990452 0.6605246940
-## 26 0.77001926      625 0.800775038 0.592331504 0.486045267 0.6565463598
-## 27 0.78803216      655 0.823998848 0.587550228 0.482121929 0.6512467439
-## 28 0.81933605      694 0.895080046 0.466733048 0.528200371 0.5173317332
-## 29 0.91444580      695 0.822697893 0.919907330 0.754841843 0.0994068613
-## 30 0.84721112      701 0.907235679 0.758112256 0.393251453 0.5312011598
-## 31 0.79839193      735 0.837773718 0.584714282 0.479794858 0.6481033527
-##           Fe         Ni row prediction
-## 1  0.7453117 0.75097212   1   163.3671
-## 2  0.7526009 0.75838174   2   164.7018
-## 3  0.8112636 0.65727555   3   164.0140
-## 4  0.7748289 0.78097684   4   144.0823
-## 5  0.8515268 0.71109197   5   153.1757
-## 6  0.6218311 0.70712090   6   165.1264
-## 7  0.5984505 0.60168490   7   233.2336
-## 8  0.6681657 0.83465256   8   351.3791
-## 9  0.6624491 0.82885311   9   377.5155
-## 10 0.7024285 0.70738055  10   411.9162
-## 11 0.6571631 0.82349174  11   397.8667
-## 12 0.6705522 0.75334321  12   462.6400
-## 13 0.4396376 0.60168490  13   486.3087
-## 14 0.5984505 0.44024860  14   540.3273
-## 15 0.8178164 0.82467451  15   567.4203
-## 16 0.6777576 0.68230210  16   567.7402
-## 17 0.6581238 0.66234397  17   633.1475
-## 18 0.7168319 0.72202188  18   556.1678
-## 19 0.6344453 0.79971063  19   481.7667
-## 20 0.7218422 0.53824657  20   630.6685
-## 21 0.7526009 0.75838174  21   499.4854
-## 22 0.5494785 0.55190397  22   580.9268
-## 23 0.5360430 0.72711494  23   570.9507
-## 24 0.5832728 0.58625657  24   485.2754
-## 25 0.5401879 0.54245995  25   612.5702
-## 26 0.5369344 0.53915266  26   622.0628
-## 27 0.5326003 0.53474695  27   634.0414
-## 28 0.5835032 0.58649068  28   654.8585
-## 29 0.8338741 0.07598826  29   718.1065
-## 30 0.4344250 0.59802069  30   673.3954
-## 31 0.5300296 0.53213377  31   640.9306</code></pre>
-<pre class="r"><code>dat %&gt;% 
+
+dat %&gt;% 
   pivot_longer(c(&quot;prediction&quot;,&quot;hardness&quot;)) %&gt;% 
   mutate(row = as.integer((row_number()-1)/2)) %&gt;% 
   ggplot(aes(row, value, colour = name, shape = name)) + 

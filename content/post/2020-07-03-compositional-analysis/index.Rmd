@@ -174,13 +174,14 @@ hard <- read_csv("hardness.csv")
 ```{r}
 # Filtering out zero values for logratio transformations
 hard_ <- hard %>% 
-  #filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
-   mutate(Al = ifelse(Al == 0, 1, Al),
-          Co = ifelse(Co == 0, 1, Co),
-          Cr = ifelse(Cr == 0, 1, Cr),
-          Cu = ifelse(Cu == 0, 1, Cu),
-          Fe = ifelse(Fe == 0, 1, Fe),
-          Ni = ifelse(Ni == 0, 1, Ni))
+  filter(Al > 0, Co > 0, Cr > 0, Cu > 0, Fe > 0, Ni > 0)
+  #mutate(Al = ifelse(Al == 0, 1, Al),
+  #        Co = ifelse(Co == 0, 1, Co),
+  #        Cr = ifelse(Cr == 0, 1, Cr),
+  #        Cu = ifelse(Cu == 0, 1, Cu),
+  #        Fe = ifelse(Fe == 0, 1, Fe),
+  #        Ni = ifelse(Ni == 0, 1, Ni))
+
 
 
 ```
@@ -310,7 +311,7 @@ hard_ann <- cbind(hard_$hardness,as.tibble(hard.clr)) %>%
   mutate_all(scale01) %>% rename("hardness" = "hard_$hardness")
 
 
-set.seed(123)
+set.seed(111)
 hard_ann_train <- sample_frac(tbl = hard_ann, replace = FALSE, size = 0.80)
 hard_ann_test <- anti_join(hard_ann, hard_ann_train)
 ```
@@ -357,7 +358,7 @@ dat <- cbind(p = hard_ann_test_output2, hard_ann_test) %>%
          hardness = scale02(hardness))
 
 
-dat
+
 dat %>% 
   pivot_longer(c("prediction","hardness")) %>% 
   mutate(row = as.integer((row_number()-1)/2)) %>% 
@@ -409,14 +410,6 @@ dat %>%
   theme_bw()+
   theme(legend.position = c(0.8,0.2),
         legend.background = element_rect(fill = "white", color = "black"))
-  
-
-
-
-
-
-
-
 ```
 
 
