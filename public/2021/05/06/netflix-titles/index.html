@@ -258,8 +258,9 @@
 <p><img src="/2021/05/06/netflix-titles/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <pre class="r"><code>library(tidytext)</code></pre>
 <pre><code>## Warning: package &#39;tidytext&#39; was built under R version 4.0.5</code></pre>
-<pre class="r"><code>library(snakecase)
-library(tidylo)</code></pre>
+<pre class="r"><code>library(snakecase)</code></pre>
+<pre><code>## Warning: package &#39;snakecase&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(tidylo)</code></pre>
 <pre><code>## Warning: package &#39;tidylo&#39; was built under R version 4.0.5</code></pre>
 <pre class="r"><code>words_unnested &lt;- netflix_titles %&gt;%
   unnest_tokens(word, description) %&gt;%

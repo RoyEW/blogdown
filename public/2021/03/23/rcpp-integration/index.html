@@ -96,10 +96,10 @@ sapply(1:10, f)</code></pre>
 Rscores</code></pre>
 <pre><code>##    test replications elapsed relative
 ## 1 f(10)          100    0.02      1.0
-## 2 f(15)          100    0.10      5.0
-## 3 f(20)          100    0.99     49.5
-## 4 f(25)          100    9.39    469.5
-## 5 f(30)          100  106.95   5347.5</code></pre>
+## 2 f(15)          100    0.11      5.5
+## 3 f(20)          100    0.93     46.5
+## 4 f(25)          100    9.61    480.5
+## 5 f(30)          100  107.45   5372.5</code></pre>
 <pre class="r"><code>p &lt;- Rscores %&gt;% 
   filter(elapsed&gt;0) %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
@@ -130,7 +130,7 @@ Cscores</code></pre>
 ## 2 g(15)          100    0.00       NA
 ## 3 g(20)          100    0.00       NA
 ## 4 g(25)          100    0.03       NA
-## 5 g(30)          100    0.30       NA</code></pre>
+## 5 g(30)          100    0.25       NA</code></pre>
 <pre class="r"><code>p &lt;- Cscores %&gt;% 
   ggplot(aes(test,elapsed, group = 1))+
   geom_line()+ theme_minimal()+
@@ -144,7 +144,7 @@ print(p)</code></pre>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (0.3 seconds) massively outperforms R (106.95 seconds).</p>
+<p>The speed in calculating the 30th iteration of the Fibonacci sequence within C++ (0.25 seconds) massively outperforms R (107.45 seconds).</p>
 <div id="pushing-c-further" class="section level2">
 <h2>Pushing C++ further</h2>
 <pre class="r"><code>Cscores &lt;- benchmark(g(10),g(15), g(20), g(25),g(30),g(35),g(40))[,1:4]

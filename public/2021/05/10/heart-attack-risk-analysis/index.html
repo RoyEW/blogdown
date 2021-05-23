@@ -262,20 +262,20 @@ best_lambda &lt;- heart_model$lambda.min</code></pre>
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        s0
-## (Intercept)  0.9914063475
-## age         -0.0006328921
-## sex         -0.1918642036
-## cp           0.1339555867
-## trtbps      -0.0021522466
-## chol        -0.0006727790
-## fbs         -0.0064845701
-## restecg      0.0331260270
-## thalachh     0.0028476474
-## exng        -0.1063276628
-## oldpeak     -0.0773014415
-## slp          0.0942738734
-## caa         -0.0793569979
-## thall       -0.1538089741</code></pre>
+## (Intercept)  1.0616362530
+## age         -0.0009551322
+## sex         -0.1499035468
+## cp           0.1198886222
+## trtbps      -0.0027153261
+## chol        -0.0005717574
+## fbs          .           
+## restecg      .           
+## thalachh     0.0023734934
+## exng        -0.1318720595
+## oldpeak     -0.0722559296
+## slp          0.0828383104
+## caa         -0.0821401748
+## thall       -0.1201386720</code></pre>
 <p>There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -294,8 +294,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.742463</code></pre>
-<p>The R-squared turns out to be 0.7425. That is, the best model was able to explain 74.25% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.7792536</code></pre>
+<p>The R-squared turns out to be 0.7793. That is, the best model was able to explain 77.93% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -314,27 +314,27 @@ library(InformationValue)</code></pre>
 # The InformationValue::optimalCutoff function attempts to predict a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.
 
 optimal</code></pre>
-<pre><code>## [1] 0.3909936</code></pre>
+<pre><code>## [1] 0.4453976</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 73
-## 2          INCORRECT 18</code></pre>
-<p>The lasso regression is correct for 80.22% of the testing observations.</p>
+## 1            CORRECT 74
+## 2          INCORRECT 17</code></pre>
+<p>The lasso regression is correct for 81.32% of the testing observations.</p>
 </div>
 <div id="confusion-matrix-metrics" class="section level2">
 <h2>Confusion matrix metrics</h2>
 <pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
 <pre><code>##    0  1
-## 0 27  4
-## 1 14 46</code></pre>
+## 0 26  5
+## 1 12 48</code></pre>
 <pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.92</code></pre>
+<pre><code>## [1] 0.9056604</code></pre>
 <pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.6585366</code></pre>
+<pre><code>## [1] 0.6842105</code></pre>
 <pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.1978</code></pre>
-<p>The model has a misclassification rate of 19.78% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
+<pre><code>## [1] 0.1868</code></pre>
+<p>The model has a misclassification rate of 18.68% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
 </div>
 </div>
 

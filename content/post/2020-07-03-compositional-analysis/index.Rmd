@@ -143,7 +143,7 @@ data %>%
   )+
   theme(legend.position = "none")+
   ggrepel::geom_text_repel()+
-  theme_classic()
+  theme_bw()
 
 
 ```
@@ -305,11 +305,12 @@ scale02 <- function(y){
   y * (max(hard_$hardness) - min(hard_$hardness)) + min(hard_$hardness)
 }
 
-
+scale03 <- function(i){
+  i * (max(i) - min(i)) + min(i)
+}
 
 hard_ann <- cbind(hard_$hardness,as_tibble(hard.clr)) %>% 
   mutate_all(scale01) %>% rename("hardness" = "hard_$hardness")
-
 
 set.seed(1)
 hard_ann_train <- sample_frac(tbl = hard_ann, replace = FALSE, size = 0.80)
@@ -357,8 +358,6 @@ dat <- cbind(p = hard_ann_test_output2, hard_ann_test) %>%
   mutate(prediction = scale02(p),
          hardness = scale02(hardness))
 
-
-
 dat %>% 
   pivot_longer(c("prediction","hardness")) %>% 
   mutate(row = as.integer((row_number()-1)/2)) %>% 
@@ -371,9 +370,6 @@ dat %>%
   theme_bw()+
   theme(legend.position = c(0.8,0.2),
         legend.background = element_rect(fill = "white", color = "black"))
-
-
-
 ```
 
 ```{r}
@@ -382,20 +378,25 @@ hard_ann_results <- compute(hard_ann_model2, hard_ann[, 2:7])$net.result
 
 
 ```{r}
-dat <- cbind(predictions = hard_ann_results, hard_ann) %>% 
+dat1 <- cbind(predictions = hard_ann_results, hard_ann) %>% 
   mutate("ANN prediction" = scale02(predictions),
-         hardness = scale02(hardness)) %>% 
-  arrange(hardness) %>% 
+         hardness = scale02(hardness),
+         distance = `ANN prediction` - hardness) %>% 
+  arrange(hardness) 
+dat2 <- dat1 %>% 
   pivot_longer(c("ANN prediction","hardness"), values_to = "val", names_to = "var") %>% 
   mutate(row = as.integer((row_number()-1)/2))
+```
 
 
-
-
+```{r}
 g <- cbind(data.frame(p = hard_ann_results) %>% mutate(p = scale02(p)),hard_ann) %>% 
   mutate(hardness = scale02(hardness))
+```
 
-dat %>% 
+
+```{r}
+dat2 %>% 
   ggplot(aes(row, val, shape = var, colour = var)) +
   geom_point()+
   scale_color_discrete(type = c("dodgerblue", "red"),name = paste("RMSE = ",round(RMSE(g$p, g$hardness),2)))+
@@ -412,7 +413,107 @@ dat %>%
         legend.background = element_rect(fill = "white", color = "black"))
 ```
 
+# Exploring the compositional space
 
+```{r}
+g <- hard_ann %>%
+  arrange(desc(hardness)) %>%
+  filter(hardness > 0.8) %>%
+  pivot_longer(cols = colnames(hard_ann)[2:7])
+
+
+#scale04("Co")
+#lapply
+
+
+
+g %>%
+  ggplot(aes(hardness, value, colour = name))+
+  geom_line(size = 2)+
+  theme_classic()
+
+
+
+g <- cbind(predictions = hard_ann_results, hard_ann) %>% 
+  mutate(
+    predictions = predictions * (max(hard_$hardness) - min(hard_$hardness)) + min(hard_$hardness),
+    hardness = hardness * (max(hard_$hardness) - min(hard_$hardness)) + min(hard_$hardness),
+    Al = Al * (max(hard_$Al) - min(hard_$Al)) + min(hard_$Al),
+    Co = Co * (max(hard_$Co) - min(hard_$Co)) + min(hard_$Co),
+    Cr = Cr * (max(hard_$Cr) - min(hard_$Cr)) + min(hard_$Cr),
+    Cu = Cu * (max(hard_$Cu) - min(hard_$Cu)) + min(hard_$Cu),
+    Fe = Fe * (max(hard_$Fe) - min(hard_$Fe)) + min(hard_$Fe),
+    Ni = Ni * (max(hard_$Ni) - min(hard_$Ni)) + min(hard_$Ni)
+  )
+
+hard_ %>% arrange(desc(hardness))
+
+hard %>% mutate(sum3 = Al + Co + Cr) %>% 
+  ggplot(aes(sum3, hardness))+
+  geom_line()
+
+g %>% filter(hardness>650) %>% # high copper, low nickel, cobalt good/midrange, iron good 
+  ggplot(aes(hardness, colour = Fe))+
+  geom_point(aes(y=Al))
+
+p <- g %>% 
+  mutate(unseen = 0) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 40, Co = 20, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 41, Co = 19, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 42, Co = 18, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 41, Co = 20, Cr = 19, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 42, Co = 20, Cr = 18, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 41, Co = 20, Cr = 20, Cu = 0, Fe = 19, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 42, Co = 20, Cr = 20, Cu = 0, Fe = 18, Ni = 0, unseen = 1) %>% 
+    add_row(predictions = 0, hardness = 0,Al = 43, Co = 17, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+    add_row(predictions = 0, hardness = 0,Al = 44, Co = 16, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+    add_row(predictions = 0, hardness = 0,Al = 45, Co = 15, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+    add_row(predictions = 0, hardness = 0,Al = 46, Co = 18, Cr = 18, Cu = 0, Fe = 18, Ni = 0, unseen = 1) %>% 
+    add_row(predictions = 0, hardness = 0,Al = 43, Co = 19, Cr = 19, Cu = 0, Fe = 19, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 49, Co = 17, Cr = 17, Cu = 0, Fe = 17, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 30:50, Co = 30:10, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 30:50, Co = 20, Cr = 30:10, Cu = 0, Fe = 20, Ni = 0, unseen = 1) %>%
+  add_row(predictions = 0, hardness = 0,Al = 30:50, Co = 20, Cr = 20, Cu = 0, Fe = 30:10, Ni = 0, unseen = 1) %>% 
+  add_row(predictions = 0, hardness = 0,Al = 20:60, Co = 40:0, Cr = 20, Cu = 0, Fe = 20, Ni = 0, unseen = 1) 
+
+
+
+
+
+predictions <- compute(hard_ann_model2, p[, 3:8])$net.result
+
+t <- cbind(predictions,p[,2:9]) %>% 
+    mutate(
+    predictions = predictions * (max(hard_$hardness) - min(hard_$hardness)) + min(hard_$hardness)) %>% 
+  distinct()
+
+
+t_plot <- t %>% arrange(predictions) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(composition = paste("Al",round(Al),"Co",round(Co),"Cr",round(Cr),"Cu",round(Cu),"Fe",round(Fe),"Ni",round(Ni))) %>% 
+  ggplot(aes(rank, predictions, colour = as.factor(unseen), shape = as.factor(unseen), group = composition))+
+  geom_point()+
+  scale_color_discrete(type = c("red", "dodgerblue"),name = "unseen")+
+  scale_shape_discrete(name = "unseen")+
+  labs(title = "Hardness prediction in a virtual space",
+       subtitle = "Exploring a virtual compositional space with the ANN model",
+       y = "HV hardness",
+       x = "rank ordered by ascending hardness")+
+  #annotate("text", y = 200, x = 25,label = paste("RMSE = ",
+  #  round(RMSE(hard$hardness, dat$predictions),2)
+  #))+
+  theme_bw()+
+  theme(legend.position = c(0.8,0.2),
+        legend.background = element_rect(fill = "white", color = "black"))
+
+plotly::ggplotly(t_plot)
+
+
+
+
+hard %>% filter(Co<15,Al>40) %>% 
+  arrange(desc(hardness))
+```
 
 
 
