@@ -261,21 +261,21 @@ best_lambda &lt;- heart_model$lambda.min</code></pre>
 <pre class="r"><code>best_model &lt;- glmnet(x, y, alpha = 1, lambda = best_lambda)
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
-##                        s0
-## (Intercept)  0.8335935413
-## age          .           
-## sex         -0.2091337291
-## cp           0.1224537312
-## trtbps      -0.0016777803
-## chol        -0.0005911227
-## fbs          .           
-## restecg      0.0537256831
-## thalachh     0.0025394569
-## exng        -0.1230653509
-## oldpeak     -0.0544243510
-## slp          0.0897791834
-## caa         -0.1022304537
-## thall       -0.1053735755</code></pre>
+##                       s0
+## (Intercept)  0.862441248
+## age         -0.002936322
+## sex         -0.181361764
+## cp           0.120174134
+## trtbps      -0.002326764
+## chol         .          
+## fbs          .          
+## restecg      0.032479784
+## thalachh     0.002119945
+## exng        -0.096966797
+## oldpeak     -0.026234644
+## slp          0.135223078
+## caa         -0.096992855
+## thall       -0.115168244</code></pre>
 <p>There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -294,8 +294,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.7432849</code></pre>
-<p>The R-squared turns out to be 0.7433. That is, the best model was able to explain 74.33% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.7757848</code></pre>
+<p>The R-squared turns out to be 0.7758. That is, the best model was able to explain 77.58% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -314,27 +314,27 @@ library(InformationValue)</code></pre>
 # The InformationValue::optimalCutoff function attempts to predict a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.
 
 optimal</code></pre>
-<pre><code>## [1] 0.6276585</code></pre>
+<pre><code>## [1] 0.4004544</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 69
-## 2          INCORRECT 22</code></pre>
-<p>The lasso regression is correct for 75.82% of the testing observations.</p>
+## 1            CORRECT 79
+## 2          INCORRECT 12</code></pre>
+<p>The lasso regression is correct for 86.81% of the testing observations.</p>
 </div>
 <div id="confusion-matrix-metrics" class="section level2">
 <h2>Confusion matrix metrics</h2>
 <pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
 <pre><code>##    0  1
-## 0 24  3
-## 1 19 45</code></pre>
+## 0 35  7
+## 1  5 44</code></pre>
 <pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.9375</code></pre>
+<pre><code>## [1] 0.8627451</code></pre>
 <pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.5581395</code></pre>
+<pre><code>## [1] 0.875</code></pre>
 <pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.2418</code></pre>
-<p>The model has a misclassification rate of 24.18% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
+<pre><code>## [1] 0.1319</code></pre>
+<p>The model has a misclassification rate of 13.19% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
 </div>
 </div>
 
