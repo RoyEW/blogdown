@@ -204,6 +204,15 @@ hard.ilr <- x %>%
 hard.alr <- x %>% 
   alr()
 
+
+
+
+```
+
+```{r}
+
+corrplot::corrplot(cor(hard))
+
 ```
 
 
