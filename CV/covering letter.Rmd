@@ -1,0 +1,20 @@
+---
+title: "Covering Letter"
+subtitle: "Deutsche Bank Analyst Graduate Programme - Technology, Data and Innovation"
+author: ""
+date: "25/05/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I have an interest in data analytics and an interest in learning new technologies to build on my abilities. Joining Deutsche Bank in this capacity would be a fantastic opportunity for me to explore more about Deutsche Bank and how I could support it in its business strategy. 
+
+I believe that I would benefit from this technology programme from Deutsche Bank as it will provide structure to my learning and provide the opportunity to expand on my interests and add value in a real-world setting. 
+
+
+Sincerely,
+
+Roy Wilson
