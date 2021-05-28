@@ -48,12 +48,12 @@ times %&gt;%
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$price
-## Dickey-Fuller = -2.6436, Lag order = 9, p-value = 0.3059
+## Dickey-Fuller = -3.268, Lag order = 9, p-value = 0.0762
 ## alternative hypothesis: stationary</code></pre>
 <pre class="r"><code>adf_output$p.value</code></pre>
-<pre><code>## [1] 0.3058608</code></pre>
+<pre><code>## [1] 0.07619618</code></pre>
 <pre class="r"><code>adf_output$significant &lt;- ifelse(adf_output$p.value&lt;0.05,&quot;significant&quot;,&quot;insignificant&quot;)</code></pre>
-<p>The p value of 0.31 is insignificant which allows us to infer that our time series data exhibits non-stationarity as the lag variable has a significant coefficient. We are unable to reject the null hypothesis that the coefficient is equal to 1.</p>
+<p>The p value of 0.08 is insignificant which allows us to infer that our time series data exhibits non-stationarity as the lag variable has a significant coefficient. We are unable to reject the null hypothesis that the coefficient is equal to 1.</p>
 <p>In the case of non-stationarity, there are a few options to coerce stationarity such as taking the log or the square roots of the data to stabalise non-constant variance, calculating the residuals from another fitted model, or simply taking another difference of our series data, that is <span class="math inline">\(\Delta^2\)</span>.</p>
 <p>This can be demonstrated as follows</p>
 <pre class="r"><code>times &lt;- times %&gt;% 
@@ -73,7 +73,7 @@ times %&gt;% ggplot(aes(day, diff_price)) + geom_line()+
 ##  Augmented Dickey-Fuller Test
 ## 
 ## data:  times$diff_price
-## Dickey-Fuller = -9.8038, Lag order = 9, p-value = 0.01
+## Dickey-Fuller = -10.027, Lag order = 9, p-value = 0.01
 ## alternative hypothesis: stationary</code></pre>
 <p>Many other unit root tests exist such as the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test.</p>
 <p>Alternatively, seasonality can be removed from the time series data using the in-built R stats functions.</p>
@@ -97,26 +97,33 @@ plot(times.season.adj.test)</code></pre>
 
 confint(fitARIMA)</code></pre>
 <pre><code>##            2.5 %     97.5 %
-## ar1  -0.75096103 1.38148954
-## ma1  -1.35323860 0.80862772
-## sar1 -0.07986111 0.04572495</code></pre>
+## ar1  -0.88300120 0.33998879
+## ma1  -0.26735137 0.92872300
+## sar1 -0.04980869 0.07526086</code></pre>
 <p>Instead of going through each iteration of Arima(x, y, z) and selecting the best model, we can use the auto.arima() function in R from the forecasts package.</p>
 <pre class="r"><code>times.arima_auto_model &lt;- auto.arima(times$price %&gt;% log(), trace = TRUE)</code></pre>
 <pre><code>## 
 ##  Fitting models using approximations to speed things up...
 ## 
 ##  ARIMA(2,1,2) with drift         : Inf
-##  ARIMA(0,1,0) with drift         : -8455.622
-##  ARIMA(1,1,0) with drift         : -8454.449
-##  ARIMA(0,1,1) with drift         : -8455.341
-##  ARIMA(0,1,0)                    : -8457.611
-##  ARIMA(1,1,1) with drift         : -8452.673
+##  ARIMA(0,1,0) with drift         : -8441.38
+##  ARIMA(1,1,0) with drift         : -8441.852
+##  ARIMA(0,1,1) with drift         : -8442.584
+##  ARIMA(0,1,0)                    : -8441.389
+##  ARIMA(1,1,1) with drift         : -8441.949
+##  ARIMA(0,1,2) with drift         : -8442.242
+##  ARIMA(1,1,2) with drift         : -8440.049
+##  ARIMA(0,1,1)                    : -8442.808
+##  ARIMA(1,1,1)                    : -8442.212
+##  ARIMA(0,1,2)                    : -8442.309
+##  ARIMA(1,1,0)                    : -8442.138
+##  ARIMA(1,1,2)                    : -8440.246
 ## 
 ##  Now re-fitting the best model(s) without approximations...
 ## 
-##  ARIMA(0,1,0)                    : -8468.937
+##  ARIMA(0,1,1)                    : -8454.117
 ## 
-##  Best model: ARIMA(0,1,0)</code></pre>
+##  Best model: ARIMA(0,1,1)</code></pre>
 </div>
 <div id="forecasting-with-the-arima-model" class="section level1">
 <h1>Forecasting with the Arima model</h1>
@@ -154,24 +161,24 @@ quantmod::getSymbols(&quot;TSLA&quot;)</code></pre>
 <pre><code>## 
 ##  Fitting models using approximations to speed things up...
 ## 
-##  ARIMA(2,1,2) with drift         : -10555.33
-##  ARIMA(0,1,0) with drift         : -10525.71
-##  ARIMA(1,1,0) with drift         : -10522.72
-##  ARIMA(0,1,1) with drift         : -10523.71
-##  ARIMA(0,1,0)                    : -10520.89
+##  ARIMA(2,1,2) with drift         : -10559.95
+##  ARIMA(0,1,0) with drift         : -10530.31
+##  ARIMA(1,1,0) with drift         : -10527.33
+##  ARIMA(0,1,1) with drift         : -10528.32
+##  ARIMA(0,1,0)                    : -10525.45
 ##  ARIMA(1,1,2) with drift         : Inf
-##  ARIMA(2,1,1) with drift         : -10539.05
-##  ARIMA(3,1,2) with drift         : -10554.49
-##  ARIMA(2,1,3) with drift         : -10554.74
+##  ARIMA(2,1,1) with drift         : -10543.64
+##  ARIMA(3,1,2) with drift         : -10559.11
+##  ARIMA(2,1,3) with drift         : -10559.34
 ##  ARIMA(1,1,1) with drift         : Inf
-##  ARIMA(1,1,3) with drift         : -10517.41
-##  ARIMA(3,1,1) with drift         : -10547.84
+##  ARIMA(1,1,3) with drift         : -10522.04
+##  ARIMA(3,1,1) with drift         : -10552.46
 ##  ARIMA(3,1,3) with drift         : Inf
-##  ARIMA(2,1,2)                    : -10549.24
+##  ARIMA(2,1,2)                    : -10553.8
 ## 
 ##  Now re-fitting the best model(s) without approximations...
 ## 
-##  ARIMA(2,1,2) with drift         : -10529.45
+##  ARIMA(2,1,2) with drift         : -10533.55
 ## 
 ##  Best model: ARIMA(2,1,2) with drift</code></pre>
 <pre class="r"><code>tsla_forecast &lt;- forecast::forecast(object = TSLA$TSLA.Close, model = tsla_model, h = 60)
@@ -189,21 +196,21 @@ forecast(tsla_model, h = 70) %&gt;% plot()</code></pre>
 <pre><code>## 
 ##  Fitting models using approximations to speed things up...
 ## 
-##  ARIMA(2,1,2) with drift         : -16798.15
-##  ARIMA(0,1,0) with drift         : -16795.85
-##  ARIMA(1,1,0) with drift         : -16795.61
-##  ARIMA(0,1,1) with drift         : -16796.87
-##  ARIMA(0,1,0)                    : -16788.28
-##  ARIMA(1,1,2) with drift         : -16800.44
-##  ARIMA(0,1,2) with drift         : -16803.44
-##  ARIMA(0,1,3) with drift         : -16801.43
-##  ARIMA(1,1,1) with drift         : -16799.2
+##  ARIMA(2,1,2) with drift         : -16803.54
+##  ARIMA(0,1,0) with drift         : -16801.23
+##  ARIMA(1,1,0) with drift         : -16800.99
+##  ARIMA(0,1,1) with drift         : -16802.26
+##  ARIMA(0,1,0)                    : -16793.71
+##  ARIMA(1,1,2) with drift         : -16805.83
+##  ARIMA(0,1,2) with drift         : -16808.83
+##  ARIMA(0,1,3) with drift         : -16806.82
+##  ARIMA(1,1,1) with drift         : -16804.59
 ##  ARIMA(1,1,3) with drift         : Inf
-##  ARIMA(0,1,2)                    : -16794.23
+##  ARIMA(0,1,2)                    : -16799.67
 ## 
 ##  Now re-fitting the best model(s) without approximations...
 ## 
-##  ARIMA(0,1,2) with drift         : -16810.9
+##  ARIMA(0,1,2) with drift         : -16816.3
 ## 
 ##  Best model: ARIMA(0,1,2) with drift</code></pre>
 <pre class="r"><code>AMZN_forecast &lt;- forecast::forecast(object = AMZN$AMZN.Close, model = AMZN_model, h = 70)
