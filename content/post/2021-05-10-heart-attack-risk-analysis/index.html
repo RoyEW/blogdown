@@ -196,20 +196,20 @@ best_lambda &lt;- heart_model$lambda.min</code></pre>
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        s0
-## (Intercept)  1.1990866456
-## age         -0.0041171336
-## sex         -0.2036524900
-## cp           0.1343809095
-## trtbps      -0.0013463889
-## chol         .           
+## (Intercept)  0.8459530144
+## age          .           
+## sex         -0.2428510553
+## cp           0.0844054728
+## trtbps      -0.0014986864
+## chol        -0.0004693439
 ## fbs          .           
-## restecg      0.0715693177
-## thalachh     0.0001518539
-## exng        -0.1572952369
-## oldpeak     -0.0642296986
-## slp          0.0856807494
-## caa         -0.0866185158
-## thall       -0.1015435667</code></pre>
+## restecg      0.0710766530
+## thalachh     0.0031372845
+## exng        -0.0781772919
+## oldpeak     -0.0691242616
+## slp          0.0392839996
+## caa         -0.0952045934
+## thall       -0.1385923248</code></pre>
 <p>There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -228,8 +228,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.749862</code></pre>
-<p>The R-squared turns out to be 0.7499. That is, the best model was able to explain 74.99% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.7741041</code></pre>
+<p>The R-squared turns out to be 0.7741. That is, the best model was able to explain 77.41% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -248,26 +248,26 @@ library(InformationValue)</code></pre>
 # The InformationValue::optimalCutoff function attempts to predict a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.
 
 optimal</code></pre>
-<pre><code>## [1] 0.5433009</code></pre>
+<pre><code>## [1] 0.4474546</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
-## 1            CORRECT 74
-## 2          INCORRECT 17</code></pre>
-<p>The lasso regression is correct for 81.32% of the testing observations.</p>
+## 1            CORRECT 78
+## 2          INCORRECT 13</code></pre>
+<p>The lasso regression is correct for 85.71% of the testing observations.</p>
 </div>
 <div id="confusion-matrix-metrics" class="section level2">
 <h2>Confusion matrix metrics</h2>
 <pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
 <pre><code>##    0  1
-## 0 25  5
-## 1 12 49</code></pre>
+## 0 32  7
+## 1  6 46</code></pre>
 <pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.9074074</code></pre>
+<pre><code>## [1] 0.8679245</code></pre>
 <pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.6756757</code></pre>
+<pre><code>## [1] 0.8421053</code></pre>
 <pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.1868</code></pre>
-<p>The model has a misclassification rate of 18.68% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
+<pre><code>## [1] 0.1429</code></pre>
+<p>The model has a misclassification rate of 14.29% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
 </div>
 </div>
