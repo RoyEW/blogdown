@@ -262,20 +262,20 @@ best_lambda &lt;- heart_model$lambda.min</code></pre>
 coef(best_model)</code></pre>
 <pre><code>## 14 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                        s0
-## (Intercept)  0.9516762309
-## age         -0.0014763266
-## sex         -0.2382553742
-## cp           0.1474654627
-## trtbps      -0.0035035188
-## chol        -0.0004643015
-## fbs          0.0331212957
-## restecg      0.0985806471
-## thalachh     0.0029444672
-## exng        -0.0990797166
-## oldpeak     -0.0571437455
-## slp          0.0708525240
-## caa         -0.0742777006
-## thall       -0.0725898768</code></pre>
+## (Intercept)  0.4788187390
+## age          .           
+## sex         -0.1809427539
+## cp           0.1194088951
+## trtbps      -0.0008964139
+## chol         .           
+## fbs         -0.0409941284
+## restecg      0.0953881109
+## thalachh     0.0033047466
+## exng        -0.1311890406
+## oldpeak     -0.0389844769
+## slp          0.0518008012
+## caa         -0.1448903689
+## thall       -0.1043982657</code></pre>
 <p>There may be coefficients above that have been reduced to zero because of the nature of the Lasso regression model used. The Lasso regression is often implemented when there are lots of features and over-fitting a model may become a problem in producing an accurate model. Coefficients tending to zero are dropped from the model completely. There may be greater or fewer coefficients dropped depending on the sampling of the training dataset.</p>
 </div>
 </div>
@@ -294,8 +294,8 @@ sse &lt;- sum((predictions - heart_test_y)^2) # sum of squares error
 rsq &lt;- 1 - sse/sst # r-squared
 
 rsq</code></pre>
-<pre><code>## [1] 0.73139</code></pre>
-<p>The R-squared turns out to be 0.7314. That is, the best model was able to explain 73.14% of the variation in the response values of the training data.</p>
+<pre><code>## [1] 0.724346</code></pre>
+<p>The R-squared turns out to be 0.7243. That is, the best model was able to explain 72.43% of the variation in the response values of the training data.</p>
 </div>
 <div id="confusion-matrix-how-correct-was-our-model" class="section level2">
 <h2>Confusion matrix (how correct was our model?)</h2>
@@ -314,7 +314,7 @@ library(InformationValue)</code></pre>
 # The InformationValue::optimalCutoff function attempts to predict a better rounding of probability. This may be more accurate than simply rounding to the nearest integer.
 
 optimal</code></pre>
-<pre><code>## [1] 0.5615495</code></pre>
+<pre><code>## [1] 0.6051164</code></pre>
 <pre class="r"><code>(cf &lt;- confusion_matrix %&gt;% 
   count(correct_prediction))</code></pre>
 <pre><code>##   correct_prediction  n
@@ -326,12 +326,12 @@ optimal</code></pre>
 <h2>Confusion matrix metrics</h2>
 <pre class="r"><code>confusionMatrix(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
 <pre><code>##    0  1
-## 0 32  5
-## 1 14 40</code></pre>
+## 0 28  8
+## 1 11 44</code></pre>
 <pre class="r"><code>sensitivity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.8888889</code></pre>
+<pre><code>## [1] 0.8461538</code></pre>
 <pre class="r"><code>specificity(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
-<pre><code>## [1] 0.6956522</code></pre>
+<pre><code>## [1] 0.7179487</code></pre>
 <pre class="r"><code>misClassError(confusion_matrix$output, confusion_matrix$prediction)</code></pre>
 <pre><code>## [1] 0.2088</code></pre>
 <p>The model has a misclassification rate of 20.88% which is quite reasonable for predicting if someone is at greater risk of heart disease.</p>
