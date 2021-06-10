@@ -6,3 +6,47 @@ slug: election-polling-data
 categories: []
 tags: []
 ---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+
+readxl::read_excel("PollBase-Q2-2021.xlsx", sheet = 24) |>  
+  mutate(date = as.Date(as.integer(...2), origin="1899-12-30")) |>  
+  pivot_longer(c("Conservative", "Labour")) |>
+  filter(date < lubridate::ymd(20211101)) |> 
+  ggplot(aes(date, value, colour = name)) + geom_point()+
+  scale_color_manual(values = c("dodgerblue","red"))+
+  geom_smooth(method = "gam", se = FALSE)+
+  theme_minimal()+
+  labs(title = "Historical voting intention of political parties",
+       y = "Voting intention percentage share",
+       x = "",
+       caption = "Data sourced from https://www.markpack.org.uk/opinion-polls/")
+  
+readxl::read_excel("PollBase-Q2-2021.xlsx", sheet = 23) |>
+  mutate(date = ...4) |> 
+  pivot_longer(c("Con", "Lab","LD","Ukip","Green")) |> 
+  filter(date < lubridate::ymd(20211101)) |> 
+  ggplot(aes(date, value, colour = name)) + geom_point()+
+  scale_color_manual(values = c("dodgerblue", "green","red","orange","purple")) +
+  geom_smooth(method = "gam",se= FALSE)+
+  theme_minimal()+
+  labs(title = "2020-2021 Polling ",
+       x = "",
+       y = "Voting intention percentage share",
+       caption = "Data sourced from https://www.markpack.org.uk/opinion-polls/")
+
+
+
+
+#   mutate(date = lubridate::day(...2))
+#   ggplot(aes(Date, Con)) + geom_line(colour = "dodgerblue")+ geom_line(aes(y = Lab), colour = "red")
+# ggplot(aes(Date, Con...8)) + geom_line(colour = "dodgerblue")+ geom_line(aes(y = Lab...10), colour = "red")
+```
+
+```{r}
+
+
+  
+```

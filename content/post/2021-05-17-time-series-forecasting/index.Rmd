@@ -77,6 +77,8 @@ times %>% ggplot(aes(day, diff_price)) + geom_line()+
 
 
 
+
+
 ts(times$diff_price, start = c(2000,1), frequency = 365) %>% 
   decompose()%>% 
   plot()
