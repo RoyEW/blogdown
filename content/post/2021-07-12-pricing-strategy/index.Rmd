@@ -1,0 +1,74 @@
+---
+title: pricing strategy
+author: ''
+date: '2021-07-12'
+slug: pricing-strategy
+categories: []
+tags: []
+---
+
+## Initial thoughts
+
+* Ignoring mark-up/margin pricing as we don't have cost data. 
+
+* A 'price-war' should be avoided as this could be unsustainable in the long-run. 
+
+* Toiletries are relatively price inelastic, i.e. people are willing to absorb the costs to obtain necessary products. More market and sales data would be required to analyse this further.
+
+* The range has somewhat luxury products as a branded bleach is expected to perform the same as an own or standard branded bleach. 
+
+* We should keep own brand products cheap to maintain the TASDA brand overall and to [support customers changing habits](https://www.bbc.co.uk/news/business-44684306). 
+
+* Maybe we can increase the price leading products closer to the LESCO price to extract more value whilst maintaining 60% price lead over the range? 
+
+* Some products are significantly lower than the LESCO alternatives. Could these be 'loss leader' products that could for marketing purposes for the range?
+
+* We have a couple of exclusive product on offer. Should this item be reduced for use in marketing purposes? Could it be that it should be higher priced to capitalise on its exclusivity? Could it be a new item that 
+
+## Requirements for the strategy
+
+* I'd like to incorporate roll-back pricing for a few products 
+
+* roll-back pricing - 10% cheaper for a period of time. This provides the incentive for customers to try new products they may love. 
+
+lower own-brand products or keep the same, increase the luxury products to 10% lower than the LESCO alternatives. 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(tidyverse)
+
+prices <- read.csv("prices.csv")
+
+prices <- prices |> rename(product = colnames(prices)[1])
+```
+
+
+
+```{r warning=TRUE, include=FALSE}
+g <- prices |> 
+  mutate(diff = TASDA - LESCO,
+         price_lead = case_when(diff < 0 ~ "price_leading",
+                                diff == 0 ~ "price_equal",
+                                diff > 0 ~ "not_leading",
+                                TRUE ~ "")) |> 
+  count(price_lead)
+
+
+price_lead_perc <- round(g[4,2]/sum(g[,2]) * 100,2)
+
+
+prices |> 
+  filter(LESCO > 0) |> 
+  {\(x) sum(x$LESCO)}()
+prices |> 
+  filter(LESCO > 0) |> 
+  {\(x) sum(x$TASDA)}()
+
+
+```
+
+## Questions
+* are the products price elastic or inelastic?
+
+price lead is `r price_lead_perc`%.
+
