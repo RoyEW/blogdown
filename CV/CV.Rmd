@@ -4,9 +4,9 @@ surname: Wilson
 position: "CIMA Cert BA, MSc, BSc"
 address: "Bangor, Wales. Open to relocation."
 phone: +44 777 617 5496
-www: royw.netlify.app
-email: "RoyWilson.MSC@gmail.com"
-linkedin: Roy Wilson
+www: RoyWilson.UK
+email: "Roy@RoyWilson.UK"
+linkedin: RoyWilsonUK
 date: "`r format(Sys.time(), '%B %Y')`"
 output: vitae::hyndman
 ---
@@ -73,7 +73,7 @@ tribble(
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
              "2021", "Dynamic documents", "This CV was produced using code in R using the {vitae} package.", "",
-  "2021", "Data analysis blog written in R markdown", "Example of dynamicly produced articles and a useful resource to keep track of useful code snippets", "RoyW.netlify.app",
+  "2021", "Data analysis blog written in R markdown", "Example of dynamicly produced articles and a useful resource to keep track of useful code snippets", "RoyWilson.UK",
     "2020", "Dashboard web application written in R shiny", "Calculates the thermal expansion of High Entropy Alloys (HEAs) using the rule of mixtures approach - publication pending", "JackWilson.shinyapps.io/cterom/",
       "2016-2018", "Treasurer at Bangor University Chess Society", "Experience running interactive sessions; undertook a teaching role; managing purchases and the society's budget", "Bangor University",
         "2019", "Welsh language", "Pellach/further level", "Bangor University",
