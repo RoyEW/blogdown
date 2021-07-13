@@ -46,6 +46,7 @@ tribble(
   "ASDA Stores Ltd.", "2016-Present", "","Sales assistant; experience giving great customer service; stock rotation; perpetual inventory management; training new colleagues; teamwork, leadership and delegation experience; supporting product recalls"
 ) %>% 
   detailed_entries(Degree, Year, Institution, Where)
+
 ```
 
 # Professional qualifications and awards
