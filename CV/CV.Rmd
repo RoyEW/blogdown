@@ -20,7 +20,7 @@ library(tibble)
 # Overview
  * Masters graduate in Accounting and Finance (Distinction). 
  * Special interests in R statistical programming, data analysis and visualisation, and data processes automation.
- * Seeking role within a finance or data analytics function. 
+ * Seeking role within a finance & accounting, data analytics, or business analyst/intelligence function. 
  * 7 exam exemptions for the CIMA and ACCA qualifications. CIMA masters gateway route is available. 
 
 # Education
