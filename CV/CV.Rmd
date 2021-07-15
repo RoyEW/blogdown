@@ -74,7 +74,7 @@ tribble(
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
              "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
-  "2021", "Data analysis blog written in R markdown", "Example of dynamicly produced articles and a useful resource to keep track of useful code snippets", "RoyWilson.UK",
+  "2021", "Blogdown site written in R markdown", "Example of dynamicly produced articles and a resource to keep track of useful code", "RoyWilson.UK",
     "2020", "Dashboard web application written in R shiny", "Calculates the thermal expansion of High Entropy Alloys (HEAs) using the rule of mixtures approach - publication pending", "JackWilson.shinyapps.io/cterom/",
       "2016-2018", "Treasurer at Bangor University Chess Society", "Organised and delivered interactive sessions; delivered the society's budget and took control of purchases", "Bangor University",
         "2019", "Welsh language", "Pellach/further level", "Bangor University",
