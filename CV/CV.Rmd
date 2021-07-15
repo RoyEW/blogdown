@@ -43,7 +43,7 @@ Methods, Company Law for Business",
 ```{r}
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "ASDA Stores Ltd.", "2016-Present", "","Sales assistant; experience giving great customer service; stock rotation; perpetual inventory management; training new colleagues; teamwork, leadership and delegation experience; supporting product recalls"
+  "ASDA Stores Ltd.", "2016-Present", "","Provided excellent customer service; stock rotation; perpetual inventory management; training new colleagues; teamwork, leadership and delegation experience; supported product recalls"
 ) %>% 
   detailed_entries(Degree, Year, Institution, Where)
 
@@ -73,10 +73,10 @@ tribble(
 ```{r}
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
-             "2021", "Dynamic documents", "This CV was produced using code in R using the {vitae} package.", "",
+             "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
   "2021", "Data analysis blog written in R markdown", "Example of dynamicly produced articles and a useful resource to keep track of useful code snippets", "RoyWilson.UK",
     "2020", "Dashboard web application written in R shiny", "Calculates the thermal expansion of High Entropy Alloys (HEAs) using the rule of mixtures approach - publication pending", "JackWilson.shinyapps.io/cterom/",
-      "2016-2018", "Treasurer at Bangor University Chess Society", "Experience running interactive sessions; undertook a teaching role; managing purchases and the society's budget", "Bangor University",
+      "2016-2018", "Treasurer at Bangor University Chess Society", "Organised and delivered interactive sessions; delivered the society's budget and took control of purchases", "Bangor University",
         "2019", "Welsh language", "Pellach/further level", "Bangor University",
             "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
  ) %>% 
@@ -93,13 +93,13 @@ tribble(
   "2020", "R for Data Science", "Manipulating data, statistical modelling, functional programming, and advanced graphics in R. Familiar with the tiderverse and data.table packages", "Jumping Rivers RSS Accredited",
   "2020", "PostgreSQL", "SQL fundamentals; familiarity with basic queries and aggregate functions","Data Camp",
 "", "Microsoft Office Suite", "Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases","",
-"", "Desire to expand on my knowledge of specialist tools for different applications", "","",
+
 "2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice","Bangor Doctoral school",
 "2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lanbda functions; additional tools","Bangor Doctoral school",
-"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; re-use though scripts","Bangor Doctoral school"
+"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; re-use though scripts","Bangor Doctoral school",
+"", "Desire to expand on my knowledge of specialist tools for different applications", "","",
 
  ) %>%
    detailed_entries(Year, Degree, Where, Institution)
 ```
 
-## Professional and academic referees are available on request. 
