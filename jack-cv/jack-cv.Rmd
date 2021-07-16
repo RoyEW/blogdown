@@ -107,7 +107,7 @@ tribble(
   "", "Welsh language", "equivalent to level B2 in the Common European Framework of Reference for Languages (CEFR).","",
 "2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice","Bangor Doctoral school",
 "2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lanbda functions; additional tools","Bangor Doctoral school",
-"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; re-use though scripts","Bangor Doctoral school",
+"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; re-use though scripts; substantial experience with bash","Bangor Doctoral school",
 
  ) %>%
    detailed_entries(Year, Degree, Where, Institution)
