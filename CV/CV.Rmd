@@ -29,7 +29,7 @@ library(tibble)
 
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "MSc in Accounting and Finance (Distinction)", "2019", "Bangor University & Fitch Learning", "• Modules: Financial Analysis (78%), Management Accounting (83%), Accounting Theory (81%), 
+  "MSc in Accounting and Finance (Distinction)", "2019", "Bangor University & Fitch Learning", "• Modules include: Financial Analysis (78%), Management Accounting (83%), Accounting Theory (81%), 
   
   Financial Econometrics (65%), Research Methods (71%), Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%). 
   
