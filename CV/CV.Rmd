@@ -29,7 +29,7 @@ library(tibble)
 
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "MSc in Accounting and Finance (Distinction)", "2019", "Bangor University & Fitch Learning", "Financial Analysis (78%), Management Accounting (83%), Accounting Theory (81%), Financial Econometrics (65%), Research Methods (71%), Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%). Summer project: Financial Research and CFA Series covering the CFA Level 1 syllabus with mock exam and 2 financial research assignments.",
+  "MSc in Accounting and Finance (Distinction)", "2019", "Bangor University & Fitch Learning", "Financial Analysis (78%), Management Accounting (83%)<br/>, Accounting Theory (81%), Financial Econometrics (65%), Research Methods (71%), Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%). Summer project: Financial Research and CFA Series covering the CFA Level 1 syllabus with mock exam and 2 financial research assignments.",
   "BSc in Accounting and Finance (First-Class with Honours)", "2018", "Bangor University", "Investment, Advanced Corporate Finance, Auditing, Advanced Investment Theory and Practice, Corporate Risk Management, Financial Statement Analysis, Comparative Banking, Taxation, Advanced Accounting Theory and Practice, Statistical
 Methods, Company Law for Business",
   "A Levels: Information Technology, C, Accounting, C, and Maths (stats), C", "2015", "Birmingham Metropolitan College", "",
@@ -54,11 +54,11 @@ tribble(
 ```{r}
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "Vulnerable person safeguarding training","", "Bangor University","",
+  
   "Associate Member, Chartered Institute of Management Accountants", "", "CIMA", "",
    "CIMA Certificate in Business Accounting", "", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law",
-   "2020 Digital Mindset AICPA certificate", "", "CIMA","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance"
-  
+   "2020 Digital Mindset AICPA certificate", "", "CIMA","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance",
+  "Vulnerable person safeguarding training","", "Bangor University","",
  ) %>%
    detailed_entries(Degree, Year, Institution, Where)
 ```
