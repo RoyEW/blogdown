@@ -1,0 +1,116 @@
+---
+name: Jack
+surname: Wilson 
+position: "PhD Student in Nuclear Science and Engineering"
+address: "Nuclear Futures Institute, Pryfysgol Bangor University"
+phone: +44 776 6044 773
+email: "Jack.Wilson@bangor.ac.uk"
+linkedin: "JackAnthonyWilson"
+date: "`r format(Sys.time(), '%B %Y')`"
+output: vitae::moderncv
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+library(tibble)
+```
+
+# Overview
+ * Nuclear Engineering and Science PhD researcher with several years of broad practical experience in chemistry, materials science, metallurgy, and computational modelling.
+ * [Research profile at nubu.nu/materials/students/jack-wilson/](https://nubu.nu/materials/students/jack-wilson/)
+
+# Education
+
+```{r}
+
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "PhD in Nuclear Engineering and Science", "2019-present", "Bangor University Nuclear Energy Futures EPSRC CDT", "Advanced Alloy Development for Accident Tolerant Fuels •	Centre for Doctoral Training: Bangor University; Bristol University; Cambridge University; Imperial University; and The Open University • •	Modules include: Nuclear Safety Management, Reactor Design and Operation, Responsible Research and Innovation, Materials for Reactor Design, Policy and Nuclear Regulation.",
+  "Masters in Chemistry (First-Class with Honours)", "2019", "Bangor University", "Structure and Reactivity (83%), Core Organic Chem concepts (89%), Chemical Biology (86%), Core Phys Chem Concepts (100%), Advanced Phys Chem (80%). •	Final Project title: Synthesis of Novel Manganese (III) Catalysts and their Application Towards Classic Organic Oxidation Transformations.",
+  "A Levels: Chemistry A, Maths B, Biology C - AS Psychology B", "2015", "Birmingham Metropolitan College", "",
+  "GCSEs: 9 GCSEs A*-B, including English, Maths, and Sciences", "2013", "Beamont Collegiate Academy", ""
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+```
+
+\newpage
+
+# Research Projects
+
+```{r}
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "Biochemical studies of oxygen-sensing mechanisms in algae and early land plants","2019", "University of Oxford","UNIQ+ internship: Interdisciplinary Bioscience Doctoral Training Partnership under Dr. Emily Flashman.
+•	Thermal shift assays, RapidFire-Q-ToF LC/MS, nanoDSF, XRD crystallography.
+",
+  "Organometallic Catalysis", "2019", "Bangor University", "Synthesis of Manganese (III) catalysts.
+•	Application towards classic epoxidation and sulfoxidation reactions.
+•	Single crystal and powder X-ray diffraction, NMR spectroscopy, IR spectroscopy, Mass spectrometry and Column Chromatography.
+•	Publication pending.
+",
+   "Organic Asymmetric Catalysis", "2018", "Bangor University", "	Synthesis of novel L-proline derived chiral catalysts.
+•	Application towards conjugate addition reactions.
+•	NMR, FTIR, Alpha D / optical rotation, Mass Spectrometry, Column Chromatography, HPLC.
+•	Publication Sep 2019: “Proline derived Guanidine catalysts forge extensive H-bonded architectures: A solution and solid-state study”.
+",
+ ) %>%
+   detailed_entries(Degree, Year, Institution, Where)
+```
+
+# Employment
+
+```{r}
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "Laboratory Technician", "2018/2019", "Liquids Research Ltd., Bangor","•	Producing small- and large-scale (500 mL – 12 L) formulations of magneto-rheological fluids and ferrofluids. • Advising direction of an R&D project following ISO standards in recording and presenting data and in compliance with NDAs. •	Vibrating-sample magnetometry, UV spectroscopy, Rheometry, Viscometry, non-Newtonian (Thixotropic) fluids. •	Contract extended well beyond original end-date based on quality of practical work.",
+    "Laboratory Technician", "2018", "School of Chemistry, Bangor University","Awarded internship in natural product isolation. •	Isolating, identifying, and purifying natural alkaloids from the Narcissus genus of daffodil. •	Column chromatography, NMR spectroscopy."
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+
+```
+
+
+
+
+
+\newpage
+
+
+# Professional qualifications and awards
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+             "", "Fire Awareness Training", "", "",
+   "", "Emergency Life Support", "", "",
+   "", "Health and Safety at work", "", "",
+   "", "Chemical Safety in the Laboratory", "", "",
+   "", "Control of Substances Hazardous to Health (COSHH)", "", "",
+   "", "Welsh Language Skills Certificate (Chemistry).", "with Distinction", "",
+   "", "Affiliate member of the Royal Society of Chemistry", "", "",
+   "", "Bangor Employability Gold Award", "BEA-200", "",
+ ) %>% 
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+
+# Professional interests and skills
+
+```{r}
+
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "2021", "R for data science", "Manipulating data, statistical modelling, functional programming, and advanced graphics in R.", "Jumping Rivers RSS Accredited",
+  "", "Full and clean driving licence", "","",
+"", "Microsoft Office Suite", "Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases","",
+  "", "Welsh language", "equivalent to level B2 in the Common European Framework of Reference for Languages (CEFR).","",
+"2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice","Bangor Doctoral school",
+"2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lanbda functions; additional tools","Bangor Doctoral school",
+"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; re-use though scripts","Bangor Doctoral school",
+
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+
