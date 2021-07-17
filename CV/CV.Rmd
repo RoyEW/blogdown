@@ -19,7 +19,7 @@ library(tibble)
 
 # Overview
  * Masters graduate in Accounting and Finance (Distinction). 
- * Special interests in R statistical programming, data analysis and visualisation, and data processes automation.
+ * Special interests in R statistical programming, data analysis and visualisation.
  * Seeking role within a finance & accounting, data analytics, or business analyst/intelligence function. 
  * 7 exam exemptions for the CIMA and ACCA qualifications. CIMA masters gateway route is available. 
 
@@ -31,15 +31,18 @@ tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
   "MSc in Accounting and Finance (Distinction)", "2019", "Bangor University & Fitch Learning", "• Modules include: Financial Analysis (78%), Management Accounting (83%), Accounting Theory (81%), 
   
-  Financial Econometrics (65%), Research Methods (71%), Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%). 
+  Financial Econometrics (65%), Research Methods (71%),
+  
+  
+  Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%). 
   
   • Summer project: Financial Research and CFA Series covering the CFA Level 1 syllabus and financial research titled 'the Role of Credit Rating Agencies' and 'Investigating the Efficient Market Hypothesis'.",
   "BSc in Accounting and Finance (First-Class with Honours)", "2018", "Bangor University", "Investment, Advanced Corporate Finance, Auditing, Advanced Investment Theory and Practice, 
   
   Corporate Risk Management, Financial Statement Analysis, Comparative Banking, Taxation, Advanced Accounting Theory and Practice, Statistical
 Methods, Company Law for Business",
-  "A Levels: Information Technology, C, Accounting, C, and Maths (stats), C", "2015", "Birmingham Metropolitan College", "",
-  "GCSEs: 8 GCSEs A-B, including English, Maths, and Science", "2013", "Beamont Collegiate Academy", ""
+  "A Levels: Maths C, Accounts C, ICT C", "2015", "Birmingham Metropolitan College", "",
+  "GCSEs: 8 GCSEs A-B, including English, Maths, and Sciences", "2013", "Beamont Collegiate Academy", ""
 ) %>% 
   detailed_entries(Degree, Year, Institution, Where)
 ```
@@ -113,7 +116,7 @@ tribble(
 "2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice","Bangor Doctoral school",
 "2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lambda functions; and additional tools","Bangor Doctoral school",
 "2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts","Bangor Doctoral school",
-"", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and PowerBI.",""
+"", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.",""
 
  ) %>%
    detailed_entries(Year, Degree, Where, Institution)

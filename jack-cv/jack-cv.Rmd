@@ -18,8 +18,9 @@ library(tibble)
 ```
 
 # Overview
- * Nuclear Engineering and Science PhD researcher with several years of broad practical experience in chemistry, materials science, metallurgy, and computational modelling.
- * Looking for a position at your company patiently awaiting your response. <3<3<3<3<3<3<3
+ * Nuclear Engineering and Science PhD researcher with several years of broad practical experience in chemistry,
+ 
+ materials science, metallurgy, and computational modelling.
 
 # Education
 
