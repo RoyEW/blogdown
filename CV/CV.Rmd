@@ -69,9 +69,10 @@ tribble(
 # Professional qualifications and awards
 
 ```{r}
+
+
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-  
   "Associate Member, Chartered Institute of Management Accountants", "", "CIMA", "",
    "CIMA Certificate in Business Accounting", "", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law",
    "2020 Digital Mindset AICPA certificate", "", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance",
@@ -80,7 +81,7 @@ tribble(
    detailed_entries(Degree, Year, Institution, Where)
 ```
 
-[Verify 2020 Digital Mindset AICPA certificate](https://www.credly.com/badges/04ce8e24-971f-407b-94a0-c8b4c6f9756f/linked_in_profile)
+<!-- [Verify 2020 Digital Mindset AICPA certificate](https://www.credly.com/badges/04ce8e24-971f-407b-94a0-c8b4c6f9756f/linked_in_profile) -->
 
 \newpage
 
@@ -96,14 +97,13 @@ tribble(
       "2016-2018", "Treasurer at Bangor University Chess Society", "• Organised and delivered interactive sessions
   
   • Delivered the society's budget and took control of purchases", "Bangor University",
-        "2019", "Welsh language", "Pellach/further level", "Bangor University",
             "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
  ) %>% 
    detailed_entries(Year, Degree, Where, Institution)
 ```
 
 
-# Professional interests and skills
+# Professional skills
 
 ```{r}
 
@@ -118,6 +118,16 @@ tribble(
 "2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts","Bangor Doctoral school",
 "", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.",""
 
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+# Hobbies and interests
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+"","Welsh learner","I enjoy using the Welsh I'm learning to communicate to other learners and colleagues",""
  ) %>%
    detailed_entries(Year, Degree, Where, Institution)
 ```
