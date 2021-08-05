@@ -2,9 +2,8 @@
 name: Roy
 surname: Wilson
 position: "CIMA Cert BA, MSc, BSc"
-address: "Bangor, Wales. Open to relocation."
+address: "Bangor, Wales."
 phone: +44 777 617 5496
-www: RoyWilson.UK
 email: "Roy@RoyWilson.UK"
 linkedin: RoyWilsonUK
 date: "`r format(Sys.time(), '%B %Y')`"
@@ -85,24 +84,6 @@ tribble(
 
 \newpage
 
-
-# Projects
-
-```{r}
- tribble(
-   ~ Degree, ~ Year, ~ Institution, ~ Where,
-             "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
-  "2021", "Blogdown site written in R markdown", "Example of dynamicly produced articles and a resource to keep track of useful code", "RoyWilson.UK",
-    "2020", "Dashboard web application written in R shiny", "Calculates the thermal expansion of High Entropy Alloys (HEAs) using the rule of mixtures approach - publication pending", "RoyWilson.UK/HEA/",
-      "2016-2018", "Treasurer at Bangor University Chess Society", "• Organised and delivered interactive sessions
-  
-  • Delivered the society's budget and took control of purchases", "Bangor University",
-            "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
- ) %>% 
-   detailed_entries(Year, Degree, Where, Institution)
-```
-
-
 # Professional skills
 
 ```{r}
@@ -122,12 +103,38 @@ tribble(
    detailed_entries(Year, Degree, Where, Institution)
 ```
 
+# Personal projects
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+             "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
+  "2021", "Blogdown site written in R markdown", "Example of dynamicly produced articles and a resource to keep track of useful code", "RoyWilson.UK",
+    "2020", "Dashboard web application written in R shiny", "Calculates the thermal expansion of High Entropy Alloys (HEAs) using the rule of mixtures approach", "RoyWilson.UK/HEA/",
+            "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
+ ) %>% 
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+
+
+
 # Hobbies and interests
 
 ```{r}
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
-"","Welsh learner","I enjoy using the Welsh I'm learning to communicate to other learners and colleagues",""
+"","Welsh learner","Learning Welsh to communicate with other learners and colleagues","",
+
+"","Books and audiobooks","Avid consumer of audiobooks","",
+
+"","Computing and data visualisation","Learning how to better represent data and honing my programming and computing skills","",
+
+"2016-2018", "Treasurer at Bangor University Chess Society", "• Organised and delivered interactive sessions
+  
+  • Took control of purchases and delivered the society's budget", "Bangor University",
+"","Books and audiobooks","Avid consumer of audiobooks","",
+
  ) %>%
    detailed_entries(Year, Degree, Where, Institution)
 ```
