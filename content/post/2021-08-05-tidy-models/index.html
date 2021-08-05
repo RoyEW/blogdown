@@ -10,3 +10,58 @@ tags: []
 <script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 
+<p>Following the guidance from <a href="https://www.tidymodels.org/start/models/" class="uri">https://www.tidymodels.org/start/models/</a></p>
+<pre class="r"><code>library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
+
+
+library(tidyverse)       
+library(broom.mixed) # for converting Bayesian models to tidy tibbles
+library(dotwhisker)  # for visualizing regression results</code></pre>
+<pre class="r"><code>urchins &lt;- read_csv(&quot;https://tidymodels.org/start/models/urchins.csv&quot;)  |&gt;  
+  setNames(c(&quot;food_regime&quot;, &quot;initial_volume&quot;, &quot;width&quot;)) |&gt;  
+  mutate(food_regime = factor(food_regime, levels = c(&quot;Initial&quot;, &quot;Low&quot;, &quot;High&quot;)))</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   TREAT = col_character(),
+##   IV = col_double(),
+##   SUTW = col_double()
+## )</code></pre>
+<pre class="r"><code>glimpse(urchins)</code></pre>
+<pre><code>## Rows: 72
+## Columns: 3
+## $ food_regime    &lt;fct&gt; Initial, Initial, Initial, Initial, Initial, Initial, I~
+## $ initial_volume &lt;dbl&gt; 3.5, 5.0, 8.0, 10.0, 13.0, 13.0, 15.0, 15.0, 16.0, 17.0~
+## $ width          &lt;dbl&gt; 0.010, 0.020, 0.061, 0.051, 0.041, 0.061, 0.041, 0.071,~</code></pre>
+<pre class="r"><code>urchins |&gt; 
+  ggplot(aes(initial_volume, width, colour = food_regime))+
+  geom_point()+
+  geom_smooth(method = lm, se = FALSE)+
+  theme_minimal()</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>linear.model &lt;- linear_reg()  |&gt;  
+  parsnip::set_engine(&quot;lm&quot;)
+
+linear.fit &lt;- linear.model |&gt; 
+  parsnip::fit(width ~ initial_volume * food_regime, data = urchins)
+
+linear.fit |&gt; 
+  tidy()</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   term                            estimate std.error statistic  p.value
+##   &lt;chr&gt;                              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)                     0.0331    0.00962      3.44  0.00100 
+## 2 initial_volume                  0.00155   0.000398     3.91  0.000222
+## 3 food_regimeLow                  0.0198    0.0130       1.52  0.133   
+## 4 food_regimeHigh                 0.0214    0.0145       1.47  0.145   
+## 5 initial_volume:food_regimeLow  -0.00126   0.000510    -2.47  0.0162  
+## 6 initial_volume:food_regimeHigh  0.000525  0.000702     0.748 0.457</code></pre>
+<pre class="r"><code>tidy(linear.fit) |&gt; 
+  ggplot(aes(term, estimate, ymin = estimate - std.error, ymax = estimate + std.error, colour = term)) +
+  geom_errorbar()+
+  geom_point()+
+  coord_flip()+
+  theme_bw()+
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>

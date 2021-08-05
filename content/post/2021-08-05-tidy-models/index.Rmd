@@ -10,12 +10,51 @@ tags: []
 
 Following the guidance from https://www.tidymodels.org/start/models/
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
 
-# Helper packages
-library(readr)       # for importing data
+
+library(tidyverse)       
 library(broom.mixed) # for converting Bayesian models to tidy tibbles
 library(dotwhisker)  # for visualizing regression results
 ```
+
+```{r}
+urchins <- read_csv("https://tidymodels.org/start/models/urchins.csv")  |>  
+  setNames(c("food_regime", "initial_volume", "width")) |>  
+  mutate(food_regime = factor(food_regime, levels = c("Initial", "Low", "High")))
+
+glimpse(urchins)
+```
+```{r}
+urchins |> 
+  ggplot(aes(initial_volume, width, colour = food_regime))+
+  geom_point()+
+  geom_smooth(method = lm, se = FALSE)+
+  theme_minimal()
+```
+
+```{r}
+linear.model <- linear_reg()  |>  
+  parsnip::set_engine("lm")
+
+linear.fit <- linear.model |> 
+  parsnip::fit(width ~ initial_volume * food_regime, data = urchins)
+
+linear.fit |> 
+  tidy()
+
+
+tidy(linear.fit) |> 
+  ggplot(aes(term, estimate, ymin = estimate - std.error, ymax = estimate + std.error, colour = term)) +
+  geom_errorbar()+
+  geom_point()+
+  coord_flip()+
+  theme_bw()+
+  theme(legend.position = "none")
+  
+```
+
+
+
 
