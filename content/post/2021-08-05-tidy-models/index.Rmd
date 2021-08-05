@@ -1,0 +1,21 @@
+---
+title: Tidy Models
+author: ''
+date: '2021-08-05'
+slug: tidy-models
+categories: []
+tags: []
+---
+
+
+Following the guidance from https://www.tidymodels.org/start/models/
+
+```{r}
+library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
+
+# Helper packages
+library(readr)       # for importing data
+library(broom.mixed) # for converting Bayesian models to tidy tibbles
+library(dotwhisker)  # for visualizing regression results
+```
+
