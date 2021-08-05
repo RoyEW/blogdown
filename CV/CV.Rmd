@@ -2,7 +2,7 @@
 name: Roy
 surname: Wilson
 position: "CIMA Cert BA, MSc, BSc"
-address: "Bangor, Wales."
+address: "Bangor, open to relocation"
 phone: +44 777 617 5496
 email: "Roy@RoyWilson.UK"
 linkedin: RoyWilsonUK
@@ -109,8 +109,8 @@ tribble(
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
              "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
-  "2021", "Blogdown site written in R markdown", "Example of dynamicly produced articles and a resource to keep track of useful code", "RoyWilson.UK",
-    "2020", "Dashboard web application written in R shiny", "Calculates the thermal expansion of High Entropy Alloys (HEAs) using the rule of mixtures approach", "RoyWilson.UK/HEA/",
+  "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "RoyWilson.UK",
+    "2020", "R Shiny dashboard web application", "Calculates the thermal expansion of high entropy alloys using the rule of mixtures approach", "RoyWilson.UK/HEA/",
             "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
  ) %>% 
    detailed_entries(Year, Degree, Where, Institution)
@@ -124,7 +124,9 @@ tribble(
 ```{r}
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
-"","Welsh learner","Learning Welsh to communicate with other learners and colleagues","",
+"","Welsh learner","• Learning Welsh to communicate with other learners and colleagues
+
+• Enjoyed engaging with the ysgol haf, and Ffrind Cymraeg project","",
 
 "","Books and audiobooks","Avid consumer of audiobooks","",
 
