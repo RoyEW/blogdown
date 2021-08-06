@@ -78,6 +78,8 @@
 <script src="/2021/08/05/tidy-models/index_files/header-attrs/header-attrs.js"></script>
 
 
+<div id="exploring-how-to-implement-machine-learning-models-using-the-tidy-models-package" class="section level1">
+<h1>Exploring how to implement machine learning models using the Tidy Models package</h1>
 <p>Following the guidance from <a href="https://www.tidymodels.org/start/models/" class="uri">https://www.tidymodels.org/start/models/</a></p>
 <pre class="r"><code>library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
 
@@ -89,7 +91,7 @@ library(dotwhisker)  # for visualizing regression results</code></pre>
   setNames(c(&quot;food_regime&quot;, &quot;initial_volume&quot;, &quot;width&quot;)) |&gt;  
   mutate(food_regime = factor(food_regime, levels = c(&quot;Initial&quot;, &quot;Low&quot;, &quot;High&quot;)))</code></pre>
 <pre><code>## 
-## -- Column specification ------------------------------------------------------------------------------------------------
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   TREAT = col_character(),
 ##   IV = col_double(),
@@ -133,6 +135,7 @@ linear.fit |&gt;
   theme_bw()+
   theme(legend.position = &quot;none&quot;)</code></pre>
 <p><img src="/2021/08/05/tidy-models/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
 
     </div>
   </article>
