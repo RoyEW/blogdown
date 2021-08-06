@@ -132,8 +132,6 @@ tribble(
 
 "","Computing and data visualisation","Learning how to better represent data and honing my programming and computing skills","",
 
-"","Financial econometrics and financial modelling","Making sense of financial markets through reading the Journal of Financial Econometrics","",
-
 "2016-2018", "Treasurer at Bangor University Chess Society", "• Organised and delivered interactive sessions
   
   • Took control of purchases and delivered the society's budget", "Bangor University",
