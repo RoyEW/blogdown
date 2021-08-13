@@ -83,7 +83,18 @@ tribble(
 <!-- [Verify 2020 Digital Mindset AICPA certificate](https://www.credly.com/badges/04ce8e24-971f-407b-94a0-c8b4c6f9756f/linked_in_profile) -->
 
 \newpage
+# Personal projects
 
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+             "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
+  "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "RoyWilson.UK",
+    "2020", "R Shiny dashboard web application", "Calculates the thermal expansion of high entropy alloys using the rule of mixtures approach", "RoyWilson.UK/HEA/",
+            "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
+ ) %>% 
+   detailed_entries(Year, Degree, Where, Institution)
+```
 # Professional skills
 
 ```{r}
@@ -103,18 +114,7 @@ tribble(
    detailed_entries(Year, Degree, Where, Institution)
 ```
 
-# Personal projects
 
-```{r}
- tribble(
-   ~ Degree, ~ Year, ~ Institution, ~ Where,
-             "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
-  "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "RoyWilson.UK",
-    "2020", "R Shiny dashboard web application", "Calculates the thermal expansion of high entropy alloys using the rule of mixtures approach", "RoyWilson.UK/HEA/",
-            "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
- ) %>% 
-   detailed_entries(Year, Degree, Where, Institution)
-```
 
 
 
