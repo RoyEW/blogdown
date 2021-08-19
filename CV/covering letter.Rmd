@@ -1,6 +1,6 @@
 ---
-title: "Covering Letter"
-subtitle: "Deutsche Bank Analyst Graduate Programme - Technology, Data and Innovation"
+title: "Fast Track Data/AI Graduate Programme"
+subtitle: "Covering Letter"
 author: ""
 date: "25/05/2021"
 output: pdf_document
@@ -10,9 +10,11 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-I have an interest in data analytics and an interest in learning new technologies to build on my abilities. Joining Deutsche Bank in this capacity would be a fantastic opportunity for me to explore more about Deutsche Bank and how I could support it in its business strategy. 
+I have an interest in data analytics and an interest in learning new technologies to build on my abilities.  Joining the programme in this capacity would be a fantastic opportunity for me to explore more about Deutsche Bank and how I could support it in its business strategy. 
 
 I believe that I would benefit from this technology programme from Deutsche Bank as it will provide structure to my learning and provide the opportunity to expand on my interests and add value in a real-world setting. 
+
+I have an interest in data analytics and applied statistics and I have developed my skills since graduating with the tools often used for data analysis. I have undertook courses provided by the Bangor University Doctoral School which I gained new skills and confidence in my ability to interrogate data and extract as much information as possible. A few courses from Jumping Rivers provided an excellent introduction to the R statistical programming language aimed to train 'advanced beginners' using R for data science. The courses include an introduction to R, data manipulation, statistical modelling in R, R functional programming, and advanced graphics in R. picked up practical skills in R, Python, and SQL 
 
 
 Sincerely,
