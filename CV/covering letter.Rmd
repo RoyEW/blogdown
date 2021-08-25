@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 My background is in Accounting and Finance with an MSc (Distinction) and a BSc (First-class). The masters programme from a research perspective gave me an appreciation for data and an interest in applying the statistical techniques that were taught. Data and statistical heavy modules include statistical methods, research methods, financial econometrics, and  
 
+I am excited for the opportunity that this programme provides. It looks to be an excellent way to combine what I've learnt and my interests into a highly employable skill set in my preferred area of interest. 
 
 I have undertook courses provided by the Bangor University Doctoral School which I gained new skills and confidence in my ability to interrogate data and extract as much information as possible. A few courses from Jumping Rivers provided an excellent introduction to the R statistical programming language aimed to train 'advanced beginners' using R for data science. The courses include an introduction to R, data manipulation, statistical modelling in R, R functional programming, and advanced graphics in R. I have also picked up practical skills in Python, and SQL throughout various courses.
 
