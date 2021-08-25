@@ -10,12 +10,13 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-I have an interest in data analytics and an interest in learning new technologies to build on my abilities.  Joining the programme in this capacity would be a fantastic opportunity for me to explore more about Deutsche Bank and how I could support it in its business strategy. 
 
-I believe that I would benefit from this technology programme from Deutsche Bank as it will provide structure to my learning and provide the opportunity to expand on my interests and add value in a real-world setting. 
+My background is in Accounting and Finance with an MSc (Distinction) and a BSc (First-class). The masters programme from a research perspective gave me an appreciation for data and an interest in applying the statistical techniques that were taught. 
 
-I have an interest in data analytics and applied statistics and I have developed my skills since graduating with the tools often used for data analysis. I have undertook courses provided by the Bangor University Doctoral School which I gained new skills and confidence in my ability to interrogate data and extract as much information as possible. A few courses from Jumping Rivers provided an excellent introduction to the R statistical programming language aimed to train 'advanced beginners' using R for data science. The courses include an introduction to R, data manipulation, statistical modelling in R, R functional programming, and advanced graphics in R. picked up practical skills in R, Python, and SQL 
 
+I have undertook courses provided by the Bangor University Doctoral School which I gained new skills and confidence in my ability to interrogate data and extract as much information as possible. A few courses from Jumping Rivers provided an excellent introduction to the R statistical programming language aimed to train 'advanced beginners' using R for data science. The courses include an introduction to R, data manipulation, statistical modelling in R, R functional programming, and advanced graphics in R. I have also picked up practical skills in Python, and SQL throughout various courses.
+
+Since graduation, I have been working on how best to use R as well as machine learning packages such as caret. To further my interest and see what I could build in R, as well as providing a useful resource to store snippets of code, I built a website in R using the blogdown package, of which is found at RoyWilson.UK. I have also assisted my brother with his research into high entropy alloys by building an interactive dashboard in R shiny which calculates thermophysical properties and the thermal expansion coefficient quickly and with ease for the user. This dashboard can be found at RoyWilson.UK/HEA/.
 
 Sincerely,
 
