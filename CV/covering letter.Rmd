@@ -11,12 +11,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-My background is in Accounting and Finance with an MSc (Distinction) and a BSc (First-class). The masters programme from a research perspective gave me an appreciation for data and an interest in applying the statistical techniques that were taught. 
+My background is in Accounting and Finance with an MSc (Distinction) and a BSc (First-class). The masters programme from a research perspective gave me an appreciation for data and an interest in applying the statistical techniques that were taught. Data and statistical heavy modules include statistical methods, research methods, financial econometrics, and  
 
 
 I have undertook courses provided by the Bangor University Doctoral School which I gained new skills and confidence in my ability to interrogate data and extract as much information as possible. A few courses from Jumping Rivers provided an excellent introduction to the R statistical programming language aimed to train 'advanced beginners' using R for data science. The courses include an introduction to R, data manipulation, statistical modelling in R, R functional programming, and advanced graphics in R. I have also picked up practical skills in Python, and SQL throughout various courses.
 
 Since graduation, I have been working on how best to use R as well as machine learning packages such as caret. To further my interest and see what I could build in R, as well as providing a useful resource to store snippets of code, I built a website in R using the blogdown package, of which is found at RoyWilson.UK. I have also assisted my brother with his research into high entropy alloys by building an interactive dashboard in R shiny which calculates thermophysical properties and the thermal expansion coefficient quickly and with ease for the user. This dashboard can be found at RoyWilson.UK/HEA/.
+
+I see myself finding a lot of success on the Data/AI Fast Track Graduate programme as it looks to be the formal structure that I have been looking for to fill in any gaps in my knowledge and to provide confidence in my ability that I will be learning cutting-edge and 
 
 Sincerely,
 
