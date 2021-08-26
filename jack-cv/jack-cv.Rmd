@@ -28,7 +28,7 @@ library(tibble)
 
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "PhD in Nuclear Engineering and Science", "2019-present", "Bangor University Nuclear Energy Futures EPSRC CDT", "Advanced Alloy Development for Accident Tolerant Fuels 
+  "PhD in Nuclear Science and Engineering", "2019-present", "Bangor University Nuclear Energy Futures EPSRC CDT", "Advanced Alloy Development for Accident Tolerant Fuels 
   
   Centre for Doctoral Training: Bangor University; Bristol University; Cambridge University; Imperial University; and The Open University 
   
