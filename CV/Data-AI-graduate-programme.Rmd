@@ -2,8 +2,9 @@
 title: "Fast Track Data/AI Graduate Programme"
 subtitle: "Covering Letter"
 author: "Roy Wilson"
-date: "25/05/2021"
+date: "`r format(Sys.time(), '%d %B %Y')`"
 output: pdf_document
+linestretch: 1.2
 ---
 
 ```{r setup, include=FALSE}
