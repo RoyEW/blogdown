@@ -1,6 +1,6 @@
 ---
 output: pdf_document
-linestretch: 1
+linestretch: 1.2
 ---
 
 ```{r setup, include=FALSE}
