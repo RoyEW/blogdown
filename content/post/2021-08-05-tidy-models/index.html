@@ -1,8 +1,11 @@
 ---
 title: Tidy Models
-author: ''
+author: 'Roy Wilson'
 date: '2021-08-05'
 slug: tidy-models
+output: 
+  html_document:
+    toc: true
 categories: []
 tags: []
 ---
@@ -10,20 +13,20 @@ tags: []
 <script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 
-<div id="exploring-how-to-implement-machine-learning-models-using-the-tidy-models-package" class="section level1">
-<h1>Exploring how to implement machine learning models using the Tidy Models package</h1>
+<div id="exploring-machine-learning-models-using-the-tidy-models-package" class="section level1">
+<h1>Exploring machine learning models using the Tidy Models package</h1>
 <p>Following the guidance from <a href="https://www.tidymodels.org/start/models/" class="uri">https://www.tidymodels.org/start/models/</a></p>
 <pre class="r"><code>library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
-
-
 library(tidyverse)       
 library(broom.mixed) # for converting Bayesian models to tidy tibbles
 library(dotwhisker)  # for visualizing regression results</code></pre>
+<div id="reading-in-the-urchin-dataset" class="section level2">
+<h2>Reading in the Urchin dataset</h2>
 <pre class="r"><code>urchins &lt;- read_csv(&quot;https://tidymodels.org/start/models/urchins.csv&quot;)  |&gt;  
   setNames(c(&quot;food_regime&quot;, &quot;initial_volume&quot;, &quot;width&quot;)) |&gt;  
   mutate(food_regime = factor(food_regime, levels = c(&quot;Initial&quot;, &quot;Low&quot;, &quot;High&quot;)))</code></pre>
 <pre><code>## 
-## -- Column specification ------------------------------------------------------------------------------------------------
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   TREAT = col_character(),
 ##   IV = col_double(),
@@ -35,6 +38,9 @@ library(dotwhisker)  # for visualizing regression results</code></pre>
 ## $ food_regime    &lt;fct&gt; Initial, Initial, Initial, Initial, Initial, Initial, I~
 ## $ initial_volume &lt;dbl&gt; 3.5, 5.0, 8.0, 10.0, 13.0, 13.0, 15.0, 15.0, 16.0, 17.0~
 ## $ width          &lt;dbl&gt; 0.010, 0.020, 0.061, 0.051, 0.041, 0.061, 0.041, 0.071,~</code></pre>
+</div>
+<div id="getting-a-visual-overview-of-the-dataset" class="section level2">
+<h2>Getting a visual overview of the dataset</h2>
 <pre class="r"><code>urchins |&gt; 
   ggplot(aes(initial_volume, width, colour = food_regime))+
   geom_point()+
@@ -42,6 +48,9 @@ library(dotwhisker)  # for visualizing regression results</code></pre>
   theme_minimal()</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="building-a-predictive-linear-model" class="section level2">
+<h2>Building a predictive linear model</h2>
 <pre class="r"><code>linear.model &lt;- linear_reg()  |&gt;  
   parsnip::set_engine(&quot;lm&quot;)
 
@@ -67,4 +76,48 @@ linear.fit |&gt;
   theme_bw()+
   theme(legend.position = &quot;none&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="using-the-model-to-make-predictions" class="section level2">
+<h2>Using the model to make predictions</h2>
+<pre class="r"><code>new_data &lt;- expand.grid(initial_volume = 35, 
+                          food_regime = c(&quot;Initial&quot;, &quot;Low&quot;, &quot;High&quot;))
+
+prediction &lt;- predict(linear.fit, new_data = new_data)
+prediction</code></pre>
+<pre><code>## # A tibble: 3 x 1
+##    .pred
+##    &lt;dbl&gt;
+## 1 0.0875
+## 2 0.0632
+## 3 0.127</code></pre>
+<pre class="r"><code>prediction_conf &lt;- predict(linear.fit, 
+                         new_data = new_data, 
+                         type = &quot;conf_int&quot;)
+prediction_conf</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   .pred_lower .pred_upper
+##         &lt;dbl&gt;       &lt;dbl&gt;
+## 1      0.0738      0.101 
+## 2      0.0520      0.0745
+## 3      0.105       0.150</code></pre>
+<pre class="r"><code>plotting &lt;- new_data |&gt; 
+  bind_cols(prediction) |&gt; 
+  bind_cols(prediction_conf)
+
+plotting</code></pre>
+<pre><code>##   initial_volume food_regime      .pred .pred_lower .pred_upper
+## 1             35     Initial 0.08753404  0.07383931  0.10122876
+## 2             35         Low 0.06323846  0.05202294  0.07445398
+## 3             35        High 0.12733395  0.10514313  0.14952477</code></pre>
+<pre class="r"><code>plotting |&gt; 
+  ggplot(aes(x = food_regime, y = .pred, colour = food_regime))+
+  geom_point()+
+  geom_errorbar(aes(ymin = .pred_lower, ymax = .pred_upper), width = 0.3)+
+  theme_light()+
+  theme(legend.position = &#39;none&#39;)+
+  labs(title = &quot;Size of Sea Urchins&quot;,
+       y = &quot;size of Urchin&quot;,
+       x  = &quot;Food Regime&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
 </div>

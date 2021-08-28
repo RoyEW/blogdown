@@ -1,24 +1,31 @@
 ---
 title: Tidy Models
-author: ''
+author: 'Roy Wilson'
 date: '2021-08-05'
 slug: tidy-models
+output: 
+  html_document:
+    toc: true
 categories: []
 tags: []
 ---
 
-# Exploring how to implement machine learning models using the Tidy Models package
+# Exploring machine learning models using the Tidy Models package
+
+\tableofcontents
 
 Following the guidance from https://www.tidymodels.org/start/models/
 
 ```{r message=FALSE, warning=FALSE}
 library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
-
-
 library(tidyverse)       
 library(broom.mixed) # for converting Bayesian models to tidy tibbles
 library(dotwhisker)  # for visualizing regression results
+
+
 ```
+
+## Reading in the Urchin dataset
 
 ```{r}
 urchins <- read_csv("https://tidymodels.org/start/models/urchins.csv")  |>  
@@ -27,6 +34,8 @@ urchins <- read_csv("https://tidymodels.org/start/models/urchins.csv")  |>
 
 glimpse(urchins)
 ```
+## Getting a visual overview of the dataset
+
 ```{r}
 urchins |> 
   ggplot(aes(initial_volume, width, colour = food_regime))+
@@ -34,6 +43,8 @@ urchins |>
   geom_smooth(method = lm, se = FALSE)+
   theme_minimal()
 ```
+
+## Building a predictive linear model
 
 ```{r}
 linear.model <- linear_reg()  |>  
@@ -56,6 +67,44 @@ tidy(linear.fit) |>
   
 ```
 
+## Using the model to make predictions
+
+```{r}
+new_data <- expand.grid(initial_volume = 35, 
+                          food_regime = c("Initial", "Low", "High"))
+
+prediction <- predict(linear.fit, new_data = new_data)
+prediction
+```
+```{r}
+prediction_conf <- predict(linear.fit, 
+                         new_data = new_data, 
+                         type = "conf_int")
+prediction_conf
+```
+```{r}
+plotting <- new_data |> 
+  bind_cols(prediction) |> 
+  bind_cols(prediction_conf)
+
+plotting
+
+plotting |> 
+  ggplot(aes(x = food_regime, y = .pred, colour = food_regime))+
+  geom_point()+
+  geom_errorbar(aes(ymin = .pred_lower, ymax = .pred_upper), width = 0.3)+
+  theme_light()+
+  theme(legend.position = 'none')+
+  labs(title = "Size of Sea Urchins",
+       y = "size of Urchin",
+       x  = "Food Regime")
+```
+
+## Using other engines
+
+```{r}
+
+```
 
 
 
