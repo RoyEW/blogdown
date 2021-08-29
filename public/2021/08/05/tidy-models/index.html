@@ -91,7 +91,7 @@ library(dotwhisker)  # for visualizing regression results</code></pre>
   setNames(c(&quot;food_regime&quot;, &quot;initial_volume&quot;, &quot;width&quot;)) |&gt;  
   mutate(food_regime = factor(food_regime, levels = c(&quot;Initial&quot;, &quot;Low&quot;, &quot;High&quot;)))</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
+## -- Column specification ------------------------------------------------------------------------------------------------
 ## cols(
 ##   TREAT = col_character(),
 ##   IV = col_double(),
@@ -184,6 +184,9 @@ plotting</code></pre>
        y = &quot;size of Urchin&quot;,
        x  = &quot;Food Regime&quot;)</code></pre>
 <p><img src="/2021/08/05/tidy-models/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="using-other-engines" class="section level2">
+<h2>Using other engines</h2>
 </div>
 </div>
 
