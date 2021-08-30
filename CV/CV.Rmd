@@ -2,7 +2,7 @@
 name: Roy
 surname: Wilson
 position: "CIMA Cert BA, MSc, BSc"
-address: "Bangor, open to relocation"
+address: "Bangor, Wales. Open to relocation"
 phone: +44 777 617 5496
 email: "Roy@RoyWilson.UK"
 linkedin: RoyWilsonUK
@@ -124,9 +124,8 @@ tribble(
 ```{r}
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
-"","Welsh learner","• Learning Welsh to communicate with other learners and colleagues
-
-• Enjoyed engaging with the ysgol haf, and Ffrind Cymraeg project","",
+"","Welsh learner","
+Learning to communicate through the medium of Welsh, attended the ysgol haf, and took part in the Ffrind Cymraeg project","",
 
 "","Books and audiobooks","Avid consumer of audiobooks","",
 
@@ -135,7 +134,6 @@ tribble(
 "2016-2018", "Treasurer at Bangor University Chess Society", "• Organised and delivered interactive sessions
   
   • Took control of purchases and delivered the society's budget", "Bangor University",
-"","Books and audiobooks","Avid consumer of audiobooks","",
 
  ) %>%
    detailed_entries(Year, Degree, Where, Institution)
