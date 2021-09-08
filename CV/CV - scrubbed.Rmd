@@ -1,0 +1,138 @@
+---
+name: Roy
+surname: Wilson
+position: "CIMA Cert BA, MSc, BSc"
+linkedin: RoyWilsonUK
+date: "`r format(Sys.time(), '%B %Y')`"
+output: vitae::hyndman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+library(tibble)
+```
+
+# Overview
+ * Masters graduate in Accounting and Finance (Distinction). 
+ * Special interests in R statistical programming, data analysis and visualisation.
+ * Seeking role within a finance & accounting, data analytics, or business analyst/intelligence function. 
+ * 7 exam exemptions for the CIMA and ACCA qualifications. CIMA masters gateway route is available.
+
+# Education
+
+```{r}
+
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "MSc in Accounting and Finance (Distinction)", "2019", "Bangor University & Fitch Learning", "• Modules include: Financial Analysis (78%), Management Accounting (83%), Accounting Theory (81%), 
+  
+  Financial Econometrics (65%), Research Methods (71%),
+  
+  
+  Advanced Financial Reporting and Regulation (81%), International Financial Markets (64%). 
+  
+  • Summer project: Financial Research and CFA Series covering the CFA Level 1 syllabus and financial research titled 'the Role of Credit Rating Agencies' and 'Investigating the Efficient Market Hypothesis'.",
+  "BSc in Accounting and Finance (First-Class with Honours)", "2018", "Bangor University", "Investment, Advanced Corporate Finance, Auditing, Advanced Investment Theory and Practice, 
+  
+  Corporate Risk Management, Financial Statement Analysis, Comparative Banking, Taxation, Advanced Accounting Theory and Practice, Statistical
+Methods, Company Law for Business",
+  "A Levels: Maths C, Accounts C, ICT C", "2015", "Birmingham Metropolitan College", "",
+  "GCSEs: 8 GCSEs A-B, including English, Maths, and Sciences", "2013", "Beamont Collegiate Academy", ""
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+```
+
+# Employment
+
+```{r}
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "ASDA Stores Ltd.", "2016-Present", "","• Provide excellent customer service
+  
+  • Perpetual inventory management, stock rotation, supported product recalls, routine processes
+  
+  • Setting up modular and promotional displays and merchandising
+  
+  • Familiar with maintaining KRAs and general store performance metrics
+  
+  • Training new colleagues; teamwork, leadership and delegation experience "
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+
+```
+
+# Professional qualifications and awards
+
+```{r}
+
+
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "Associate Member, Chartered Institute of Management Accountants", "", "CIMA", "",
+   "CIMA Certificate in Business Accounting", "", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law",
+   "2020 Digital Mindset AICPA certificate", "", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance",
+  "Vulnerable person safeguarding training","", "Bangor University","",
+ ) %>%
+   detailed_entries(Degree, Year, Institution, Where)
+```
+
+<!-- [Verify 2020 Digital Mindset AICPA certificate](https://www.credly.com/badges/04ce8e24-971f-407b-94a0-c8b4c6f9756f/linked_in_profile) -->
+
+\newpage
+# Personal projects
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+             "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
+  "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "RoyWilson.UK",
+    "2020", "R Shiny dashboard web application", "Calculates the thermal expansion of high entropy alloys using the rule of mixtures approach", "RoyWilson.UK/HEA/",
+            "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
+ ) %>% 
+   detailed_entries(Year, Degree, Where, Institution)
+```
+# Professional skills
+
+```{r}
+
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "2020", "R for Data Science", "Manipulating data, statistical modelling, functional programming, and advanced graphics in R.", "Jumping Rivers RSS Accredited",
+  "2020", "PostgreSQL", "SQL fundamentals; familiarity with basic queries and aggregate functions","Data Camp",
+"", "Microsoft Office Suite", "Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases","",
+
+"2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice","Bangor Doctoral school",
+"2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lambda functions; and additional tools","Bangor Doctoral school",
+"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts","Bangor Doctoral school",
+"", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.",""
+
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+
+
+
+
+
+# Hobbies and interests
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+"","Welsh learner","
+Learning to communicate through the medium of Welsh, attended the ysgol haf, and took part in the Ffrind Cymraeg project","",
+
+"","Books and audiobooks","Avid consumer of audiobooks","",
+
+"","Computing and data visualisation","Learning how to better represent data and honing my programming and computing skills","",
+
+"2016-2018", "Treasurer at Bangor University Chess Society", "• Organised and delivered interactive sessions
+  
+  • Took control of purchases and delivered the society's budget", "Bangor University",
+
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
