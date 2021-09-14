@@ -89,8 +89,8 @@ tribble(
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
              "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
-  "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "www.RoyWilson.UK",
-    "2020", "R Shiny dashboard web application", "Calculates the thermal expansion of high entropy alloys using the rule of mixtures approach", "www.Alloys.one",
+  "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "https://RoyWilson.UK",
+    "2020", "R Shiny dashboard web application", "Calculates the thermal expansion of high entropy alloys using the rule of mixtures approach", "https://Alloys.one",
             "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
  ) %>% 
    detailed_entries(Year, Degree, Where, Institution)
