@@ -13,6 +13,6 @@ https://Alloys.one
 A CTE calculator and design hub for high entropy alloys. 
 
 ```{r}
-knitr::include_url("https://Alloys.one")
+knitr::include_app(url = "https://alloys.one")
 ```
 

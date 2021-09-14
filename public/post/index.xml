@@ -82,7 +82,7 @@ R implementationf &amp;lt;- function(n){if (n &amp;lt; 2) return(n)return(f(n
       <guid>/2020/12/27/thermal-expansion-calculator-with-rshiny/</guid>
       <description>https://Alloys.one
 A CTE calculator and design hub for high entropy alloys.
-knitr::include_url(&amp;quot;https://Alloys.one&amp;quot;)</description>
+knitr::include_app(url = &amp;quot;https://alloys.one&amp;quot;)</description>
     </item>
     
     <item>
