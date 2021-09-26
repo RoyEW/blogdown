@@ -51,7 +51,10 @@ Methods, Company Law for Business",
 ```{r}
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-  "ASDA Stores Ltd.", "2016-Present", "","• Provide excellent customer service
+    "Finance and Operations Assistant", "2021-Present", "Medical Resource Partners","
+  ",
+  
+  "Sales assistant", "2016-Present", "ASDA Stores Ltd.","• Provide excellent customer service
   
   • Perpetual inventory management, stock rotation, supported product recalls, routine processes
   
