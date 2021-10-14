@@ -52,6 +52,8 @@ Methods, Company Law for Business",
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
     "Finance and Operations Assistant", "2021-Present", "Medical Resource Partners","
+  
+  • Payroll
   ",
   
   "Sales assistant", "2016-Present", "ASDA Stores Ltd.","• Provide excellent customer service
