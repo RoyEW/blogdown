@@ -54,6 +54,7 @@ tribble(
     "Finance and Operations Assistant", "2021-Present", "Medical Resource Partners","
   
   • Payroll
+  • Credit control
   ",
   
   "Sales assistant", "2016-Present", "ASDA Stores Ltd.","• Provide excellent customer service
