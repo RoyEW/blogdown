@@ -54,7 +54,12 @@ tribble(
     "Finance and Payroll Officer", "2021-Present", "Medical Resource Partners","
   
   • Payroll
+  
   • Credit control
+  
+  • Robotic Process Automation
+  
+  • Data analysis 
   ",
   
   "Sales assistant", "2016-Present", "ASDA Stores Ltd.","• Provide excellent customer service
