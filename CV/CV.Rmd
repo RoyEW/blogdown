@@ -51,7 +51,7 @@ Methods, Company Law for Business",
 ```{r}
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-    "Finance and Operations Assistant", "2021-Present", "Medical Resource Partners","
+    "Finance and Payroll Officer", "2021-Present", "Medical Resource Partners","
   
   • Payroll
   • Credit control
