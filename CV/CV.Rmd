@@ -50,19 +50,22 @@ Methods, Company Law for Business",
 
 ```{r}
 tribble(
+  
   ~ Degree, ~ Year, ~ Institution, ~ Where,
     "Finance and Payroll Officer", "2021-Present", "Medical Resource Partners","
   
-  • Payroll
+  • Payroll: ensuring candidates are paid correctly and clients are charged correctly each week. 
   
-  • Credit control
+  • Credit control: reviewing invoices and ensuring a low level of aged-debts.
   
-  • Robotic Process Automation
+  • Robotic Process Automation (RPA): automated processing of timesheets and routine processes.
   
-  • Data analysis 
+  • Data analysis: providing insight into candidate and financial information.
+  
+  • Built a bespoke pay and bill solution.
   ",
   
-  "Sales assistant", "2016-Present", "ASDA Stores Ltd.","• Provide excellent customer service
+  "Sales assistant", "2016-2022", "ASDA Stores Ltd.","• Provide excellent customer service
   
   • Perpetual inventory management, stock rotation, supported product recalls, routine processes
   
@@ -103,7 +106,7 @@ tribble(
              "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
   "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "https://RoyWilson.UK",
   
-    "2020", "R Shiny dashboard web application", "Publication: XXX DOI", "https://Alloys.one",
+    "2022", "R Shiny dashboard web application", "Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, Predicting the thermal expansion of BCC high entropy alloys in the Mo-Nb-Ta-Ti-W system, (2022). https://doi.org/10.1088/2515-7655/ac6f7e.", "https://Alloys.one",
             
   "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
  ) %>% 
