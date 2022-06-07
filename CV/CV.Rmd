@@ -52,17 +52,19 @@ Methods, Company Law for Business",
 tribble(
   
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-    "Finance and Payroll Officer", "2021-Present", "Medical Resource Partners","
+    "Finance and payroll officer", "2021-Present", "Medical Resource Partners","
   
   • Payroll: ensuring candidates are paid correctly and clients are charged correctly each week. 
   
-  • Credit control: reviewing invoices and ensuring a low level of aged-debts.
+  • Credit control: reviewing invoices and ensuring a low volume of aged-debts.
   
   • Robotic Process Automation (RPA): automated processing of timesheets and routine processes.
   
-  • Data analysis: providing insight into candidate and financial information.
+  • Data analysis: with RShiny dashboards, and ad hoc insight into candidate and financial information.
   
-  • Built a bespoke pay and bill solution.
+  • Built a bespoke pay and bill solution integrating data with Xero and Paycircle payroll software. 
+  
+  • Automated production of sales and self-billing invoices written in RMarkdown and LaTeX.
   ",
   
   "Sales assistant", "2016-2022", "ASDA Stores Ltd.","• Provide excellent customer service
