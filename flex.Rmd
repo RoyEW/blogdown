@@ -1,0 +1,59 @@
+---
+title: "Medical Resource Partners"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Digital timesheet
+
+```{r}
+USArrests |> 
+  tail(10) |> 
+  knitr::kable()
+
+library(dplyr)
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Gross total
+
+```{r}
+g <- USArrests |> 
+  mutate(sum = sum(Rape)) 
+g <- g[1, "sum"]
+
+valueBox(paste0("£",g), icon = "fa-pound-sign", color = "green")
+```
+
+
+-----------------------------------------------------------------------
+
+### Week ending
+
+```{r}
+valueBox("29/05/2022", icon = "fa-calendar-alt", color = "orange")
+```
+
+### Payroll@medicalresourcepartners.co.uk<br>+44 743 5536 990
+
+```{r}
+
+valueBox(htmltools::HTML("Contact us"), icon = "fa-comments")
+
+
+
+
+```
+
+
