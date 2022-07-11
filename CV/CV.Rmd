@@ -1,7 +1,7 @@
 ---
 name: Roy
 surname: Wilson
-position: "CIMA Cert BA, MSc, BSc"
+position: "CIMA Dip MA, MSc, BSc"
 address: "Bangor, Wales. Open to relocation"
 phone: +44 777 617 5496
 email: "Roy@RoyWilson.UK"
