@@ -18,7 +18,7 @@ library(tibble)
 
 # Overview
  * Masters graduate in Accounting and Finance (Distinction). 
- * Special interests in R statistical programming, data analysis and visualisation.
+ * Special interest in R statistical programming, data analysis and visualisation.
  * Seeking role within a finance & accounting, data analytics, or business analyst/intelligence function. 
  * 7 exam exemptions for the CIMA and ACCA qualifications. CIMA masters gateway route is available.
 
@@ -74,8 +74,7 @@ tribble(
   • Setting up modular and promotional displays and merchandising
   
   • Familiar with maintaining KRAs and general store performance metrics
-  
-  • Training new colleagues; teamwork, leadership and delegation experience "
+"
 ) %>% 
   detailed_entries(Degree, Year, Institution, Where)
 
