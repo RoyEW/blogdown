@@ -126,8 +126,8 @@ tribble(
 "2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice","Bangor Doctoral school",
 "2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lambda functions; and additional tools","Bangor Doctoral school",
 "2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts","Bangor Doctoral school",
-"", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.",""
-
+"", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.","",
+"", "Full clean driver's licence","",""
  ) %>%
    detailed_entries(Year, Degree, Where, Institution)
 ```
