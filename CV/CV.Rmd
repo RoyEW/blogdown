@@ -109,7 +109,7 @@ tribble(
              "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
   "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "https://RoyWilson.UK",
   
-    "2022", "R Shiny dashboard web application", "Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, Predicting the thermal expansion of BCC high entropy alloys in the Mo-Nb-Ta-Ti-W system, (2022). https://doi.org/10.1088/2515-7655/ac6f7e.", "https://Alloys.one",
+    "2022", "R Shiny dashboard web application", "Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, Predicting the Thermal Expansion of BCC High Entropy Alloys in the Mo-Nb-Ta-Ti-W System, (2022). https://doi.org/10.1088/2515-7655/ac6f7e.", "https://Alloys.one",
             
   "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
  ) %>% 
