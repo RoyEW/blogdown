@@ -2,7 +2,7 @@
 name: Roy
 surname: Wilson
 position: "CIMA Dip MA, MSc, BSc"
-address: "Bangor, Wales. Open to relocation"
+address: "Deganwy. Open to relocation"
 phone: +44 777 617 5496
 email: "Roy@RoyWilson.UK"
 linkedin: RoyWilsonUK
@@ -20,8 +20,8 @@ library(tibble)
 ```
 
 # Overview
- * Masters graduate in Accounting and Finance (Distinction). 
- * Special interest in R statistical programming, data analysis and visualisation.
+ * Masters graduate in Accounting and Finance (Distinction) and part-qualified accountant (CIMA).
+ * Special interest in R statistical programming, RShiny dashboards, data analysis and visualisation.
  * Seeking role within a finance & accounting, data analytics, or business analyst/intelligence function. 
 
 # Education
@@ -62,11 +62,13 @@ tribble(
   
   • Robotic Process Automation (RPA): automated processing of timesheets and routine processes.
   
-  • Data analysis: with RShiny dashboards, and ad hoc insight into candidate and financial information.
+  • Data analysis: weekly insight into candidate and financial information with rich visualisation features.
   
   • Built a bespoke pay and bill solution integrating data with Xero and Paycircle payroll software. 
   
   • Automated production of sales and self-billing invoices written in RMarkdown and LaTeX.
+  
+  • Web automation using RSelenium to extract information and automate tasks.
   ",
   
   "Sales assistant", "2016-2022", "ASDA Stores Ltd.","• Provide excellent customer service
@@ -90,9 +92,14 @@ tribble(
 tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
   "Associate Member, Chartered Institute of Management Accountants", "", "CIMA", "",
-   "CIMA Certificate in Business Accounting", "", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law",
-   "2020 Digital Mindset AICPA certificate", "", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance",
-  "Vulnerable person safeguarding training","", "Bangor University","",
+  
+   "CIMA Certificate in Business Accounting", "2018", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law.",
+  
+   "2020 Digital Mindset AICPA certificate", "2020", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance.",
+  
+  "CIMA: Performance and Project Management","2023", "Association of International Certified Professional Accountants","Business Models, Leading and Managing People, and Project Management https://RoyWilson.UK/tpm.pdf.",
+  
+  "Vulnerable person safeguarding training.","2017", "Bangor University","",
  ) %>%
    detailed_entries(Degree, Year, Institution, Where)
 ```
@@ -109,7 +116,7 @@ tribble(
              "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
   "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "https://RoyWilson.UK",
   
-    "2022", "R Shiny dashboard web application", "Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, Predicting the Thermal Expansion of BCC High Entropy Alloys in the Mo-Nb-Ta-Ti-W System, (2022). https://doi.org/10.1088/2515-7655/ac6f7e.", "https://Alloys.one",
+    "2022", "R Shiny dashboard web application hosted on AWS", 'Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, "Predicting the Thermal Expansion of BCC High Entropy Alloys in the Mo-Nb-Ta-Ti-W System, (2022)", Journal of Physics: Energy. https://doi.org/10.1088/2515-7655/ac6f7e.', "https://Alloys.one",
             
   "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
  ) %>% 
@@ -122,12 +129,12 @@ tribble(
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
   "2020", "R for Data Science", "Manipulating data, statistical modelling, functional programming, and advanced graphics in R.", "Jumping Rivers RSS Accredited",
-  "2020", "PostgreSQL", "SQL fundamentals; familiarity with basic queries and aggregate functions","Data Camp",
-"", "Microsoft Office Suite", "Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases","",
+  "2020", "PostgreSQL", "SQL fundamentals; familiarity with basic queries and aggregate functions.","Data Camp",
+"", "Microsoft Office Suite", "Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases.","",
 
-"2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice","Bangor Doctoral school",
-"2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lambda functions; and additional tools","Bangor Doctoral school",
-"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts","Bangor Doctoral school",
+"2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice.","Bangor Doctoral school",
+"2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lambda functions; and additional tools.","Bangor Doctoral school",
+"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts.","Bangor Doctoral school",
 "", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.","",
 "", "Full clean driver's licence","",""
  ) %>%
