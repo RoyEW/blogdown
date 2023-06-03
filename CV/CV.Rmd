@@ -97,7 +97,7 @@ tribble(
   
    "2020 Digital Mindset AICPA certificate", "2020", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance.",
   
-  "CIMA: Performance and Project Management","2023", "Association of International Certified Professional Accountants","Business Models, Leading and Managing People, and Project Management https://RoyWilson.UK/tpm.pdf.",
+  "CIMA Performance and Project Management","2023", "Association of International Certified Professional Accountants","Business Models and Leading and Managing People. Cert: https://RoyWilson.UK/tpm.pdf.",
   
   "Vulnerable person safeguarding training.","2017", "Bangor University","",
  ) %>%
