@@ -93,11 +93,11 @@ tribble(
   ~ Degree, ~ Year, ~ Institution, ~ Where,
   "Associate Member, Chartered Institute of Management Accountants", "", "CIMA", "",
   
+    "CIMA Performance and Project Management","2023", "Association of International Certified Professional Accountants","Business Models and Leading and Managing People. Cert: https://RoyWilson.UK/tpm.pdf.",
+  
+     "2020 Digital Mindset AICPA certificate", "2020", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance.",
+  
    "CIMA Certificate in Business Accounting", "2018", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law.",
-  
-   "2020 Digital Mindset AICPA certificate", "2020", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance.",
-  
-  "CIMA Performance and Project Management","2023", "Association of International Certified Professional Accountants","Business Models and Leading and Managing People. Cert: https://RoyWilson.UK/tpm.pdf.",
   
   "Vulnerable person safeguarding training.","2017", "Bangor University","",
  ) %>%
