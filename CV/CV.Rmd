@@ -54,13 +54,15 @@ Methods, Company Law for Business",
 tribble(
   
   ~ Degree, ~ Year, ~ Institution, ~ Where,
-    "Finance and payroll officer", "2021-Present", "Medical Resource Partners","
+    "Finance and Technology Manager", "2021-Present", "Medical Resource Partners","
   
   • Payroll: ensuring candidates are paid correctly and clients are charged correctly each week. 
   
   • Credit control: reviewing invoices and ensuring a low volume of aged-debts.
   
   • Robotic Process Automation (RPA): automated processing of timesheets and routine processes.
+  
+    • APIs: integrating and automating processes between systems. 
   
   • Data analysis: weekly insight into candidate and financial information with rich visualisation features.
   
