@@ -1,8 +1,8 @@
 ---
 name: Roy
 surname: Wilson
-position: "CIMA Dip MA, MSc, BSc"
-address: "Deganwy. Open to relocation"
+position: "CGMA Dip MA, MSc, BSc"
+address: "Deganwy, Wales"
 phone: +44 777 617 5496
 email: "Roy@RoyWilson.UK"
 linkedin: RoyWilsonUK
