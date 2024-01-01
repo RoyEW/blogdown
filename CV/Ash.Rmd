@@ -1,0 +1,170 @@
+---
+name: Ashleigh
+surname: Sherlock
+position: "BA Musical Theatre and Cabaret Performance"
+address: "Benfleet, Essex"
+phone: +44 7706 088840
+email: "Ashsherlock98@outlook.com"
+linkedin: AshleighSherlock?
+date: "`r format(Sys.time(), '%B %Y')`"
+output: vitae::awesomecv
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+library(tibble)
+
+
+
+```
+
+# Overview
+ * Recent graduate in Musical Theatre and Cabaret Performance.
+ * Special interest in R statistical programming, RShiny dashboards, data analysis and visualisation.
+ * Seeking role within a finance & accounting, data analytics, or business analyst/intelligence function. 
+
+# Education
+
+```{r}
+
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "BA in Musical Theatre and Cabaret Performance (Upper Second-Class with Honours)", "2023", "University of Chichester", "• Modules include: ",
+  
+  "A Levels: Performing Arts (A), Drama and Theatre Studies (A), English Lit (A), Fine Art (A)", "2017", "Sevic College", "",
+  "GCSEs: 12 GCSEs A-C, including English, Maths, and Sciences", "2014", "The Appleton School", ""
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+```
+
+# Employment
+
+```{r}
+tribble(
+  
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+    "Production Vocalist and Entertainer/Host", "Jul 2023-Nov 2023", "Lyons Holiday Parks – Winkups and Oakfields","
+  
+  • Details about the role?
+  ",
+  
+  "Vocalist (Main Stage)", "Jun 2023", "Chichester Pride","• Details about the role?
+",
+
+  "Patricia Bakewell", "Jun 2023", "Fat Club: A Comedy Musical –","• Details about the role?
+ 
+",
+
+  "Syd Lawrence Orchestra ‘Strictly Cabaret’", "May 2023", "The Kings Theatre
+Portsmouth","• Details about the role
+  
+",
+
+  "Marvelous Musicals", "Jan 2023", "Chichester Conservatoire","• Mama Morton /Anne of Cleves /Ensemble
+
+",
+
+
+  "A Christmas Carol the Concert UK Tour", "Jan 2023", "Great Immediately Productions","• Lead Soprano
+
+",
+
+  "Marvelous Musicals", "Jan 2023", "Chichester Conservatoire","• Mama Morton /Anne of Cleves /Ensemble
+
+",
+
+  "Marvelous Musicals", "Jan 2023", "Chichester Conservatoire","• Mama Morton /Anne of Cleves /Ensemble
+
+",
+
+  "Marvelous Musicals", "Jan 2023", "Chichester Conservatoire","• Mama Morton /Anne of Cleves /Ensemble
+
+"
+) %>% 
+  detailed_entries(Degree, Year, Institution, Where)
+
+```
+
+# Professional qualifications and awards
+
+```{r}
+
+
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "Associate Member, Chartered Institute of Management Accountants", "", "CIMA", "",
+  
+    "CIMA Performance and Project Management","2023", "Association of International Certified Professional Accountants","Business Models and Leading and Managing People. Cert: https://RoyWilson.UK/tpm.pdf.",
+  
+     "2020 Digital Mindset AICPA certificate", "2020", "Association of International Certified Professional Accountants","Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance.",
+  
+   "CIMA Certificate in Business Accounting", "2018", "CIMA", "Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law.",
+  
+  "Vulnerable person safeguarding training.","2017", "Bangor University","",
+ ) %>%
+   detailed_entries(Degree, Year, Institution, Where)
+```
+
+<!-- [Verify 2020 Digital Mindset AICPA certificate](https://www.credly.com/badges/04ce8e24-971f-407b-94a0-c8b4c6f9756f/linked_in_profile) -->
+
+\newpage
+
+# Personal projects
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+             "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
+  "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "https://RoyWilson.UK",
+  
+    "2022", "R Shiny dashboard web application hosted on AWS", 'Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, "Predicting the Thermal Expansion of BCC High Entropy Alloys in the Mo-Nb-Ta-Ti-W System, (2022)", Journal of Physics: Energy. https://doi.org/10.1088/2515-7655/ac6f7e.', "https://Alloys.one",
+            
+  "2009-2013", "Visual Basic / VB.NET", "Experience building GUIs in a compiled language; experience in functional programming", "",
+ ) %>% 
+   detailed_entries(Year, Degree, Where, Institution)
+```
+# Professional skills
+
+```{r}
+
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "2020", "R for Data Science", "Manipulating data, statistical modelling, functional programming, and advanced graphics in R.", "Jumping Rivers RSS Accredited",
+  "2020", "PostgreSQL", "SQL fundamentals; familiarity with basic queries and aggregate functions.","Data Camp",
+"", "Microsoft Office Suite", "Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases.","",
+
+"2019", "Programming Principles and Practice using Python", "Fundamental programming concepts and best practice.","Bangor Doctoral school",
+"2019", "Advanced Python", "Exceptions; libraries; documentation and unit testing; mapping and fitlering; lambda functions; and additional tools.","Bangor Doctoral school",
+"2019", "Introduction to the Linux Shell", "Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts.","Bangor Doctoral school",
+"", "Desire to expand on my knowledge of specialist tools for different applications","Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.","",
+"", "Full clean driver's licence","",""
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+
+
+
+
+
+
+# Hobbies and interests
+
+```{r}
+ tribble(
+   ~ Degree, ~ Year, ~ Institution, ~ Where,
+"","Welsh learner","
+Learning to communicate through the medium of Welsh, attended the ysgol haf, and took part in the Ffrind Cymraeg project","",
+
+"","Books and audiobooks","Avid consumer of audiobooks","",
+
+"","Computing and data visualisation","Learning how to better represent data and honing my programming and computing skills","",
+
+"2016-2018", "Treasurer at Bangor University Chess Society", "• Organised and delivered interactive sessions
+  
+  • Took control of purchases and delivered the society's budget", "Bangor University",
+
+ ) %>%
+   detailed_entries(Year, Degree, Where, Institution)
+```
+

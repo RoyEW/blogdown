@@ -1,0 +1,84 @@
+---
+name: Ashleigh
+surname: Sherlock
+address: "Benfleet, Essex"
+phone: +44 7706 088840
+www: Website?
+email: "ashsherlock98@outlook.com"
+twitter: Twitter?
+github: Github?
+linkedin: Linkedin?
+profilepic: "D:/libraries/downloads/capture.png"
+date: "`r format(Sys.time(), '%B %Y')`"
+output: 
+  vitae::awesomecv:
+    page_total: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(vitae)
+```
+
+# Overview
+
+ * Recent graduate in Musical Theatre and Cabaret Performance
+ * What role am I looking for?
+
+# Education
+
+
+```{r}
+ library(tibble)
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+  "BA in Musical Theatre and Cabaret Performance (Upper Second-Class with Honours)", "University of Chichester", "2023", "• Modules include: ",
+  
+  "A Levels: Performing Arts (A), Drama and Theatre Studies (A), English Lit (A), Fine Art (A)", "Sevic College","2017", "",
+  "GCSEs: 12 GCSEs A-C, including English, Maths, and Sciences", "The Appleton School","2014", ""
+) %>% 
+  detailed_entries(Where,Institution,Degree,Year)
+```
+
+# Employment
+
+
+```{r}
+ library(tibble)
+tribble(
+  ~ Degree, ~ Year, ~ Institution, ~ Where,
+"Production Vocalist and Entertainer/Host", "Lyons Holiday Parks", "Jul 2023-Nov 2023","• Details about role?",
+
+"Vocalist (Main Stage)", "Chichester Pride", "Jun 2023","• Details about role?",
+
+"Fat Club: A Comedy Musical", "Chichester Fringe", "Jun 2023","• Played Patricia Bakewell",
+
+"Syd Lawrence Orchestra ‘Strictly Cabaret’", "The Kings Theatre, Portsmouth", "May 2023","• Soloist - more details?",
+
+"Marvelous Musicals", "Chichester Conservatoire", "Jan 2023","• Mama Morton, Anne of Cleves, and Ensemble",
+
+"Production Vocalist and Entertainer/Host", "Lyons Holiday Parks", "Jul 2023-Nov 2023","• Details about role?",
+
+"Production Vocalist and Entertainer/Host", "Lyons Holiday Parks", "Jul 2023-Nov 2023","• Details about role?",
+
+"Production Vocalist and Entertainer/Host", "Lyons Holiday Parks", "Jul 2023-Nov 2023","• Details about role?"
+) %>% 
+  detailed_entries(Where,Institution,Degree,Year)
+```
+
+
+
+# Projects
+
+# Professional skills
+
+### Testing paragraph
+
+```{r}
+library(dplyr)
+knitr::write_bib(c("vitae", "tibble"), "packages.bib")
+
+bibliography_entries("packages.bib") %>%
+  arrange(desc(author$family), issued)
+```
+

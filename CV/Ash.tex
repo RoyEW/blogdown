@@ -1,0 +1,226 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+% Awesome CV LaTeX Template for CV/Resume
+%
+% This template has been downloaded from:
+% https://github.com/posquit0/Awesome-CV
+%
+% Author:
+% Claud D. Park <posquit0.bj@gmail.com>
+% http://www.posquit0.com
+%
+%
+% Adapted to be an Rmarkdown template by Mitchell O'Hara-Wild
+% 23 November 2018
+%
+% Template license:
+% CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/)
+%
+%-------------------------------------------------------------------------------
+% CONFIGURATIONS
+%-------------------------------------------------------------------------------
+% A4 paper size by default, use 'letterpaper' for US letter
+\documentclass[11pt,a4paper,]{awesome-cv}
+
+% Configure page margins with geometry
+\usepackage{geometry}
+\geometry{left=1.4cm, top=.8cm, right=1.4cm, bottom=1.8cm, footskip=.5cm}
+
+
+% Specify the location of the included fonts
+\fontdir[fonts/]
+
+% Color for highlights
+% Awesome Colors: awesome-emerald, awesome-skyblue, awesome-red, awesome-pink, awesome-orange
+%                 awesome-nephritis, awesome-concrete, awesome-darknight
+
+\colorlet{awesome}{awesome-red}
+
+% Colors for text
+% Uncomment if you would like to specify your own color
+% \definecolor{darktext}{HTML}{414141}
+% \definecolor{text}{HTML}{333333}
+% \definecolor{graytext}{HTML}{5D5D5D}
+% \definecolor{lighttext}{HTML}{999999}
+
+% Set false if you don't want to highlight section with awesome color
+\setbool{acvSectionColorHighlight}{true}
+
+% If you would like to change the social information separator from a pipe (|) to something else
+\renewcommand{\acvHeaderSocialSep}{\quad\textbar\quad}
+
+\def\endfirstpage{\newpage}
+
+%-------------------------------------------------------------------------------
+%	PERSONAL INFORMATION
+%	Comment any of the lines below if they are not required
+%-------------------------------------------------------------------------------
+% Available options: circle|rectangle,edge/noedge,left/right
+
+\name{Ashleigh}{Sherlock}
+
+\position{BA Musical Theatre and Cabaret Performance}
+\address{Benfleet, Essex}
+
+\mobile{+44 7706 088840}
+\email{\href{mailto:Ashsherlock98@outlook.com}{\nolinkurl{Ashsherlock98@outlook.com}}}
+\linkedin{AshleighSherlock?}
+
+% \gitlab{gitlab-id}
+% \stackoverflow{SO-id}{SO-name}
+% \skype{skype-id}
+% \reddit{reddit-id}
+
+
+\usepackage{booktabs}
+
+\providecommand{\tightlist}{%
+	\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+%------------------------------------------------------------------------------
+
+
+
+% Pandoc CSL macros
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{2em}
+\newenvironment{CSLReferences}[3] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
+  % set entry spacing
+  \ifnum #2 > 0
+  \setlength{\parskip}{#2\baselineskip}
+  \fi
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\honortitlestyle{#1}}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\honordatestyle{#1}}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\begin{document}
+
+% Print the header with above personal informations
+% Give optional argument to change alignment(C: center, L: left, R: right)
+\makecvheader
+
+% Print the footer with 3 arguments(<left>, <center>, <right>)
+% Leave any of these blank if they are not needed
+% 2019-02-14 Chris Umphlett - add flexibility to the document name in footer, rather than have it be static Curriculum Vitae
+
+
+%-------------------------------------------------------------------------------
+%	CV/RESUME CONTENT
+%	Each section is imported separately, open each file in turn to modify content
+%------------------------------------------------------------------------------
+
+
+
+\hypertarget{overview}{%
+\section{Overview}\label{overview}}
+
+\begin{itemize}
+\tightlist
+\item
+  Recent graduate in Musical Theatre and Cabaret Performance.
+\item
+  Special interest in R statistical programming, RShiny dashboards, data
+  analysis and visualisation.
+\item
+  Seeking role within a finance \& accounting, data analytics, or
+  business analyst/intelligence function.
+\end{itemize}
+
+\hypertarget{education}{%
+\section{Education}\label{education}}
+
+\begin{cventries}
+    \cventry{BA in Musical Theatre and Cabaret Performance (Upper Second-Class with Honours)}{University of Chichester}{• Modules include: }{2023}{}\vspace{-4.0mm}
+    \cventry{A Levels: Performing Arts (A), Drama and Theatre Studies (A), English Lit (A), Fine Art (A)}{Sevic College}{}{2017}{}\vspace{-4.0mm}
+    \cventry{GCSEs: 12 GCSEs A-C, including English, Maths, and Sciences}{The Appleton School}{}{2014}{}\vspace{-4.0mm}
+\end{cventries}
+
+\hypertarget{employment}{%
+\section{Employment}\label{employment}}
+
+\begin{cventries}
+    \cventry{Production Vocalist and Entertainer/Host}{Lyons Holiday Parks – Winkups and Oakfields}{
+  
+  • Details about the role?
+  }{Jul 2023-Nov 2023}{}\vspace{-4.0mm}
+    \cventry{Vocalist (Main Stage)}{Chichester Pride}{• Details about the role?
+}{Jun 2023}{}\vspace{-4.0mm}
+    \cventry{Patricia Bakewell}{Fat Club: A Comedy Musical –}{• Details about the role?
+ 
+}{Jun 2023}{}\vspace{-4.0mm}
+    \cventry{Syd Lawrence Orchestra ‘Strictly Cabaret’}{The Kings Theatre
+Portsmouth}{• Details about the role
+  
+}{May 2023}{}\vspace{-4.0mm}
+    \cventry{Marvelous Musicals}{Chichester Conservatoire}{• Mama Morton /Anne of Cleves /Ensemble
+
+}{Jan 2023}{}\vspace{-4.0mm}
+    \cventry{A Christmas Carol the Concert UK Tour}{Great Immediately Productions}{• Lead Soprano
+
+}{Jan 2023}{}\vspace{-4.0mm}
+\end{cventries}
+
+\hypertarget{professional-qualifications-and-awards}{%
+\section{Professional qualifications and
+awards}\label{professional-qualifications-and-awards}}
+
+\begin{cventries}
+    \cventry{Associate Member, Chartered Institute of Management Accountants}{CIMA}{}{}{}\vspace{-4.0mm}
+    \cventry{CIMA Performance and Project Management}{Association of International Certified Professional Accountants}{Business Models and Leading and Managing People. Cert: https://RoyWilson.UK/tpm.pdf.}{2023}{}\vspace{-4.0mm}
+    \cventry{2020 Digital Mindset AICPA certificate}{Association of International Certified Professional Accountants}{Robotic Process Automation (RPA), blockchain technology, human intelligence, data analysis theory and the future of finance.}{2020}{}\vspace{-4.0mm}
+    \cventry{CIMA Certificate in Business Accounting}{CIMA}{Fundamentals of Business Economics, Management Accounting, Financial Accounting, Ethics, Corporate Governance and Business Law.}{2018}{}\vspace{-4.0mm}
+    \cventry{Vulnerable person safeguarding training.}{Bangor University}{}{2017}{}\vspace{-4.0mm}
+\end{cventries}
+
+\newpage
+
+\hypertarget{personal-projects}{%
+\section{Personal projects}\label{personal-projects}}
+
+\begin{cventries}
+    \cventry{Dynamic documents}{}{Dynamic documents written in R markdown - including this CV!}{2021}{}\vspace{-4.0mm}
+    \cventry{R markdown blogdown site}{https://RoyWilson.UK}{Example of dynamically produced articles and a resource to keep track of useful code}{2021}{}\vspace{-4.0mm}
+    \cventry{R Shiny dashboard web application hosted on AWS}{https://Alloys.one}{Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, ``Predicting the Thermal Expansion of BCC High Entropy Alloys in the Mo-Nb-Ta-Ti-W System, (2022)'', Journal of Physics: Energy. https://doi.org/10.1088/2515-7655/ac6f7e.}{2022}{}\vspace{-4.0mm}
+    \cventry{Visual Basic / VB.NET}{}{Experience building GUIs in a compiled language; experience in functional programming}{2009-2013}{}\vspace{-4.0mm}
+\end{cventries}
+
+\hypertarget{professional-skills}{%
+\section{Professional skills}\label{professional-skills}}
+
+\begin{cventries}
+    \cventry{R for Data Science}{Jumping Rivers RSS Accredited}{Manipulating data, statistical modelling, functional programming, and advanced graphics in R.}{2020}{}\vspace{-4.0mm}
+    \cventry{PostgreSQL}{Data Camp}{SQL fundamentals; familiarity with basic queries and aggregate functions.}{2020}{}\vspace{-4.0mm}
+    \cventry{Microsoft Office Suite}{}{Including Excel and Access, familiar with data functions (e.g. pivot tables) and working with relational databases.}{}{}\vspace{-4.0mm}
+    \cventry{Programming Principles and Practice using Python}{Bangor Doctoral school}{Fundamental programming concepts and best practice.}{2019}{}\vspace{-4.0mm}
+    \cventry{Advanced Python}{Bangor Doctoral school}{Exceptions; libraries; documentation and unit testing; mapping and fitlering; lambda functions; and additional tools.}{2019}{}\vspace{-4.0mm}
+    \cventry{Introduction to the Linux Shell}{Bangor Doctoral school}{Navigating file structures; working with files and directories; standard out, standard error and pipes; loops; conditions; and re-use through scripts.}{2019}{}\vspace{-4.0mm}
+    \cventry{Desire to expand on my knowledge of specialist tools for different applications}{}{Interest in learning rapid development tools like Tableau, Alteryx, and Power BI.}{}{}\vspace{-4.0mm}
+    \cventry{Full clean driver's licence}{}{}{}{}\vspace{-4.0mm}
+\end{cventries}
+
+\hypertarget{hobbies-and-interests}{%
+\section{Hobbies and interests}\label{hobbies-and-interests}}
+
+\begin{cventries}
+    \cventry{Welsh learner}{}{
+Learning to communicate through the medium of Welsh, attended the ysgol haf, and took part in the Ffrind Cymraeg project}{}{}\vspace{-4.0mm}
+    \cventry{Books and audiobooks}{}{Avid consumer of audiobooks}{}{}\vspace{-4.0mm}
+    \cventry{Computing and data visualisation}{}{Learning how to better represent data and honing my programming and computing skills}{}{}\vspace{-4.0mm}
+    \cventry{Treasurer at Bangor University Chess Society}{Bangor University}{• Organised and delivered interactive sessions
+  
+  • Took control of purchases and delivered the society's budget}{2016-2018}{}\vspace{-4.0mm}
+\end{cventries}
+
+
+
+\end{document}
