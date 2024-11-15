@@ -1,8 +1,8 @@
 ---
-title: Thermal Expansion Calculator with RShiny
-author: ~
-date: '2020-12-27'
-slug: thermal-expansion-calculator-with-rshiny
+title: "Thermal Expansion Calculator with RShiny"
+author: 'null'
+date: "2020-12-27"
+slug: "thermal-expansion-calculator-with-rshiny"
 categories: []
 tags: []
 ---
