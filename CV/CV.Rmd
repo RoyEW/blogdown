@@ -118,6 +118,10 @@ tribble(
  tribble(
    ~ Degree, ~ Year, ~ Institution, ~ Where,
              "2021", "Dynamic documents", "Dynamic documents written in R markdown - including this CV!", "",
+   
+   "2025", "R Shiny dashboard web application hosted on AWS", 'Molten salts research tools and database in collaboration with the General Atomics Center for Transformational Nuclear Technologies of University of South Carolina.  ', "https://moltsa.com",
+   
+   
   "2021", "R markdown blogdown site", "Example of dynamically produced articles and a resource to keep track of useful code", "https://RoyWilson.UK",
   
     "2022", "R Shiny dashboard web application hosted on AWS", 'Publication: J.A. Wilson, L.J. Evitts, A. Fraile, R.E. Wilson, M.J.D. Rushton, D.T. Goddard, W.E. Lee, S.C. Middleburgh, "Predicting the Thermal Expansion of BCC High Entropy Alloys in the Mo-Nb-Ta-Ti-W System, (2022)", Journal of Physics: Energy. https://doi.org/10.1088/2515-7655/ac6f7e.', "https://Alloys.one",
