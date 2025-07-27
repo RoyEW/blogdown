@@ -66,7 +66,7 @@ tribble(
   
   • Data analysis: weekly insight into candidate and financial information with rich visualisation features.
   
-  • Built a shift management system with RShiny and PostgreSQL all hosted on AWS. 
+  • Built a shift management system with RShiny and PostgreSQL hosted on AWS, integrating with our CRM and payroll workflows. 
   
   • Built a bespoke pay and bill solution integrating data with Xero and Paycircle payroll software. 
   
